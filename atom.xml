@@ -6,7 +6,7 @@
   <link href="https://venuslee.vercel.app/atom.xml" rel="self"/>
   
   <link href="https://venuslee.vercel.app/"/>
-  <updated>2021-04-08T01:52:09.569Z</updated>
+  <updated>2021-04-09T03:41:46.473Z</updated>
   <id>https://venuslee.vercel.app/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>git撤销以，添加代理以及wget设置代理</title>
+    <link href="https://venuslee.vercel.app/2021/04/09/git%E6%92%A4%E9%94%80%E4%BB%A5%E5%8F%8A%E6%B7%BB%E5%8A%A0%E4%BB%A3%E7%90%86/"/>
+    <id>https://venuslee.vercel.app/2021/04/09/git%E6%92%A4%E9%94%80%E4%BB%A5%E5%8F%8A%E6%B7%BB%E5%8A%A0%E4%BB%A3%E7%90%86/</id>
+    <published>2021-04-09T03:14:38.000Z</published>
+    <updated>2021-04-09T03:41:46.473Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="git撤销操作"><a href="#git撤销操作" class="headerlink" title="git撤销操作"></a>git撤销操作</h2><h3 id="没有add"><a href="#没有add" class="headerlink" title="没有add"></a>没有add</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br><span class="line">git checkout . <span class="comment"># 撤销修改。</span></span><br><span class="line">git checkout &lt;somefile&gt; <span class="comment"># 加文件名撤销该文件的修改。</span></span><br></pre></td></tr></table></figure><h3 id="没有commit"><a href="#没有commit" class="headerlink" title="没有commit"></a>没有commit</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br><span class="line">git reset HEAD <span class="comment"># 撤销上一次add.</span></span><br><span class="line">git reset HEAD &lt;somefile&gt; <span class="comment"># HEAD后加文件名，撤销该文件。</span></span><br></pre></td></tr></table></figure><h3 id="没有push"><a href="#没有push" class="headerlink" title="没有push"></a>没有push</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span><br><span class="line">git reset --hard &lt;commit_id&gt;  <span class="comment"># 回到其中你想要的某个版本</span></span><br><span class="line">git reset --hard HEAD^  <span class="comment"># 回到最新的一次提交</span></span><br><span class="line">git reset HEAD^  <span class="comment"># 此时代码保留，回到 git add 之前</span></span><br></pre></td></tr></table></figure><h3 id="已经push，希望回滚到上一个版本"><a href="#已经push，希望回滚到上一个版本" class="headerlink" title="已经push，希望回滚到上一个版本"></a>已经push，希望回滚到上一个版本</h3><ol><li>通过git reset直接删除指定的commit</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span><br><span class="line">git reset --hard &lt;commit_id&gt;</span><br><span class="line">git push origin HEAD --force <span class="comment"># 强制提交一次，之前提交就从远程仓库删除</span></span><br></pre></td></tr></table></figure><ol start="2"><li>通过git revert是用一次新的commit来回滚之前的commit</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span><br><span class="line">git revert &lt;commit_id&gt;  <span class="comment"># 撤销指定的版本，撤销也会作为一次提交进行保存</span></span><br></pre></td></tr></table></figure><p>git revert是用一次新的commit来回滚之前的commit，此次提交之前的commit都会被保留；<br>git reset是回到某次提交，提交及之前的commit都会被保留，但是此commit id之后的修改都会被删除。</p><h2 id="git添加代理"><a href="#git添加代理" class="headerlink" title="git添加代理"></a>git添加代理</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global --add remote.origin.proxy &lt;代理地址&gt; <span class="comment"># 添加代理</span></span><br><span class="line">git config --global --add remote.origin.proxy 127.0.0.1:8889</span><br><span class="line">git config --global --<span class="built_in">unset</span> remote.origin.proxy <span class="comment"># 取消代理</span></span><br></pre></td></tr></table></figure><h2 id="wget设置代理"><a href="#wget设置代理" class="headerlink" title="wget设置代理"></a>wget设置代理</h2><p>添加变量即可</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> HTTP_PROXY=127.0.0.1:8889</span><br><span class="line"><span class="built_in">export</span> HTTPS_PROXY=127.0.0.1:8889</span><br><span class="line"><span class="comment"># 取消</span></span><br><span class="line"><span class="built_in">unset</span> HTTP_PROXY</span><br><span class="line"><span class="built_in">unset</span> HTTPS_PROXY</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+    <summary type="html">这些东西都能搜到，但也容易忘记，记录在此方便查阅。</summary>
+    
+    
+    
+    <category term="linux" scheme="https://venuslee.vercel.app/categories/linux/"/>
+    
+    
+    <category term="转载" scheme="https://venuslee.vercel.app/tags/%E8%BD%AC%E8%BD%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python如何让两个变量保持同步</title>
+    <link href="https://venuslee.vercel.app/2021/04/08/Python%E5%A6%82%E4%BD%95%E8%AE%A9%E4%B8%A4%E4%B8%AA%E5%8F%98%E9%87%8F%E4%BF%9D%E6%8C%81%E5%90%8C%E6%AD%A5/"/>
+    <id>https://venuslee.vercel.app/2021/04/08/Python%E5%A6%82%E4%BD%95%E8%AE%A9%E4%B8%A4%E4%B8%AA%E5%8F%98%E9%87%8F%E4%BF%9D%E6%8C%81%E5%90%8C%E6%AD%A5/</id>
+    <published>2021-04-08T14:29:49.000Z</published>
+    <updated>2021-04-09T03:13:22.023Z</updated>
+    
+    <content type="html"><![CDATA[<p>众所周知，连Java都有的引用，Python都没有。可谁让我智商低下，学不会C++呢。找了一圈，也没有发现一个优雅地方法去实现这样一个函数：<code>track(a) = b    </code>，然后a和b同步改变。</p><p>只能用这样丑陋的方式：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Alias</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, data</span>):</span></span><br><span class="line">        self.data = data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">self, data</span>):</span></span><br><span class="line">        self.data = data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">str</span>(self.data)</span><br><span class="line"></span><br><span class="line">    __str__ = __repr__</span><br></pre></td></tr></table></figure><p>然后定义变量a：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = Alias(<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">1</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><p>令b=a：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line"><span class="number">1</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><p>更新a:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a.update(<span class="string">&quot;Python就这？&quot;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">Python就这？</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><p>b也会同步改变：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">Python就这？</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><p>看完这个，你可能想说：就这？</p><p>没错，就这。</p><p>我也想对卖Python编程课的公众号说一句：就这？别恶心人啦。</p>]]></content>
+    
+    
+    <summary type="html">python就这？连个引用都没有。卖课公众号还好意思吹什么无所不能的编程语言呢。就这？</summary>
+    
+    
+    
+    <category term="python" scheme="https://venuslee.vercel.app/categories/python/"/>
+    
+    
+    <category term="原创" scheme="https://venuslee.vercel.app/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title>gtf转bed，提取intron.bed以及一个处理gtf的轮子</title>
