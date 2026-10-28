@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>git撤销操作，添加代理以及wget设置代理 · Venusleeyous</title>
+<meta name="description" content="这些东西都能搜到，但也容易忘记，记录在此方便查阅。">
+<meta name="author" content="Venuslee">
+<meta name="theme-color" content="#f6f3ee">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Venusleeyous">
+<meta property="og:title" content="git撤销操作，添加代理以及wget设置代理 · Venusleeyous">
+<meta property="og:description" content="这些东西都能搜到，但也容易忘记，记录在此方便查阅。">
+<meta property="og:image" content="/assets/img/tx.jpg">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script>
+(function () {
+  document.documentElement.classList.add('js')
+  try {
+    var t = localStorage.getItem('venus-theme')
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    document.documentElement.dataset.theme = t
+  } catch (e) {}
+})()
+</script>
+</head>
+<body data-page="post" class="">
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7.2" cy="7.2" r="1.4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7L11.5 6.4"/><path d="M14 10.5a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.3-1.3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 2.5-.34c.85 0 1.71.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.05 10.05 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></symbol>
+  <symbol id="i-rss" viewBox="0 0 24 24"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M4 11a9 9 0 0 1 9 9M4 5a15 15 0 0 1 15 15"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-feather" viewBox="0 0 24 24"><path d="M20 4c-6 0-11 3.5-13 9l-3 7 7-3c5.5-2 9-7 9-13z"/><path d="M4 20 14 10"/></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+</svg>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<header class="site-header site-header--solid" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Venusleeyous 首页">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+      <span class="brand-name">Venuslee<span class="brand-accent">yous</span></span>
+    </a>
+    <nav class="nav-desktop" aria-label="主导航"><a class="nav-link" href="/">首页</a><a class="nav-link" href="/articles.html">文章</a><a class="nav-link" href="/archives.html">归档</a><a class="nav-link" href="/categories.html">分类</a><a class="nav-link" href="/tags.html">标签</a><a class="nav-link" href="/about.html">关于</a></nav>
+    <div class="header-actions">
+      <button class="icon-btn search-open" type="button" aria-label="搜索文章" title="搜索（Ctrl K）">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="search-btn-label">搜索</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="icon-btn theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
+        <span class="icon-sun"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></span><span class="icon-moon"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg></span>
+      </button>
+      <button class="icon-btn menu-toggle" type="button" aria-label="打开菜单" aria-controls="drawer" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-backdrop" data-drawer-close></div>
+  <aside class="drawer-panel" aria-label="移动端菜单">
+    <div class="drawer-head">
+      <span class="drawer-title">Menu</span>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="关闭菜单"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer-nav" aria-label="移动端导航">
+      <a href="/"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>首页</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/articles.html"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span>文章</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/archives.html"><svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg><span>归档</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/categories.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span>分类</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/tags.html"><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span>标签</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/about.html"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><span>关于</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      <a href="/links.html"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span>友链</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      <a href="/message.html"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span>留言板</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    </nav>
+    <div class="drawer-foot">
+      <a class="btn btn-ghost btn-sm" href="https://github.com/liqiming-whu" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a class="btn btn-ghost btn-sm" href="mailto:1914658215@qq.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 写邮件</a>
+    </div>
+  </aside>
+</div>
+
+<div class="search-modal" id="searchModal" hidden>
+  <div class="search-backdrop" data-search-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+    <div class="search-bar">
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="searchInput" type="search" placeholder="搜索文章、分类或标签…" autocomplete="off" spellcheck="false" aria-labelledby="searchTitle">
+      <span id="searchTitle" class="sr-only">站内搜索</span>
+      <button class="search-esc" type="button" data-search-close>Esc</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <p class="search-hint">输入关键词开始搜索，试试「python」或「生信」。</p>
+    </div>
+  </div>
+</div>
+<main id="main">
+  <header class="post-hero">
+    <div class="post-hero-bg" style="background-image:url('/assets/img/bg10.jpg')"></div>
+    <div class="post-hero-overlay"></div>
+    <div class="container post-hero-inner">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/">首页</a><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        <a href="/articles.html?category=linux">linux</a><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        <span>正文</span>
+      </nav>
+      <div class="post-hero-meta">
+        <a class="chip chip-solid" href="/articles.html?category=linux">linux</a>
+        <time datetime="2021-04-09">2021 年 4 月 9 日</time>
+        <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 分钟阅读</span>
+      </div>
+      <h1 class="post-title">git撤销操作，添加代理以及wget设置代理</h1>
+      <p class="post-hero-excerpt">这些东西都能搜到，但也容易忘记，记录在此方便查阅。</p>
+    </div>
+  </header>
+
+  <div class="reading-progress" aria-hidden="true"><span id="readingBar"></span></div>
+
+  <div class="container post-shell">
+    <article class="post-main">
+      <details class="toc-mobile" id="tocMobile">
+        <summary>目录 <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <nav class="toc-nav" id="tocMobileNav"></nav>
+      </details>
+      <div class="prose" id="articleContent"><h2 id="git撤销操作">git撤销操作</h2><h3 id="没有add">没有add</h3><div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git status</span>
+<span class="line">git checkout . <span class="comment"># 撤销修改。</span></span>
+<span class="line">git checkout &lt;somefile&gt; <span class="comment"># 加文件名撤销该文件的修改。</span></span></code></pre></div>
+
+<h3 id="没有commit">没有commit</h3><div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git status</span>
+<span class="line">git reset HEAD <span class="comment"># 撤销上一次add.</span></span>
+<span class="line">git reset HEAD &lt;somefile&gt; <span class="comment"># HEAD后加文件名，撤销该文件。</span></span></code></pre></div>
+
+<h3 id="没有push">没有push</h3><div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span>
+<span class="line">git reset --hard &lt;commit_id&gt;  <span class="comment"># 回到其中你想要的某个版本</span></span>
+<span class="line">git reset --hard HEAD^  <span class="comment"># 回到最新的一次提交</span></span>
+<span class="line">git reset HEAD^  <span class="comment"># 此时代码保留，回到 git add 之前</span></span></code></pre></div>
+
+<h3 id="已经push，希望回滚到上一个版本">已经push，希望回滚到上一个版本</h3><ul>
+<li>通过git reset直接删除指定的commit</li>
+</ul>
+<div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span>
+<span class="line">git reset --hard &lt;commit_id&gt;</span>
+<span class="line">git push origin HEAD --force <span class="comment"># 强制提交一次，之前提交就从远程仓库删除</span></span></code></pre></div>
+
+<ul>
+<li>通过git revert是用一次新的commit来回滚之前的commit</li>
+</ul>
+<div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git <span class="built_in">log</span> <span class="comment"># 得到你需要回退一次提交的commit id</span></span>
+<span class="line">git revert &lt;commit_id&gt;  <span class="comment"># 撤销指定的版本，撤销也会作为一次提交进行保存</span></span></code></pre></div>
+
+<p>git revert是用一次新的commit来回滚之前的commit，此次提交之前的commit都会被保留；<br>git reset是回到某次提交，提交及之前的commit都会被保留，但是此commit id之后的修改都会被删除。</p>
+<h2 id="git添加代理">git添加代理</h2><p>参考<a target="_blank" rel="noopener" href="http://git-scm.com/docs/git-config/en">git config文档</a>，查找<code>http.proxy</code>和<code>remote.&lt;name&gt;.proxy</code>设置。</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line">git config -l <span class="comment"># 显示配置</span></span>
+<span class="line">git config --global --add http.proxy &lt;代理地址&gt; <span class="comment"># 添加代理，不需要设置https.proxy</span></span>
+<span class="line">git config --global --add http.proxy 127.0.0.1:8889</span>
+<span class="line">git config --global --<span class="built_in">unset</span> http.proxy <span class="comment"># 取消代理</span></span>
+<span class="line">git config --global --unset-all http.proxy <span class="comment"># 取消全部</span></span>
+<span class="line"><span class="comment"># 假设您有一个名为“origin”的远程服务器，那么可以用来绕过该远程服务器的代理的命令是:</span></span>
+<span class="line">git config --global --add remote.origin.proxy 127.0.0.1:8889</span>
+<span class="line">git config --global --<span class="built_in">unset</span> remote.origin.proxy</span>
+<span class="line">git config --global --unset-all remote.origin.proxy</span></code></pre></div>
+
+<h2 id="wget设置代理">wget设置代理</h2><p>添加变量即可</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-bash"><span class="line"><span class="built_in">export</span> HTTP_PROXY=127.0.0.1:8889</span>
+<span class="line"><span class="built_in">export</span> HTTPS_PROXY=127.0.0.1:8889</span>
+<span class="line"><span class="comment"># 取消</span></span>
+<span class="line"><span class="built_in">unset</span> HTTP_PROXY</span>
+<span class="line"><span class="built_in">unset</span> HTTPS_PROXY</span></code></pre></div></div>
+
+      <div class="post-tags">
+        <div class="post-tags-inner"><a class="tag-link" href="/articles.html?tag=%E8%BD%AC%E8%BD%BD"># 转载</a></div>
+        <button class="btn btn-outline btn-sm copy-link" type="button" data-copy-url><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg> <span>复制链接</span></button>
+      </div>
+
+      <div class="post-copyright">
+        <div class="copyright-row"><span>文章作者</span><strong>Venuslee</strong></div>
+        <div class="copyright-row"><span>版权协议</span><strong>CC BY-NC-SA 4.0</strong></div>
+        <p>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="/">Venusleeyous</a>。</p>
+      </div>
+
+      <div class="post-author">
+        <img src="/assets/img/tx.jpg" alt="Venuslee 的头像" width="400" height="400">
+        <div>
+          <p class="eyebrow">Written by</p>
+          <h2>Venuslee</h2>
+          <p>一个不太聪明的年轻人，正在学生信。记录 Python、Linux 与生信工具。</p>
+          <div class="post-author-links">
+            <a class="text-link" href="/about.html">关于我 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            <a class="text-link" href="https://github.com/liqiming-whu" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <nav class="post-nav" aria-label="文章导航">
+        
+        <a class="post-nav-card prev" href="/posts/python-sync-variables/">
+          <span class="post-nav-label"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> 上一篇</span>
+          <span class="post-nav-title">Python如何让两个变量保持同步</span>
+          <span class="post-nav-date">2021.04.08</span>
+        </a>
+        
+        <a class="post-nav-card next" href="/posts/wsl2-archlinux/">
+          <span class="post-nav-label">下一篇 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+          <span class="post-nav-title">在WSL2中安装ArchLinux并进行本地化配置</span>
+          <span class="post-nav-date">2021.04.09</span>
+        </a>
+      </nav>
+    </article>
+
+    <aside class="post-side">
+      <div class="side-card toc-card" id="tocCard">
+        <p class="side-title">目录</p>
+        <nav class="toc-nav" id="tocNav"></nav>
+      </div>
+      <div class="side-card side-author">
+        <img src="/assets/img/tx.jpg" alt="Venuslee 的头像" width="400" height="400">
+        <p class="side-author-name">Venuslee</p>
+        <p class="side-author-bio">一个不太聪明的年轻人。</p>
+        <div class="side-author-stats">
+          <span>10 篇文章</span><span>5 个分类</span>
+        </div>
+        <a class="btn btn-outline btn-sm" href="/about.html">关于我</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="section section-related">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Keep reading</p>
+          <h2>继续阅读</h2>
+        </div>
+        <a class="text-link" href="/articles.html">全部文章 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <div class="post-grid">
+        
+<article class="post-card" data-reveal data-category="linux" data-tag="原创" data-title="大幅度提升终端使用体验——zsh安装与配置" data-text="学习Linux从zsh的安装与配置开始 1.安装zsh bash 复制 或者 通过源码安装 如果没有root权限，通过源码安装，下载解压之后： 首先配置zsh，自定义安装路径 ./configure --prefix=$HOME/.local 然后编译 make -j4 检查编译是否成功 make check 如果没有编译错误，则安装zsh make install -j4 2.将zsh设置为默认shell 如果使用root权限安装的zsh，直接终端运行 chsh -s $(which zsh) 即可。 如果没有root权限，通过源码安装zsh的话，则解决方法是在每次打开终端时执行 exec &lt;zsh-path&gt; 来替代当前的shell。在文件 .bash_profile 中加入： [ -f $HOME/.local/bin/zsh ] &amp;&amp; exec $HOME/.local/bin/zsh -l 如果上述两种方法都不能修改默认shell，安装 oh-my-zsh，安装时会自动切换shell成zsh。 3.安装oh-my-zsh ArchLinux用户直接 yay -S oh-my-">
+  <a class="post-card-media" href="/posts/zsh-config/" tabindex="-1" aria-hidden="true">
+    <img src="/assets/img/bg6.jpg" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">linux</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category=linux">linux</a>
+      <time datetime="2021-04-01">2021.04.01</time>
+    </div>
+    <h3 class="post-card-title"><a href="/posts/zsh-config/">大幅度提升终端使用体验——zsh安装与配置</a></h3>
+    <p class="post-card-excerpt">如果你没用过zsh，那么你需要这篇文章，如果你没用过oh-my-zsh，那你更需要这篇文章。如果你不用oh-my-zsh，那没事了。</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 5 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>
+<article class="post-card" data-reveal data-category="linux" data-tag="原创" data-title="配置你的vim，让它成为能用的编辑器" data-text="学习Linux，从vim配置开始： 不会真有人不配置就用vim吧，不会吧 1.使用vim-plug管理vim插件 把vim-plug安装在~/.vim/autoload/ bash 复制 由于github处于骑墙状态有时候没法连接，所以： 通过git安装 通过gitee安装 bash 复制 bash 复制 2.重命名vimrc.txt为.vimrc于~/ 这里可以clone我的配置： 通过git 通过gitee bash 复制 bash 复制 3.安装插件 bash 复制 4.安装依赖 bash 复制 5.安装yarn 去yarn官网查看 安装说明 bash 复制 6.安装主题配色 我们要把主题配色复制到指定位置才能生效。 bash 复制 7.复制.vimrc, .vim, .config至/root 为了让root也可以使用vim配置，直接粗暴的复制过去就完了。 bash 复制 8.我的.vimrc文件 需要vim &gt; 8.0才能用 plain 复制 另有vim7可用版本，软件版本比较旧的服务器可用 plain 复制">
+  <a class="post-card-media" href="/posts/vim-config/" tabindex="-1" aria-hidden="true">
+    <img src="/assets/img/bg2.jpg" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">linux</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category=linux">linux</a>
+      <time datetime="2021-03-31">2021.03.31</time>
+    </div>
+    <h3 class="post-card-title"><a href="/posts/vim-config/">配置你的vim，让它成为能用的编辑器</a></h3>
+    <p class="post-card-excerpt">很多服务器上的至今仍然装着vim7，没有基本的配置，vim是很难用的，经常会遇到空格和tab混用的问题。使用vim，需要先从配置开始。</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+        <span class="brand-name">Venuslee<span class="brand-accent">yous</span></span>
+      </a>
+      <p class="footer-quote">“天运苟如此，且进杯中物。”</p>
+      <p class="footer-desc">记录生信、Python 与 Linux 的折腾笔记。</p>
+    </div>
+    <nav class="footer-nav" aria-label="页脚导航">
+      <a href="/">首页</a><a href="/articles.html">文章</a><a href="/archives.html">归档</a><a href="/categories.html">分类</a><a href="/tags.html">标签</a><a href="/about.html">关于</a><a href="/links.html">友链</a><a href="/message.html">留言板</a>
+    </nav>
+    <div class="footer-contact">
+      <a href="https://github.com/liqiming-whu" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a href="mailto:1914658215@qq.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 1914658215@qq.com</a>
+      <a href="https://venuslee.vercel.app/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg> 旧站地址</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2021–2026 Venuslee. 保留所有权利。</p>
+    <p class="footer-beian"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">鄂ICP备2020017072号</a><span>本站部署于中国大陆，请勿发布违反国家法律信息。</span></p>
+  </div>
+</footer>
+<div class="to-top" id="toTop">
+  <button class="icon-btn" type="button" aria-label="回到顶部" title="回到顶部"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+</div>
+<script src="/assets/js/main.js" defer></script></body>
+</html>

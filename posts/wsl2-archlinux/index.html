@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在WSL2中安装ArchLinux并进行本地化配置 · Venusleeyous</title>
+<meta name="description" content="微软商店没有ArchLinux官方版本的WSL，不过我们可以使用LxRunOffline安装。">
+<meta name="author" content="Venuslee">
+<meta name="theme-color" content="#f6f3ee">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Venusleeyous">
+<meta property="og:title" content="在WSL2中安装ArchLinux并进行本地化配置 · Venusleeyous">
+<meta property="og:description" content="微软商店没有ArchLinux官方版本的WSL，不过我们可以使用LxRunOffline安装。">
+<meta property="og:image" content="/assets/img/tx.jpg">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script>
+(function () {
+  document.documentElement.classList.add('js')
+  try {
+    var t = localStorage.getItem('venus-theme')
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    document.documentElement.dataset.theme = t
+  } catch (e) {}
+})()
+</script>
+</head>
+<body data-page="post" class="">
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7.2" cy="7.2" r="1.4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7L11.5 6.4"/><path d="M14 10.5a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 0 0 5.7 5.7l1.3-1.3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 2.5-.34c.85 0 1.71.12 2.5.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.05 10.05 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></symbol>
+  <symbol id="i-rss" viewBox="0 0 24 24"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M4 11a9 9 0 0 1 9 9M4 5a15 15 0 0 1 15 15"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-feather" viewBox="0 0 24 24"><path d="M20 4c-6 0-11 3.5-13 9l-3 7 7-3c5.5-2 9-7 9-13z"/><path d="M4 20 14 10"/></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+</svg>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<header class="site-header site-header--solid" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Venusleeyous 首页">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+      <span class="brand-name">Venuslee<span class="brand-accent">yous</span></span>
+    </a>
+    <nav class="nav-desktop" aria-label="主导航"><a class="nav-link" href="/">首页</a><a class="nav-link" href="/articles.html">文章</a><a class="nav-link" href="/archives.html">归档</a><a class="nav-link" href="/categories.html">分类</a><a class="nav-link" href="/tags.html">标签</a><a class="nav-link" href="/about.html">关于</a></nav>
+    <div class="header-actions">
+      <button class="icon-btn search-open" type="button" aria-label="搜索文章" title="搜索（Ctrl K）">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="search-btn-label">搜索</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="icon-btn theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
+        <span class="icon-sun"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></span><span class="icon-moon"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg></span>
+      </button>
+      <button class="icon-btn menu-toggle" type="button" aria-label="打开菜单" aria-controls="drawer" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-backdrop" data-drawer-close></div>
+  <aside class="drawer-panel" aria-label="移动端菜单">
+    <div class="drawer-head">
+      <span class="drawer-title">Menu</span>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="关闭菜单"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer-nav" aria-label="移动端导航">
+      <a href="/"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>首页</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/articles.html"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span>文章</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/archives.html"><svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg><span>归档</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/categories.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span>分类</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/tags.html"><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span>标签</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a><a href="/about.html"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><span>关于</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      <a href="/links.html"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span>友链</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      <a href="/message.html"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span>留言板</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    </nav>
+    <div class="drawer-foot">
+      <a class="btn btn-ghost btn-sm" href="https://github.com/liqiming-whu" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a class="btn btn-ghost btn-sm" href="mailto:1914658215@qq.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 写邮件</a>
+    </div>
+  </aside>
+</div>
+
+<div class="search-modal" id="searchModal" hidden>
+  <div class="search-backdrop" data-search-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+    <div class="search-bar">
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="searchInput" type="search" placeholder="搜索文章、分类或标签…" autocomplete="off" spellcheck="false" aria-labelledby="searchTitle">
+      <span id="searchTitle" class="sr-only">站内搜索</span>
+      <button class="search-esc" type="button" data-search-close>Esc</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <p class="search-hint">输入关键词开始搜索，试试「python」或「生信」。</p>
+    </div>
+  </div>
+</div>
+<main id="main">
+  <header class="post-hero">
+    <div class="post-hero-bg" style="background-image:url('/assets/img/bg3.jpg')"></div>
+    <div class="post-hero-overlay"></div>
+    <div class="container post-hero-inner">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/">首页</a><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        <a href="/articles.html?category=windows">windows</a><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        <span>正文</span>
+      </nav>
+      <div class="post-hero-meta">
+        <a class="chip chip-solid" href="/articles.html?category=windows">windows</a>
+        <time datetime="2021-04-09">2021 年 4 月 9 日</time>
+        <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 7 分钟阅读</span>
+      </div>
+      <h1 class="post-title">在WSL2中安装ArchLinux并进行本地化配置</h1>
+      <p class="post-hero-excerpt">微软商店没有ArchLinux官方版本的WSL，不过我们可以使用LxRunOffline安装。</p>
+    </div>
+  </header>
+
+  <div class="reading-progress" aria-hidden="true"><span id="readingBar"></span></div>
+
+  <div class="container post-shell">
+    <article class="post-main">
+      <details class="toc-mobile" id="tocMobile">
+        <summary>目录 <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <nav class="toc-nav" id="tocMobileNav"></nav>
+      </details>
+      <div class="prose" id="articleContent"><h2 id="启用WSL">启用WSL</h2><p>用管理员打开powershell输入：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">dism.exe /online /<span class="built_in">enable-feature</span> /featurename:Microsoft<span class="literal">-Windows</span><span class="literal">-Subsystem</span><span class="literal">-Linux</span> /all /norestart</span></code></pre></div>
+
+<h2 id="升级为WSL2的必要条件">升级为WSL2的必要条件</h2><ul>
+<li>对于x64的系统要求win10版本为<strong>1903</strong> 或者更高</li>
+<li>win + R 输入 <code>winver</code>查看版本</li>
+</ul>
+<h2 id="启用虚拟平台">启用虚拟平台</h2><p>用管理员打开powershell输入</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">dism.exe /online /<span class="built_in">enable-feature</span> /featurename:VirtualMachinePlatform /all /norestart</span></code></pre></div>
+
+<p><strong>执行完毕后重启</strong>。</p>
+<p><strong>需要在BIOS中开启虚拟化，Intel CPU开启VT选项，AMD CPU开启SVM选项。</strong></p>
+<h2 id="下载Linux内核升级包">下载Linux内核升级包</h2><p>下载地址：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi">https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi</a></p>
+</blockquote>
+<p>下载完成后双击安装。</p>
+<h2 id="将WSL2设置为默认版本">将WSL2设置为默认版本</h2><p>用管理员打开powershell输入</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl -<span class="literal">-set</span><span class="literal">-default</span><span class="literal">-version</span> <span class="number">2</span></span></code></pre></div>
+
+<p>到这里WSL就安装好了，下面安装ArchLinux。</p>
+<h2 id="安装LxRunOffline">安装LxRunOffline</h2><p>下载地址：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/DDoSolitary/LxRunOffline/releases">https://github.com/DDoSolitary/LxRunOffline/releases</a></p>
+</blockquote>
+<p>选择最新版下载，解压后将LxRunOffline.exe放入任意一个path文件夹下（比如C:/Windows/System32）。也可以把LxRunOffline.exe的目录添加到环境变量中。</p>
+<p>当前最新版为<a target="_blank" rel="noopener" href="https://github.com/DDoSolitary/LxRunOffline/releases/download/v3.5.0/LxRunOffline-v3.5.0-msvc.zip">LxRunOffline-v3.5.0-msvc.zip</a> 。</p>
+<h2 id="下载Archlinux">下载Archlinux</h2><p>下载地址：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/">https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/</a></p>
+<p>找到<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/archlinux-bootstrap-2021.04.01-x86_64.tar.gz">archlinux-bootstrap-2021.04.01-x86_64.tar.gz</a> 。</p>
+<h2 id="安装archlinux到WSL2">安装archlinux到WSL2</h2><p>命令1：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">LxRunOffline i <span class="literal">-n</span> &lt;自定义名称&gt; <span class="operator">-f</span> &lt;Arch镜像位置&gt; <span class="literal">-d</span> &lt;安装系统的位置&gt; <span class="literal">-r</span> root.x86_64</span></code></pre></div>
+
+<p>比如：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">plain</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-plain"><span class="line">LxRunOffline i -n ArchLinux -f C:\Users\19146\Downloads\archlinux-bootstrap-2021.04.01-x86_64.tar.gz -d C:\Users\19146\ArchLinux -r root.x86_64</span></code></pre></div>
+
+<p>命令2：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">plain</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-plain"><span class="line">wsl --set-version &lt;名称&gt; 2</span></code></pre></div>
+
+<p>比如：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">plain</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-plain"><span class="line">wsl --set-version ArchLinux 2</span></code></pre></div>
+
+<h2 id="进入系统">进入系统</h2><p>命令：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl <span class="literal">-d</span> &lt;你的archlinux名字&gt;</span></code></pre></div>
+
+<p>比如:</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl <span class="literal">-d</span> ArchLinux</span></code></pre></div>
+
+<p>在这里我们就进入了archlinux内部，然后以下操作在archlinux中进行</p>
+<p>删除<code>/etc/resolv.conf</code>文件，让archlinux自己生成resolve.conf文件</p>
+<p>执行命令</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">rm /etc/resolv.conf</span></code></pre></div>
+
+<p>重新启动Archlinux</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line"><span class="keyword">exit</span></span></code></pre></div>
+
+<p>执行上述命令后会退出arch,回到powershell,然后在powershell中执行</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl -<span class="literal">-shutdown</span> &lt;你的archlinux名字&gt;</span></code></pre></div>
+
+<p>比如：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl -<span class="literal">-shutdown</span> ArchLinux</span></code></pre></div>
+
+<p>然后再次进入Arch：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl <span class="literal">-d</span> ArchLinux</span></code></pre></div>
+
+<h2 id="添加清华源">添加清华源</h2><h3 id="使用vim">使用vim</h3><p>安装vim：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -S vim</span></code></pre></div>
+
+<p>编辑pacman配置文件：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">vim /etc/pacman.conf</span></code></pre></div>
+
+<p>在文件末尾添加：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">sh</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-sh"><span class="line">[archlinuxcn]</span>
+<span class="line">Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/<span class="variable">$arch</span></span></code></pre></div>
+
+<p>然后退出，编辑镜像源列表：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">vim /etc/pacman.d/mirrolist</span></code></pre></div>
+
+<p>将China的源注释去掉（选择部分即可）</p>
+<h3 id="不会用vim的可以用资源管理器打开">不会用vim的可以用资源管理器打开</h3><p><del>很难相信有人居然不会用vim</del></p>
+<p>在Arch中执行：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line"><span class="built_in">cd</span> /etc/</span>
+<span class="line">explorer.exe .</span></code></pre></div>
+
+<p>注意后面的点，执行这条命令后会用windows的文件管理器打开/etc目录，然后找到pacman.conf，在这个文件最后加入</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">[archlinuxcn]</span>
+<span class="line">Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch</span></code></pre></div>
+
+<p>然后进入下一级目录<code>pacman.d</code>,编辑里面的mirrolist文件，将China的源注释去掉。</p>
+<h3 id="安装pacman-key">安装pacman-key</h3><p>然后回到ArchLinux，执行：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -Syy</span>
+<span class="line">pacman-key --init</span>
+<span class="line">pacman-key --populate</span>
+<span class="line">pacman -Sy archlinuxcn-keyring</span></code></pre></div>
+
+<p><strong>Archwiki提示：</strong></p>
+<blockquote>
+<p><strong>注意：</strong> 如果<code>pacman-key --init</code>运行时系统没有足够的熵，可能会需要很长时间。请在目标机器上安装 <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Haveged">haveged</a> 或 <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Rng-tools">rng-tools</a>。然后在用 root 权限执行<code>pacman-key --init</code> 前<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Start">启动</a> <code>haveged.service</code>。</p>
+</blockquote>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -Syu haveged</span>
+<span class="line">systemctl start haveged</span>
+<span class="line">systemctl enable haveged</span></code></pre></div>
+
+<p>如果<code>pacman -S archlinuxcn-keyring 报错</code>，删除gnupg，重建密钥：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">rm -rf /etc/pacman.d/gnupg</span>
+<span class="line">pacman-key --init</span>
+<span class="line">pacman-key --populate archlinux</span>
+<span class="line">pacman-key --populate archlinuxcn</span></code></pre></div>
+
+<h2 id="配置sudo">配置sudo</h2><p>安装一些常用软件：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -S base base-devel vim git wget python</span></code></pre></div>
+
+<p>给当前的root设置密码：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">passwd</span></code></pre></div>
+
+<p><strong>Archwiki提示：</strong></p>
+<blockquote>
+<p><strong>警告：</strong> <code>/etc/sudoers</code>格式错误会导致sudo不可用。<strong>必须</strong>使用<code>visudo</code>编辑该文件防止出错。</p>
+<p><code>visudo</code>调用的默认编辑器是<code>vi</code>。官方仓库里的 sudo 编译时开启了<code>--with-env-editor</code>，会采用环境变量 <code>VISUAL</code> 和 <code>EDITOR</code>的设置。如果设置了<code>VISUAL</code> 就不会使用<code>EDITOR</code>。</p>
+<p>如果要临时使用其他编辑器，在该命令前加上<code>EDITOR</code>环境变量即可。例如，要使用 <code>nano</code>，用root运行以下命令：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">EDITOR=nano visudo</span></code></pre></div>
+
+<p>要永久设置编辑器，请查看 <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Environment_variables#Defining_variables">定义本地环境变量</a>.</p>
+<p>系统级的设置可以把编辑器设置到 <code>/etc/sudoers</code>。以 <code>nano</code> 为例，使用<code>visudo</code>打开该文件，加入以下内容：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line"><span class="meta">#</span><span class="bash"> Defaults specification</span></span>
+<span class="line"><span class="meta">#</span><span class="bash"> Reset environment by default</span></span>
+<span class="line">Defaults      env_reset</span>
+<span class="line"><span class="meta">#</span><span class="bash"> Set default EDITOR to vim, and <span class="keyword">do</span> not allow visudo to use EDITOR/VISUAL.</span></span>
+<span class="line">Defaults      editor=/usr/bin/nano, !env_editor</span></code></pre></div>
+</blockquote>
+<p>使用vim作为编辑器，就需要在 <code>/etc/sudoers</code>中加入：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line"><span class="meta">#</span><span class="bash"> Defaults specification</span></span>
+<span class="line"><span class="meta">#</span><span class="bash"> Reset environment by default</span></span>
+<span class="line">Defaults      env_reset</span>
+<span class="line"><span class="meta">#</span><span class="bash"> Set default EDITOR to vim, and <span class="keyword">do</span> not allow visudo to use EDITOR/VISUAL.</span></span>
+<span class="line">Defaults      editor=/usr/bin/vim, !env_editor</span></code></pre></div>
+
+<p>或者直接<code>ln -s /bin/vim /bin/vi</code>。</p>
+<p>执行<code>visudo</code>，将<code>/etc/sudoers</code>中的<code>wheel ALL=(ALL) ALL</code>那一行前面的注释去掉：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">visudo</span></code></pre></div>
+
+<h2 id="设置语言，安装字体">设置语言，安装字体</h2><p>编辑<code>locale.gen</code>：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">vim /etc/locale.gen</span></code></pre></div>
+
+<p>取消下面两行的注释：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">en_US.UTF-8 UTF-8</span>
+<span class="line">zh_CN.UTF-8 UTF-8</span></code></pre></div>
+
+<p>如果不取消<code>en_US.UTF-8 UTF-8</code>前面的注释，你就会发现终端无法正常显示中文。</p>
+<p>设置语言：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">echo &#x27;LANG=zh_CN.UTF-8&#x27; &gt; /etc/locale.conf</span></code></pre></div>
+
+<p>生成语言配置：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">locale-gen </span></code></pre></div>
+
+<p>安装字体配置工具：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -S fontconfig</span></code></pre></div>
+
+<p>安装字体：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">pacman -S ttf-dejavu wqy-zenhei wqy-microhei</span></code></pre></div>
+
+<p>刷新字体缓存：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">fc-cache</span></code></pre></div>
+
+<h2 id="设置使用普通用户登录Archlinux">设置使用普通用户登录Archlinux</h2><p>新建一个普通用户并设置密码：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">useradd -m -G wheel -s /bin/bash &lt;用户名&gt;</span>
+<span class="line">passwd &lt;用户名&gt;</span></code></pre></div>
+
+<p>查看当前用户id：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">id -u &lt;用户名&gt;</span></code></pre></div>
+
+<p>退出ArchLinux：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-shell"><span class="line">exit</span></code></pre></div>
+
+<p>在powershell中执行</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">lxrunoffline su <span class="literal">-n</span> &lt;你的archlinux名字&gt; <span class="literal">-v</span> &lt;账户id&gt;</span></code></pre></div>
+
+<p>运行linux：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">wsl <span class="literal">-d</span> ArchLinux <span class="comment"># wsl -d &lt;你的archlinux名字&gt;</span></span></code></pre></div>
+
+<h2 id="卸载">卸载</h2><p>输入指令：</p>
+<div class="code-block"><div class="code-meta"><span class="code-lang">powershell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code class="hljs language-powershell"><span class="line">LxRunOffline ui <span class="literal">-n</span> ArchLinux <span class="comment"># LxRunOffline ui -n &lt;你的archlinux名字&gt;</span></span></code></pre></div>
+
+<h2 id="安装Windows-Terminal">安装Windows Terminal</h2><p>在微软商店搜索<code>Windows Terminal</code>，安装后打开，就会发现下拉菜单有ArchLinux选项卡，不用每次执行<code>wsl -d ArchLinux</code>进入系统了。</p>
+<hr>
+<h2 id="参考文献">参考文献</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kainhuck/p/13835833.html">在WSL2中安装ArchLinux</a></p>
+</blockquote>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_30151813/article/details/89555259">sudo pacman -S archlinuxcn-keyring 报错</a></p>
+</blockquote>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Pacman_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)/Package_signing_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Archwiki: pacman (简体中文)</a></p>
+</blockquote>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Sudo_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Archwiki: Sudo (简体中文)</a></p>
+</blockquote></div>
+
+      <div class="post-tags">
+        <div class="post-tags-inner"><a class="tag-link" href="/articles.html?tag=%E8%BD%AC%E8%BD%BD"># 转载</a></div>
+        <button class="btn btn-outline btn-sm copy-link" type="button" data-copy-url><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg> <span>复制链接</span></button>
+      </div>
+
+      <div class="post-copyright">
+        <div class="copyright-row"><span>文章作者</span><strong>Venuslee</strong></div>
+        <div class="copyright-row"><span>版权协议</span><strong>CC BY-NC-SA 4.0</strong></div>
+        <p>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="/">Venusleeyous</a>。</p>
+      </div>
+
+      <div class="post-author">
+        <img src="/assets/img/tx.jpg" alt="Venuslee 的头像" width="400" height="400">
+        <div>
+          <p class="eyebrow">Written by</p>
+          <h2>Venuslee</h2>
+          <p>一个不太聪明的年轻人，正在学生信。记录 Python、Linux 与生信工具。</p>
+          <div class="post-author-links">
+            <a class="text-link" href="/about.html">关于我 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            <a class="text-link" href="https://github.com/liqiming-whu" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <nav class="post-nav" aria-label="文章导航">
+        
+        <a class="post-nav-card prev" href="/posts/git-undo-proxy/">
+          <span class="post-nav-label"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> 上一篇</span>
+          <span class="post-nav-title">git撤销操作，添加代理以及wget设置代理</span>
+          <span class="post-nav-date">2021.04.09</span>
+        </a>
+        
+        <a class="post-nav-card next" href="/posts/python-split-container/">
+          <span class="post-nav-label">下一篇 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+          <span class="post-nav-title">python按长度拆分容器</span>
+          <span class="post-nav-date">2021.04.14</span>
+        </a>
+      </nav>
+    </article>
+
+    <aside class="post-side">
+      <div class="side-card toc-card" id="tocCard">
+        <p class="side-title">目录</p>
+        <nav class="toc-nav" id="tocNav"></nav>
+      </div>
+      <div class="side-card side-author">
+        <img src="/assets/img/tx.jpg" alt="Venuslee 的头像" width="400" height="400">
+        <p class="side-author-name">Venuslee</p>
+        <p class="side-author-bio">一个不太聪明的年轻人。</p>
+        <div class="side-author-stats">
+          <span>10 篇文章</span><span>5 个分类</span>
+        </div>
+        <a class="btn btn-outline btn-sm" href="/about.html">关于我</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="section section-related">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Keep reading</p>
+          <h2>继续阅读</h2>
+        </div>
+        <a class="text-link" href="/articles.html">全部文章 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <div class="post-grid">
+        
+<article class="post-card" data-reveal data-category="python" data-tag="原创" data-title="python将列表按指定的列去重，并合并其它行的内容" data-text="pandas的去重方法 df.drop_duplicates(subset=keys, keep=&#39;first&#39;) 在按某列去重时，其他列每组只能保留其中一行。如何想要把这一组的所有内容合并在一行，或者进行简单的统计呢？我造了个轮子，以解决这个问题。 merge_row.py 可以对指定的列进行去重，并输出指定的其他列合并后的内容，可自定义分隔符。可以对指定的其他列的每组求和，均值，最大值，最小值，中位数等，可以对分组进行去重，可以输出每个分组的数据个数。 输入输出支持 csv 、 tsv 表格和excel表格，使用 .csv ， .tsv 和 .xlsx 后缀加以区分。 使用方法： shell 复制 在终端执行： shell 复制 -i ：输入文件，可以是文本格式文件或 xlsx 格式的excel表格。配合 -sep 指定分隔符， -header 指定表头。 -o ：输出文件，不指定 -o 就会把输出打印出来。 -header ：表头。0表示第0列作为表头，没有表头则不指定该参数。 -by ：按哪几列去重， -by 0 表示按第0列去重， -by 0,1,2 表示按第0，1，2列去重">
+  <a class="post-card-media" href="/posts/python-merge-rows/" tabindex="-1" aria-hidden="true">
+    <img src="/assets/img/bg9.jpg" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">python</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category=python">python</a>
+      <time datetime="2021-04-29">2021.04.29</time>
+    </div>
+    <h3 class="post-card-title"><a href="/posts/python-merge-rows/">python将列表按指定的列去重，并合并其它行的内容</a></h3>
+    <p class="post-card-excerpt">pandas的drop_duplicates在按某列去重时，其他列每组只能保留其中一行。如何把这一组的若干行合并在一行，是本文主要解决的问题。</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 3 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>
+<article class="post-card" data-reveal data-category="python|生信入门" data-tag="原创|生信" data-title="统计bam文件中的fragments长度分布" data-text="RSeQC 的 RNA_fragment_size.py 虽然可以统计fragments的长度，但只能输出每个比对到每个转录本的片段的均值，中位数等信息： calculate fragment size for each gene/transcript. For each transcript/gene, it Will report: 1) # of fragment that was used. 2) mean of fragment size 3) median of fragment size 4) stdev of fragment size 所以我参考它造了一个轮子，按照每个基因的一个转录本来统计所有的fragment长度，方便生成fragment长度分布图。 原理：根据read1和read2比对到基因组上的坐标，统计该区域包含的exon长度之和。当read1和read2没有overlap，且在一个转录本上比对到了两个很远的位置，它们中间的所有exon都会被统计进去，这时候fragment长度就会很长。但这种pair reads比较少，可以设置一个阈值去掉比例比较低的fra">
+  <a class="post-card-media" href="/posts/bam-fragment-length/" tabindex="-1" aria-hidden="true">
+    <img src="/assets/img/bg.jpg" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">python</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category=python">python</a>
+      <time datetime="2021-04-16">2021.04.16</time>
+    </div>
+    <h3 class="post-card-title"><a href="/posts/bam-fragment-length/">统计bam文件中的fragments长度分布</a></h3>
+    <p class="post-card-excerpt">输入bam文件，输出两列，一列是fragment的长度，一列是数量。不愧是python，就是慢。</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>
+<article class="post-card" data-reveal data-category="python" data-tag="原创" data-title="python按长度拆分容器" data-text="输入任意长度列表，拆分容器或者有限迭代器。 假设有这样一个列表 [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5] ，现在输入一个度列表 [1,2,3,4,5] ，把列表按长度依次拆分。 代码如下： python 复制 测试： python 复制">
+  <a class="post-card-media" href="/posts/python-split-container/" tabindex="-1" aria-hidden="true">
+    <img src="/assets/img/bg2.jpg" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">python</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category=python">python</a>
+      <time datetime="2021-04-14">2021.04.14</time>
+    </div>
+    <h3 class="post-card-title"><a href="/posts/python-split-container/">python按长度拆分容器</a></h3>
+    <p class="post-card-excerpt">一个python烂活，输入任意长度列表，根据长度列表对容器进行拆分。</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+        <span class="brand-name">Venuslee<span class="brand-accent">yous</span></span>
+      </a>
+      <p class="footer-quote">“天运苟如此，且进杯中物。”</p>
+      <p class="footer-desc">记录生信、Python 与 Linux 的折腾笔记。</p>
+    </div>
+    <nav class="footer-nav" aria-label="页脚导航">
+      <a href="/">首页</a><a href="/articles.html">文章</a><a href="/archives.html">归档</a><a href="/categories.html">分类</a><a href="/tags.html">标签</a><a href="/about.html">关于</a><a href="/links.html">友链</a><a href="/message.html">留言板</a>
+    </nav>
+    <div class="footer-contact">
+      <a href="https://github.com/liqiming-whu" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a href="mailto:1914658215@qq.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 1914658215@qq.com</a>
+      <a href="https://venuslee.vercel.app/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg> 旧站地址</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2021–2026 Venuslee. 保留所有权利。</p>
+    <p class="footer-beian"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">鄂ICP备2020017072号</a><span>本站部署于中国大陆，请勿发布违反国家法律信息。</span></p>
+  </div>
+</footer>
+<div class="to-top" id="toTop">
+  <button class="icon-btn" type="button" aria-label="回到顶部" title="回到顶部"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+</div>
+<script src="/assets/js/main.js" defer></script></body>
+</html>
