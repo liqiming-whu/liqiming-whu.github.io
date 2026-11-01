@@ -24,11 +24,11 @@ home:
   recent_title: 最近的笔记
   projects_title: 最近在做
   about_title: 你好，我是 Venuslee
-  about_text: 最早写这个博客时，我还是一个正在学生信的研究生，电脑里塞满了跑到一半的脚本和改了八遍的配置文件。后来兴趣一路拐进了 AI Agent，开始给各种宿主写插件和 Skills。这里两边的东西都记，如果某篇刚好帮你省下一个下午，那它就没白写。
+  about_text: 生物信息学博士，快毕业了。最早写这个博客时我还在读研，电脑里塞满了跑到一半的脚本和改了八遍的配置文件。后来兴趣一路拐进了 AI Agent，开始给各种宿主写插件和 Skills。这里两边的东西都记，如果某篇刚好帮你省下一个下午，那它就没白写。
 
-author_bio_short: 一个不太聪明的年轻人。
-author_bio_post: 生信出身，爱折腾终端，现在也给 AI Agent 造轮子。
-profile_role: Bioinformatics, AI agents
+author_bio_short: 一个不太聪明的年轻人，生信博士在读。
+author_bio_post: 生信博士，快毕业了。爱折腾终端，现在也给 AI Agent 造轮子。
+profile_role: Bioinformatics PhD candidate · WHU
 
 # ---------- 分类（名字要和文章里写的一致；color 是轨道和列表上的颜色）----------
 # 没有文章的分类不会显示，写了第一篇就会自动出现。
