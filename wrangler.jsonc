@@ -1,0 +1,16 @@
+// Cloudflare Workers 的部署配置：先用 build.py 生成网站，再把 dist/ 作为静态资源发布。
+// Python 依赖由 Cloudflare 根据 requirements.txt 自动安装。
+{
+  "name": "liqiming-whu-github-io",
+  "compatibility_date": "2026-11-01",
+  "build": {
+    "command": "python3 build.py"
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  // 非 main 分支的预览部署（npx wrangler preview）需要这个块，留空即可
+  "previews": {}
+}
