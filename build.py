@@ -275,6 +275,23 @@ def load_projects():
     return {"groups": groups, "ticks": ticks, "recent": recent, "early": data.get("early") or []}
 
 
+def load_resume():
+    path = CONTENT / "resume.yaml"
+    if not path.exists():
+        return None
+    r = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    me = r.get("me", "")
+    for p in r.get("papers") or []:
+        names = [a.strip() for a in str(p["authors"]).split(",")]
+        p["authors_html"] = ", ".join(
+            f"<strong>{html.escape(n)}</strong>" if n.rstrip("#*") == me else html.escape(n) for n in names)
+        p["co_first"] = any(n.rstrip("*").endswith("#") and n.rstrip("#*") == me for n in names)
+    r["papers"] = sorted(r.get("papers") or [], key=lambda p: p["year"], reverse=True)
+    for sk in r.get("skills") or []:
+        sk["html"] = re.sub(r"^<p>|</p>$", "", render_md(sk["text"]).strip())
+    return r
+
+
 def group_tags(tags, groups):
     by_name = {t["name"]: t for t in tags}
     out, used = [], set()
@@ -352,6 +369,9 @@ def build():
     write("about.html", "about.html", page="about",
           about_html=render_md((CONTENT / "about.md").read_text(encoding="utf-8")))
     write("links.html", "links.html", page="links")
+    resume = load_resume()
+    if resume:
+        write("resume.html", "resume.html", page="resume", resume=resume)
     if projects:
         write("projects.html", "projects.html", page="projects")
     write("message.html", "message.html", page="message")
