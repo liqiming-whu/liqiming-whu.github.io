@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% set page_title = '分类' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'categories' %}{% include '_head.html' %}
+  <section class="section">
+    {% for c in categories %}
+    <section class="cat-block" style="--c:{{ c.color }}">
+      <div>
+        <h2><a href="/articles.html?category={{ c.name|qurl }}" style="color:inherit">{{ c.name }}</a></h2>
+        <p class="desc">{{ c.desc }}</p>
+        <p class="count">{{ c.count }} 篇</p>
+      </div>
+      <ul class="mini-list">
+        {% for p in c.posts %}<li><a href="{{ p.url }}"><time class="date">{{ p.date|dot }}</time><span>{{ p.title }}</span></a></li>{% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% set page_title = '关于' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'about' %}{% include '_head.html' %}
+  <section class="section about-grid">
+    <article class="prose">
+{{ about_html|safe }}
+    </article>
+    <aside class="profile">
+      <img src="/assets/img/tx.jpg" alt="{{ site.author }} 的头像" width="400" height="400">
+      <h2>{{ site.author }}</h2>
+      <p class="role">{{ site.profile_role }}</p>
+      <dl>
+        <dt>文章</dt><dd>{{ stats.posts }} 篇</dd>
+        <dt>字数</dt><dd>约 {{ stats.words }}</dd>
+        <dt>建站</dt><dd>{{ site.since }} 年</dd>
+        <dt>最近更新</dt><dd>{{ stats.updated }}</dd>
+      </dl>
+      <div class="links">
+        <a href="{{ site.github }}" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:{{ site.email }}">写邮件</a>
+      </div>
+    </aside>
+  </section>
+</main>
+{% endblock %}

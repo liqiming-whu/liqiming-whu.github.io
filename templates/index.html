@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block main %}
+<main id="main" class="wrap">
+  <section class="home-hero">
+    <h1>{{ site.home.headline }}</h1>
+    <p>{{ site.home.intro }}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="/articles.html">翻翻笔记</a>
+      <a class="btn" href="/about.html">认识一下我</a>
+    </div>
+  </section>
+
+  {% if track %}
+  <figure class="track" aria-labelledby="trackCaption" style="margin-left:0;margin-right:0">
+    <div class="track-head">
+      <span><strong>{{ site.title }}</strong>:{{ track['from']|dot }}–{{ track['to']|dot }}</span>
+      <span>{{ stats.posts }} 篇 / {{ stats.categories }} 条轨道</span>
+    </div>
+    <div>
+      <div class="track-body">
+        <div class="track-ruler" aria-hidden="true">
+          {% for t in track.ticks %}<span class="track-tick" style="left:{{ t.x }}%"><span>{{ t.label }}</span></span>{% endfor %}
+        </div>
+        {% for row in track.rows %}
+        <div class="track-row">
+          <a class="track-label" href="/articles.html?category={{ row.name|qurl }}">{{ row.name }}</a>
+          <div class="track-lane">
+            {% for it in row['items'] %}
+            <a class="feature" href="{{ it.post.url }}" style="left:{{ it.x }}%;--c:{{ row.color }}" aria-label="{{ it.post.title }}（{{ it.post.date|dot }}）">
+              <span class="feature-tip" aria-hidden="true"><span class="date">{{ it.post.date|dot }}</span>{{ it.post.title }}</span>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <figcaption class="track-foot" id="trackCaption">{{ site.home.track_caption }}</figcaption>
+  </figure>
+  {% endif %}
+
+  <section class="section">
+    <div class="section-head">
+      <h2>{{ site.home.recent_title }}</h2>
+      <a href="/articles.html">全部 {{ stats.posts }} 篇</a>
+    </div>
+    <ol class="post-list">
+      {% for p in posts[:6] %}{% include '_row.html' %}{% endfor %}
+    </ol>
+  </section>
+
+  <section class="home-about">
+    <img src="/assets/img/tx.jpg" alt="{{ site.author }} 的头像" width="400" height="400">
+    <div>
+      <h2>{{ site.home.about_title }}</h2>
+      <p>{{ site.home.about_text }}</p>
+      <div class="links">
+        <a href="/about.html">关于我</a>
+        <a href="/links.html">友链</a>
+        <a href="/message.html">留言板</a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

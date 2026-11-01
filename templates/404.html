@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% set page_title = '页面未找到' %}
+{% set page_desc = '页面未找到。' %}
+{% block main %}
+<main id="main" class="wrap notfound">
+  <div>
+    <p class="code" aria-hidden="true">404</p>
+    <h1>这条小路走不通了</h1>
+    <p>你要找的页面可能搬家了，也可能从来没存在过。不如回到首页，换条路重新出发。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="/">回到首页</a>
+      <a class="btn" href="/articles.html">翻翻笔记</a>
+      <button class="btn search-open" type="button">搜索一下</button>
+    </div>
+  </div>
+</main>
+{% endblock %}

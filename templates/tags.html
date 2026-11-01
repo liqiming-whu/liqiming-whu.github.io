@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% set page_title = '标签' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'tags' %}{% set head_n = stats.tags %}{% include '_head.html' %}
+  <section class="section">
+    <div class="tag-cloud">
+      {% for t in tags %}<a class="tag-pill" href="#tag-{{ loop.index }}"># {{ t.name }} <span>{{ t.count }}</span></a>{% endfor %}
+    </div>
+    {% for t in tags %}
+    <section class="cat-block" id="tag-{{ loop.index }}" style="--c:var(--rule-strong)">
+      <div>
+        <h2># {{ t.name }}</h2>
+        <p class="count">{{ t.count }} 篇，<a href="/articles.html?tag={{ t.name|qurl }}">在文章列表里筛选</a></p>
+      </div>
+      <ul class="mini-list">
+        {% for p in t.posts %}<li><a href="{{ p.url }}"><time class="date">{{ p.date|dot }}</time><span>{{ p.title }}</span></a></li>{% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

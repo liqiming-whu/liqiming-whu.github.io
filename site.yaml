@@ -1,0 +1,60 @@
+# 站点设置。改这里的文字，重新构建后全站生效。
+
+title: Venusleeyous
+brand: [Venuslee, yous]          # 品牌字样，第二段显示为强调色
+author: Venuslee
+url: https://liqiming-whu.github.io
+email: 1914658215@qq.com
+github: https://github.com/liqiming-whu
+old_site: https://venuslee.vercel.app/
+since: 2021
+beian: 鄂ICP备2020017072号
+license: CC BY-NC-SA 4.0
+license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+description: 一个不太聪明的年轻人，在生信、Python 和 Linux 里摸爬滚打，顺手把踩过的坑写下来。
+quote: 天运苟如此，且进杯中物。
+quote_source: 陶渊明《责子》
+
+# ---------- 首页 ----------
+home:
+  headline: 白天跟测序数据较劲，晚上跟配置文件较劲。
+  intro: 这里收着我踩过的坑、造过的轮子，还有一些没什么用但挺好玩的东西。
+  track_caption: 每个色块是一篇笔记，按写下的日期排在时间轴上，一行一个分类。点一下就能打开。
+  recent_title: 最近在折腾
+  about_title: 你好，我是 Venuslee
+  about_text: 正在学生信的研究生，也是一个不太聪明的年轻人。电脑里塞满了跑到一半的脚本和改了八遍的配置文件，这里就是它们的归宿。如果某篇笔记刚好帮你省下一个下午，那它就没白写。
+
+author_bio_short: 一个不太聪明的年轻人。
+author_bio_post: 正在学生信的研究生，爱折腾终端，也爱造点小轮子。
+profile_role: Bioinformatics · WHU
+
+# ---------- 分类（名字要和文章里写的一致；color 是首页轨道和标签上的颜色）----------
+categories:
+  python: { color: "#2357C6", desc: 脚本、数据处理，外加一些不太正经的奇技淫巧。 }
+  linux: { color: "#2E8B57", desc: 终端、编辑器，和那些让手指少敲几下的配置。 }
+  生信入门: { color: "#C98A12", desc: BAM、GTF、BED……和基因组文件打交道的日常。 }
+  windows: { color: "#C4423A", desc: WSL 与环境配置，让 Windows 也能好好干活。 }
+  没事瞎写的: { color: "#7462B0", desc: 随笔，以及一些没什么用但就是想写的东西。 }
+
+# ---------- 各页面标题下的一句话 ----------
+pages:
+  articles: { title: 文章, desc: "{n} 篇笔记，从最新踩的坑开始往回翻。" }
+  archives: { title: 归档, desc: "从 {start} 写到现在，一共 {n} 篇。时间线上的每个点，都是一次折腾。" }
+  categories: { title: 分类, desc: 笔记按主题分好了堆，挑一堆翻翻看。 }
+  tags: { title: 标签, desc: "{n} 个标签，把零零散散的笔记串成线。" }
+  about: { title: 关于, desc: 一个不太聪明，但很能折腾的年轻人。 }
+  links: { title: 友链, desc: 一起写东西的朋友，和平时常逛的网站。 }
+  message: { title: 留言板, desc: 有话想说？这里随时欢迎。 }
+
+# ---------- 友链 ----------
+links:
+  - group: 友情链接
+    items:
+      - { name: Venusleeyous, desc: 作者的旧站, url: "https://venuslee.vercel.app/", avatar: /assets/img/tx.jpg }
+      - { name: JerryC, desc: 旧站主题的作者, url: "https://immyw.com/" }
+      - { name: Hexo, desc: 快速、简洁且高效的博客框架, url: "https://hexo.io/zh-cn/", avatar: /assets/img/links/hexo.svg }
+  - group: 网站
+    items:
+      - { name: bilibili, desc: 学习（摸鱼）圣地, url: "https://www.bilibili.com/", avatar: /assets/img/links/bilibili.jpg }
+      - { name: Weibo, desc: 国内最大的社交分享平台, url: "https://www.weibo.com/" }

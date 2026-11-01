@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% set page_title = '归档' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'archives' %}{% set head_n = stats.posts %}{% include '_head.html' %}
+  <section class="section">
+    {% for y, months in archive.items() %}
+    <section class="archive-year">
+      <h2>{{ y }}<small>{{ months.values()|map('length')|sum }} 篇</small></h2>
+      <div>
+        {% for m, items in months.items() %}
+        <div class="archive-month">
+          <h3>{{ m }} 月</h3>
+          <ul class="archive-list">
+            {% for p in items %}
+            <li><a href="{{ p.url }}">
+              <time class="date" datetime="{{ p.date.isoformat() }}">{{ '%02d' % p.date.month }}.{{ '%02d' % p.date.day }}</time>
+              <span class="t">{{ p.title }}</span>
+              <span class="cat" style="--c:{{ color_of[p.categories[0]] }}">{{ p.categories[0] }}</span>
+            </a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

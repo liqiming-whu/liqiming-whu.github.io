@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% set page_title = '友链' %}
+{% block main %}
+<main id="main" class="wrap narrow">
+  {% set head_key = 'links' %}{% include '_head.html' %}
+  <section class="section">
+    {% for g in site.links %}
+    <div class="link-group">
+      <h2>{{ g.group }}</h2>
+      <ul class="link-list">
+        {% for l in g['items'] %}
+        <li><a href="{{ l.url }}" target="_blank" rel="noopener">
+          <span class="link-avatar">{{ l.name[0]|upper }}{% if l.avatar %}<img src="{{ l.avatar }}" alt="" loading="lazy" onerror="this.remove()">{% endif %}</span>
+          <span><span class="name">{{ l.name }}</span><span class="desc">{{ l.desc }}</span></span>
+          <span class="url">{{ l.url.split('://')[1].rstrip('/') }}</span>
+        </a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+
+    <div class="apply">
+      <div>
+        <h2>申请友链</h2>
+        <p>你也在写博客？欢迎来交换友链。照着旁边的格式发封邮件给我，或者去 GitHub 上找我都行。</p>
+        <a class="btn btn-primary" href="mailto:{{ site.email }}?subject=友链申请">写邮件申请</a>
+      </div>
+      <div class="code-block">
+        <div class="code-meta"><span class="code-lang">友链信息</span></div>
+        <pre><code>站点名称：
+站点地址：
+头像地址：
+一句话简介：</code></pre>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

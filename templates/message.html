@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% set page_title = '留言板' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'message' %}{% include '_head.html' %}
+  <section class="section message">
+    <p>这里没有评论系统，也不用登录任何第三方账号。想讨论某篇文章、指出我写错的地方，或者只是路过打个招呼，直接写封邮件就好，每一封我都会看。</p>
+    <a class="mail" href="mailto:{{ site.email }}?subject=来自博客留言板">{{ site.email }}</a>
+    <div class="actions">
+      <a class="btn btn-primary" href="mailto:{{ site.email }}?subject=来自博客留言板">写邮件</a>
+      <a class="btn" href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+    </div>
+    <p class="note">旧站的留言搬家时没能带过来。如果你以前留过言，欢迎再来打个招呼。</p>
+  </section>
+</main>
+{% endblock %}

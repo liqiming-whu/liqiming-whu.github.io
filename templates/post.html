@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% set page_title = post.title %}
+{% set page_desc = post.description %}
+{% block main %}
+{% set cat = post.categories[0] %}
+<div class="reading-progress" aria-hidden="true" style="--c:{{ color_of[cat] }}"><span id="readingBar"></span></div>
+<main id="main" class="wrap" style="--c:{{ color_of[cat] }}">
+  <div class="post-shell">
+    <article class="post-main">
+      <header class="post-head">
+        <div class="crumbs">
+          {% for c in post.categories %}<a class="cat" href="/articles.html?category={{ c|qurl }}" style="--c:{{ color_of[c] }}">{{ c }}</a>{% endfor %}
+        </div>
+        <h1>{{ post.title }}</h1>
+        {% if post.description %}<p class="lede">{{ post.description }}</p>{% endif %}
+        <div class="meta">
+          <time datetime="{{ post.date.isoformat() }}">{{ post.date|cn_date }}</time>
+          <span>{{ post.minutes }} 分钟读完</span>
+          <span>{{ site.author }}</span>
+        </div>
+      </header>
+
+      <details class="toc-mobile" id="tocMobile">
+        <summary>目录 <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+        <nav class="toc-nav" id="tocMobileNav"></nav>
+      </details>
+
+      <div class="prose" id="articleContent">{{ post.html|safe }}</div>
+
+      <footer>
+        <div class="post-end">
+          <div class="tags">{% for t in post.tags %}<a href="/articles.html?tag={{ t|qurl }}"># {{ t }}</a>{% endfor %}</div>
+          <button class="btn btn-sm copy-link" type="button" data-copy-url><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg> <span>复制链接</span></button>
+        </div>
+        <p class="post-license">本文由 {{ site.author }} 写于 {{ post.date|cn_date }}，采用 <a href="{{ site.license_url }}" target="_blank" rel="noopener">{{ site.license }}</a> 许可。转载请注明出处，有问题欢迎<a href="mailto:{{ site.email }}?subject={{ ('关于《' ~ post.title ~ '》')|urlencode }}">写邮件告诉我</a>。</p>
+
+        <nav class="post-nav" aria-label="上一篇和下一篇">
+          {% if prev %}<a class="prev" href="{{ prev.url }}"><small>上一篇</small><span>{{ prev.title }}</span></a>{% endif %}
+          {% if next %}<a class="next" href="{{ next.url }}"><small>下一篇</small><span>{{ next.title }}</span></a>{% endif %}
+        </nav>
+      </footer>
+    </article>
+
+    <aside class="post-side" id="tocCard">
+      <p class="side-title">目录</p>
+      <nav class="toc-nav" id="tocNav"></nav>
+    </aside>
+  </div>
+
+  {% if related %}
+  <section class="related">
+    <div class="section-head"><h2>顺便看看</h2><a href="/articles.html">全部文章</a></div>
+    <ol class="post-list">
+      {% for p in related %}{% include '_row.html' %}{% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% set h = site.pages[head_key] %}
+<header class="page-head">
+  <h1>{{ h.title }}</h1>
+  <p>{{ fmt(h.desc, n=head_n|default(''), start=stats.start) }}</p>
+</header>
