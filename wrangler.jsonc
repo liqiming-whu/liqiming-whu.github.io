@@ -1,0 +1,14 @@
+// Cloudflare Workers 的部署配置：先用 build.py 生成网站，再把 dist/ 作为静态资源发布。
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "liqiming-whu-github-io",
+  "compatibility_date": "2026-11-01",
+  "build": {
+    "command": "(python3 -m pip install -r requirements.txt || python3 -m pip install --user -r requirements.txt || pip3 install --break-system-packages -r requirements.txt) && python3 build.py"
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}
