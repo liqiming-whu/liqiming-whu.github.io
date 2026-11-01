@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% set page_title = '留言板' %}
+{% block main %}
+<main id="main">
+  {% set hero_key = 'message' %}{% include '_hero.html' %}
+  <section class="section">
+    <div class="container message-wrap">
+      <div class="message-card" data-reveal>
+        <span class="message-icon"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
+        <h2>想聊点什么？</h2>
+        <p>这里没有评论系统，也不用登录任何第三方账号。想讨论某篇文章、指出我写错的地方，或者只是路过打个招呼，直接写封邮件就好，每一封我都会看。</p>
+        <div class="message-actions">
+          <a class="btn btn-primary" href="mailto:{{ site.email }}?subject=来自博客留言板">写邮件 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+          <a class="btn btn-outline" href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+        </div>
+        <p class="message-mail">{{ site.email }}</p>
+      </div>
+      <div class="message-note">
+        <p><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg> 旧站的留言搬家时没能带过来。如果你以前留过言，欢迎再来打个招呼。</p>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

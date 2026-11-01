@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% set page_title = '关于' %}
+{% block main %}
+<main id="main">
+  {% set hero_key = 'about' %}{% include '_hero.html' %}
+  <section class="section">
+    <div class="container about-layout">
+      <aside class="profile-card" data-reveal>
+        <div class="profile-avatar"><img src="/assets/img/tx.jpg" alt="{{ site.author }} 的头像" width="400" height="400"></div>
+        <h2>{{ site.author }}</h2>
+        <p class="profile-role">{{ site.profile_role }}</p>
+        <p class="profile-bio">{{ site.author_bio_short }}</p>
+        <div class="profile-links">
+          <a href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+          <a href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> Email</a>
+        </div>
+        <dl class="profile-stats">
+          <div><dt>文章</dt><dd>{{ stats.posts }}</dd></div>
+          <div><dt>分类</dt><dd>{{ stats.categories }}</dd></div>
+          <div><dt>建站</dt><dd>{{ site.since }}</dd></div>
+        </dl>
+      </aside>
+
+      <div class="about-main">
+        <article class="prose about-prose">
+{{ about_html|safe }}
+        </article>
+        <div class="about-cta">
+          <div>
+            <h3>去笔记堆里转转</h3>
+            <p>{{ stats.posts }} 篇笔记，说不定哪篇就能帮你少踩一个坑。</p>
+          </div>
+          <a class="btn btn-primary" href="/articles.html">翻翻笔记 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

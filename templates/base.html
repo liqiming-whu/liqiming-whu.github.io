@@ -1,0 +1,120 @@
+{% set nav = [('home', '/', '首页', 'i-home'), ('articles', '/articles.html', '文章', 'i-file'), ('archives', '/archives.html', '归档', 'i-archive'), ('categories', '/categories.html', '分类', 'i-folder'), ('tags', '/tags.html', '标签', 'i-tag'), ('about', '/about.html', '关于', 'i-heart')] %}
+{% set extra_nav = [('links', '/links.html', '友链', 'i-link'), ('message', '/message.html', '留言板', 'i-mail')] %}
+{% set full_title = (page_title ~ ' · ' ~ site.title) if page_title else (site.title ~ ' · ' ~ site.description) %}
+{% set meta_desc = page_desc or site.description %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ full_title }}</title>
+<meta name="description" content="{{ meta_desc }}">
+<meta name="author" content="{{ site.author }}">
+<meta name="theme-color" content="#f6f3ee">
+<meta property="og:type" content="{{ 'article' if page == 'post' else 'website' }}">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:title" content="{{ full_title }}">
+<meta property="og:description" content="{{ meta_desc }}">
+<meta property="og:image" content="/assets/img/tx.jpg">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/rss.xml">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script>
+(function () {
+  document.documentElement.classList.add('js')
+  try {
+    var t = localStorage.getItem('venus-theme')
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    document.documentElement.dataset.theme = t
+  } catch (e) {}
+})()
+</script>
+</head>
+<body data-page="{{ page }}" class="">
+
+{% include '_icons.html' %}
+
+<a class="skip-link" href="#main">跳到主要内容</a>
+<header class="site-header site-header--{{ 'overlay' if page == 'home' else 'solid' }}" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="{{ site.title }} 首页">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+      <span class="brand-name">{{ site.brand[0] }}<span class="brand-accent">{{ site.brand[1] }}</span></span>
+    </a>
+    <nav class="nav-desktop" aria-label="主导航">{% for key, href, label, icon in nav %}<a class="nav-link{{ ' is-active' if page == key }}" href="{{ href }}"{{ ' aria-current="page"'|safe if page == key }}>{{ label }}</a>{% endfor %}</nav>
+    <div class="header-actions">
+      <button class="icon-btn search-open" type="button" aria-label="搜索文章" title="搜索（Ctrl K）">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="search-btn-label">搜索</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="icon-btn theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
+        <span class="icon-sun"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></span><span class="icon-moon"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg></span>
+      </button>
+      <button class="icon-btn menu-toggle" type="button" aria-label="打开菜单" aria-controls="drawer" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-backdrop" data-drawer-close></div>
+  <aside class="drawer-panel" aria-label="移动端菜单">
+    <div class="drawer-head">
+      <span class="drawer-title">Menu</span>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="关闭菜单"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer-nav" aria-label="移动端导航">
+      {% for key, href, label, icon in nav + extra_nav %}
+      <a href="{{ href }}"{{ ' class="is-active"'|safe if page == key }}><svg class="icon" aria-hidden="true"><use href="#{{ icon }}"/></svg><span>{{ label }}</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      {% endfor %}
+    </nav>
+    <div class="drawer-foot">
+      <a class="btn btn-ghost btn-sm" href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a class="btn btn-ghost btn-sm" href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 写邮件</a>
+    </div>
+  </aside>
+</div>
+
+<div class="search-modal" id="searchModal" hidden>
+  <div class="search-backdrop" data-search-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+    <div class="search-bar">
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="searchInput" type="search" placeholder="搜索文章、分类或标签…" autocomplete="off" spellcheck="false" aria-labelledby="searchTitle">
+      <span id="searchTitle" class="sr-only">站内搜索</span>
+      <button class="search-esc" type="button" data-search-close>Esc</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <p class="search-hint">输入关键词开始搜索，试试「python」或「生信」。</p>
+    </div>
+  </div>
+</div>
+{% block main %}{% endblock %}
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
+        <span class="brand-name">{{ site.brand[0] }}<span class="brand-accent">{{ site.brand[1] }}</span></span>
+      </a>
+      <p class="footer-quote">“{{ site.quote }}”</p>
+      <p class="footer-desc">生信、Python、Linux，以及折腾它们时踩过的坑。</p>
+    </div>
+    <nav class="footer-nav" aria-label="页脚导航">
+      {% for key, href, label, icon in nav + extra_nav %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
+    </nav>
+    <div class="footer-contact">
+      <a href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+      <a href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> {{ site.email }}</a>
+      <a href="/rss.xml"><svg class="icon" aria-hidden="true"><use href="#i-rss"/></svg> RSS 订阅</a>
+      <a href="{{ site.old_site }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg> 旧站地址</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© {{ site.since }}–{{ year }} {{ site.author }}. 保留所有权利。</p>
+    <p class="footer-beian"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{{ site.beian }}</a><span>本站部署于中国大陆，请勿发布违反国家法律信息。</span></p>
+  </div>
+</footer>
+<div class="to-top" id="toTop">
+  <button class="icon-btn" type="button" aria-label="回到顶部" title="回到顶部"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+</div>
+<script src="/assets/js/main.js" defer></script></body>
+</html>

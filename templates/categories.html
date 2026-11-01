@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% set page_title = '分类' %}
+{% block main %}
+<main id="main">
+  {% set hero_key = 'categories' %}{% include '_hero.html' %}
+  <section class="section">
+    <div class="container">
+      <div class="category-grid">
+        {% for c in categories %}
+          <section class="category-card" data-reveal>
+            <div class="category-card-head">
+              <span class="category-num">{{ '%02d' % loop.index }}</span>
+              <span class="category-icon"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg></span>
+            </div>
+            <h2><a href="/articles.html?category={{ c.name|qurl }}">{{ c.name }}</a></h2>
+            <p class="category-desc">{{ c.desc }}</p>
+            <p class="category-count">{{ c.count }} 篇文章</p>
+            <ul class="category-posts">
+              {% for p in c.posts[:3] %}<li><a href="{{ p.url }}">{{ p.title }}</a></li>{% endfor %}
+            </ul>
+            <a class="text-link" href="/articles.html?category={{ c.name|qurl }}">查看全部 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+          </section>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% set page_title = '文章' %}
+{% block main %}
+<main id="main">
+  {% set hero_key = 'articles' %}{% set hero_n = stats.posts %}{% include '_hero.html' %}
+  <section class="section section-list">
+    <div class="container">
+      <div class="list-toolbar" id="articleToolbar">
+        <div class="filter-row">
+          <div class="filter-chips" role="group" aria-label="按分类筛选">
+            <button class="chip-btn is-active" type="button" data-filter="all">全部 <span>{{ stats.posts }}</span></button>
+            {% for c in categories %}<button class="chip-btn" type="button" data-filter="{{ c.name }}">{{ c.name }} <span>{{ c.count }}</span></button>{% endfor %}
+          </div>
+          <label class="list-search">
+            <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" id="articleSearch" placeholder="筛选标题…" aria-label="筛选标题">
+          </label>
+        </div>
+        <div class="list-status" id="listStatus" aria-live="polite"></div>
+      </div>
+      <div class="post-grid" id="postGrid">
+        {% for p in posts %}{% include '_card.html' %}{% endfor %}
+      </div>
+      <p class="empty-state" id="emptyState" hidden>没翻到匹配的文章，换个关键词试试？</p>
+    </div>
+  </section>
+</main>
+{% endblock %}

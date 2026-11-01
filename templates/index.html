@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% set topic_icons = ['i-file', 'i-archive', 'i-heart', 'i-folder', 'i-tag'] %}
+{% block main %}
+<main id="main">
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-bg" style="background-image:url('{{ site.home.hero_image }}')"></div>
+    <div class="hero-shade"></div>
+    <div class="hero-grain"></div>
+    <div class="container hero-inner">
+      <p class="hero-eyebrow"><span></span>{{ site.home.eyebrow }}</p>
+      <h1 class="hero-title" id="heroTitle">{{ site.brand[0] }}<span>{{ site.brand[1] }}</span></h1>
+      <p class="hero-quote">“{{ site.quote }}”</p>
+      <p class="hero-intro">{{ site.home.intro }}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/articles.html">翻翻笔记 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        <a class="btn btn-ghost-light" href="/about.html">认识一下我</a>
+      </div>
+      <dl class="hero-stats">
+        <div><dt>文章</dt><dd>{{ stats.posts }}</dd></div>
+        <div><dt>分类</dt><dd>{{ stats.categories }}</dd></div>
+        <div><dt>标签</dt><dd>{{ stats.tags }}</dd></div>
+        <div><dt>开始于</dt><dd>{{ site.since }}</dd></div>
+      </dl>
+    </div>
+    <a class="hero-scroll" href="#recent" aria-label="向下浏览文章">
+      <span>往下看看</span><span class="scroll-line"></span>
+    </a>
+  </section>
+
+  <section class="section section-recent" id="recent">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Recent Notes</p>
+          <h2>{{ site.home.recent_title }}</h2>
+        </div>
+        <a class="text-link" href="/articles.html">全部文章 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+
+      {% if posts %}
+      {% set f = posts[0] %}
+      <a class="featured-card" href="{{ f.url }}" data-reveal>
+        <div class="featured-media">
+          <img src="{{ f.cover }}" alt="" width="1200" height="800">
+          <span class="featured-badge"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg> 最新</span>
+        </div>
+        <div class="featured-body">
+          <div class="card-meta">
+            <span class="chip chip-solid">{{ f.categories[0] }}</span>
+            <time datetime="{{ f.date.isoformat() }}">{{ f.date|dot }}</time>
+          </div>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.description }}</p>
+          <div class="featured-foot">
+            <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> {{ f.minutes }} 分钟阅读</span>
+            <span class="read-more">阅读全文 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+
+      <div class="post-grid home-grid">
+        {% for p in posts[1:7] %}{% include '_card.html' %}{% endfor %}
+      </div>
+      <div class="section-more">
+        <a class="btn btn-outline" href="/articles.html">看看全部 {{ stats.posts }} 篇 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-band">
+    <div class="container about-band-inner">
+      <div class="about-band-avatar">
+        <img src="/assets/img/tx.jpg" alt="{{ site.author }} 的头像" width="400" height="400">
+      </div>
+      <div class="about-band-text">
+        <p class="eyebrow">About the author</p>
+        <h2>{{ site.home.about_title }}</h2>
+        <p>{{ site.home.about_text }}</p>
+        <p class="about-band-quote">“{{ site.quote }}”</p>
+        <div class="about-band-links">
+          <a class="text-link" href="/about.html">了解更多 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+          <a class="text-link" href="/links.html">友情链接 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
+      </div>
+      <dl class="about-band-stats">
+        <div><dt>文章</dt><dd>{{ stats.posts }}</dd></div>
+        <div><dt>字数</dt><dd>{{ stats.words }}</dd></div>
+        <div><dt>最后更新</dt><dd>{{ stats.updated }}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section section-topics">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Topics</p>
+          <h2>{{ site.home.topics_title }}</h2>
+        </div>
+        <a class="text-link" href="/categories.html">全部分类 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <div class="topic-grid">
+        {% for c in categories %}
+          <a class="topic-card" href="/articles.html?category={{ c.name|qurl }}" data-reveal>
+            <span class="topic-index">{{ '%02d' % loop.index }}</span>
+            <span class="topic-icon"><svg class="icon" aria-hidden="true"><use href="#{{ topic_icons[loop.index0 % 5] }}"/></svg></span>
+            <h3>{{ c.name }}</h3>
+            <p>{{ c.count }} 篇文章</p>
+            <span class="topic-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-band">
+    <div class="container quote-band-inner" data-reveal>
+      <p class="quote-mark">“</p>
+      <blockquote>{{ site.quote }}</blockquote>
+      <p class="quote-cite">— {{ site.quote_source }}</p>
+    </div>
+  </section>
+</main>
+{% endblock %}

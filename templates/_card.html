@@ -1,0 +1,18 @@
+<article class="post-card" data-reveal data-category="{{ p.categories|join('|') }}" data-tag="{{ p.tags|join('|') }}" data-title="{{ p.title }}" data-text="{{ p.text|truncate_text }}">
+  <a class="post-card-media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+    <img src="{{ p.cover }}" alt="" loading="lazy" width="800" height="500">
+    <span class="post-card-cover-tag">{{ p.categories[0] }}</span>
+  </a>
+  <div class="post-card-body">
+    <div class="card-meta">
+      <a class="chip" href="/articles.html?category={{ p.categories[0]|qurl }}">{{ p.categories[0] }}</a>
+      <time datetime="{{ p.date.isoformat() }}">{{ p.date|dot }}</time>
+    </div>
+    <h3 class="post-card-title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+    <p class="post-card-excerpt">{{ p.description }}</p>
+    <div class="card-foot">
+      <span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> {{ p.minutes }} 分钟阅读</span>
+      <span class="card-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+    </div>
+  </div>
+</article>

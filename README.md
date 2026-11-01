@@ -1,0 +1,59 @@
+# Venusleeyous
+
+一个不太聪明的年轻人的博客：生信、Python、Linux，以及折腾它们时踩过的坑。
+
+线上地址：<https://liqiming-whu.github.io>
+
+## 写一篇新文章
+
+```bash
+python build.py new my-new-post        # 生成 content/posts/my-new-post.md
+```
+
+打开这个文件，改好开头的信息，正文用 Markdown 写：
+
+```yaml
+---
+title: 文章标题
+date: 2026-11-01
+categories: [python]        # 第一个分类会显示在卡片上
+tags: [原创]
+description: 一句话介绍，显示在卡片和搜索结果里
+cover: /assets/img/bg5.jpg  # 封面图，放在 public/assets/img/
+draft: true                 # 写完删掉这一行就会发布
+---
+```
+
+写完推送到 `main`，GitHub Actions 会自动构建并发布，首页、归档、分类、标签、搜索和 RSS 都会自动更新。
+
+### 可以用的特殊写法
+
+- 代码块：照常用 ```` ```python ```` 这样的写法，会自动高亮并带「复制」按钮。
+- `~~删除线~~`
+- 选项卡（比如同一个命令的 GitHub 版和 Gitee 版）：
+
+  ```html
+  <div class="tabs">
+  <div class="tab-item" data-label="通过 git 安装">
+
+  这里照常写 Markdown
+
+  </div>
+  <div class="tab-item" data-label="通过 gitee 安装">
+
+  另一个选项
+
+  </div>
+  </div>
+  ```
+
+## 改网站上的文字
+
+首页介绍、各页面标题、分类说明、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`。页面结构在 `templates/`，样式和脚本在 `public/assets/`。
+
+## 本地预览
+
+```bash
+pip install -r requirements.txt
+python build.py serve       # 打开 http://localhost:8000
+```

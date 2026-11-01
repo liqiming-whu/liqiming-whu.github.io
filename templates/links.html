@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% set page_title = '友链' %}
+{% block main %}
+<main id="main">
+  {% set hero_key = 'links' %}{% include '_hero.html' %}
+  <section class="section">
+    <div class="container">
+      {% for g in site.links %}
+      <div class="link-group">
+        <div class="section-head section-head-sm">
+          <div>
+            <p class="eyebrow">{{ g.eyebrow }}</p>
+            <h2>{{ g.group }}</h2>
+          </div>
+        </div>
+        <div class="link-grid">
+          {% for l in g['items'] %}
+          <a class="link-card" href="{{ l.url }}" target="_blank" rel="noopener" data-reveal>
+            <span class="link-avatar">
+              <span class="link-initial">{{ l.name[0]|upper }}</span>
+              {% if l.avatar %}<img src="{{ l.avatar }}" alt="" loading="lazy" onerror="this.remove()">{% endif %}
+            </span>
+            <span class="link-info">
+              <span class="link-name">{{ l.name }} <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></span>
+              <span class="link-desc">{{ l.desc }}</span>
+              <span class="link-url">{{ l.url.split('://')[1].rstrip('/') }}</span>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="link-apply" data-reveal>
+        <div>
+          <p class="eyebrow">Apply</p>
+          <h2>申请友链</h2>
+          <p>你也在写博客？欢迎来交换友链。按下面的格式发封邮件给我，或者去 GitHub 上找我都行。</p>
+        </div>
+        <div class="code-block apply-code">
+          <div class="code-meta"><span class="code-lang">format</span></div>
+          <pre><code>头像地址：
+站点地址：
+站点名称：
+站点简介：</code></pre>
+        </div>
+        <a class="btn btn-primary" href="mailto:{{ site.email }}?subject=友链申请">写邮件申请 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
