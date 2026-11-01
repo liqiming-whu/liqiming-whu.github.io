@@ -2,16 +2,15 @@
 {% set page_title = '页面未找到' %}
 {% set page_desc = '页面未找到。' %}
 {% block main %}
-<main id="main" class="notfound">
-  <div class="notfound-bg" style="background-image:url('{{ site.pages.notfound.image }}')"></div>
-  <div class="notfound-overlay"></div>
-  <div class="container notfound-inner">
-    <p class="notfound-code">404</p>
+<main id="main" class="wrap notfound">
+  <div>
+    <p class="code" aria-hidden="true">404</p>
     <h1>这条小路走不通了</h1>
     <p>你要找的页面可能搬家了，也可能从来没存在过。不如回到首页，换条路重新出发。</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="/">回到首页 <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
-      <a class="btn btn-ghost-light" href="/articles.html">翻翻笔记</a>
+      <a class="btn btn-primary" href="/">回到首页</a>
+      <a class="btn" href="/articles.html">翻翻笔记</a>
+      <button class="btn search-open" type="button">搜索一下</button>
     </div>
   </div>
 </main>

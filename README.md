@@ -49,7 +49,7 @@ draft: true                 # 写完删掉这一行就会发布
 
 ## 改网站上的文字
 
-首页介绍、各页面标题、分类说明、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`。页面结构在 `templates/`，样式和脚本在 `public/assets/`。
+首页介绍、各页面标题、分类说明和颜色、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`。页面结构在 `templates/`，样式和脚本在 `public/assets/`。
 
 ## 本地预览
 

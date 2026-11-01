@@ -10,7 +10,7 @@
   const themeMeta = $('meta[name="theme-color"]')
   function applyTheme(theme) {
     root.dataset.theme = theme
-    if (themeMeta) themeMeta.setAttribute('content', theme === 'dark' ? '#0f1115' : '#f6f3ee')
+    if (themeMeta) themeMeta.setAttribute('content', theme === 'dark' ? '#0E1420' : '#F6F7F4')
     try { localStorage.setItem('venus-theme', theme) } catch (e) {}
   }
   $$('.theme-toggle').forEach(btn => {
@@ -29,9 +29,7 @@
     ticking = true
     requestAnimationFrame(() => {
       const y = window.scrollY
-      if (header && header.classList.contains('site-header--overlay')) {
-        header.classList.toggle('is-scrolled', y > 24)
-      }
+      if (header) header.classList.toggle('is-scrolled', y > 8)
       if (toTop) toTop.classList.toggle('is-visible', y > 720)
       updateReading(y)
       ticking = false
@@ -144,11 +142,10 @@
     }
 
     resultsBox.innerHTML = hits.map(({ item }, i) => `
-      <a class="search-result${i === 0 ? ' is-selected' : ''}" href="${escapeHtml(item.url)}" data-index="${i}">
-        <img src="${escapeHtml(item.cover)}" alt="" loading="lazy">
+      <a class="search-result${i === 0 ? ' is-selected' : ''}" href="${escapeHtml(item.url)}" data-index="${i}" style="--c:${escapeHtml(item.color || '')}">
         <span>
           <span class="search-result-title">${escapeHtml(item.title)}</span>
-          <span class="search-result-meta"><span>${escapeHtml(item.categories.join(' · '))}</span>${item.date.replaceAll('-', '.')} · ${escapeHtml(item.tags.map(t => '#' + t).join(' '))}</span>
+          <span class="search-result-meta"><span>${item.date.replaceAll('-', '.')}</span><span>${escapeHtml(item.categories.join('、'))}</span><span>${escapeHtml(item.tags.map(t => '#' + t).join(' '))}</span></span>
         </span>
       </a>`).join('') + `<div class="search-footnote"><span><kbd>↑</kbd><kbd>↓</kbd> 选择</span><span><kbd>Enter</kbd> 打开</span><span><kbd>Esc</kbd> 关闭</span></div>`
     selected = 0
@@ -202,7 +199,7 @@
 
   const grid = $('#postGrid')
   if (grid) {
-    const cards = $$('.post-card', grid)
+    const cards = $$('.post-row', grid)
     const chips = $$('.chip-btn', $('#articleToolbar'))
     const search = $('#articleSearch')
     const status = $('#listStatus')
@@ -264,22 +261,6 @@
       apply()
     })
     apply()
-  }
-
-  /* ---------- reveal ---------- */
-
-  const reveals = $$('[data-reveal]')
-  if ('IntersectionObserver' in window && reveals.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
-        if (!entry.isIntersecting) return
-        const el = entry.target
-        el.style.animationDelay = Math.min(i * 60, 240) + 'ms'
-        el.classList.add('is-revealed')
-        io.unobserve(el)
-      })
-    }, { threshold: 0.12, rootMargin: '0px 0px -30px' })
-    reveals.forEach(el => io.observe(el))
   }
 
   /* ---------- post: toc / progress / copy / tabs ---------- */

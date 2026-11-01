@@ -10,7 +10,7 @@
 <title>{{ full_title }}</title>
 <meta name="description" content="{{ meta_desc }}">
 <meta name="author" content="{{ site.author }}">
-<meta name="theme-color" content="#f6f3ee">
+<meta name="theme-color" content="#F6F7F4">
 <meta property="og:type" content="{{ 'article' if page == 'post' else 'website' }}">
 <meta property="og:site_name" content="{{ site.title }}">
 <meta property="og:title" content="{{ full_title }}">
@@ -35,13 +35,10 @@
 {% include '_icons.html' %}
 
 <a class="skip-link" href="#main">跳到主要内容</a>
-<header class="site-header site-header--{{ 'overlay' if page == 'home' else 'solid' }}" id="siteHeader">
-  <div class="container header-inner">
-    <a class="brand" href="/" aria-label="{{ site.title }} 首页">
-      <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
-      <span class="brand-name">{{ site.brand[0] }}<span class="brand-accent">{{ site.brand[1] }}</span></span>
-    </a>
-    <nav class="nav-desktop" aria-label="主导航">{% for key, href, label, icon in nav %}<a class="nav-link{{ ' is-active' if page == key }}" href="{{ href }}"{{ ' aria-current="page"'|safe if page == key }}>{{ label }}</a>{% endfor %}</nav>
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="{{ site.title }} 首页">{{ site.title }}<span class="brand-path">~/notes</span></a>
+    <nav class="nav-desktop" aria-label="主导航">{% for key, href, label, icon in nav[1:] %}<a class="nav-link{{ ' is-active' if page == key }}" href="{{ href }}"{{ ' aria-current="page"'|safe if page == key }}>{{ label }}</a>{% endfor %}</nav>
     <div class="header-actions">
       <button class="icon-btn search-open" type="button" aria-label="搜索文章" title="搜索（Ctrl K）">
         <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="search-btn-label">搜索</span><kbd>Ctrl K</kbd>
@@ -58,7 +55,7 @@
   <div class="drawer-backdrop" data-drawer-close></div>
   <aside class="drawer-panel" aria-label="移动端菜单">
     <div class="drawer-head">
-      <span class="drawer-title">Menu</span>
+      <span class="drawer-title">~/notes</span>
       <button class="icon-btn" type="button" data-drawer-close aria-label="关闭菜单"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
     </div>
     <nav class="drawer-nav" aria-label="移动端导航">
@@ -89,28 +86,25 @@
 </div>
 {% block main %}{% endblock %}
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a class="brand" href="/">
-        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-feather"/></svg></span>
-        <span class="brand-name">{{ site.brand[0] }}<span class="brand-accent">{{ site.brand[1] }}</span></span>
-      </a>
-      <p class="footer-quote">“{{ site.quote }}”</p>
-      <p class="footer-desc">生信、Python、Linux，以及折腾它们时踩过的坑。</p>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <p class="footer-quote">“{{ site.quote }}”<cite>{{ site.quote_source }}</cite></p>
+      </div>
+      <nav class="footer-nav" aria-label="页脚导航">
+        {% for key, href, label, icon in nav[1:] + extra_nav %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
+      </nav>
+      <div class="footer-contact">
+        <a href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
+        <a href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> 写邮件</a>
+        <a href="/rss.xml"><svg class="icon" aria-hidden="true"><use href="#i-rss"/></svg> RSS 订阅</a>
+        <a href="{{ site.old_site }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg> 旧站</a>
+      </div>
     </div>
-    <nav class="footer-nav" aria-label="页脚导航">
-      {% for key, href, label, icon in nav + extra_nav %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
-    </nav>
-    <div class="footer-contact">
-      <a href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub</a>
-      <a href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> {{ site.email }}</a>
-      <a href="/rss.xml"><svg class="icon" aria-hidden="true"><use href="#i-rss"/></svg> RSS 订阅</a>
-      <a href="{{ site.old_site }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg> 旧站地址</a>
+    <div class="footer-bottom">
+      <p>© {{ site.since }}–{{ year }} {{ site.author }}</p>
+      <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{{ site.beian }}</a></p>
     </div>
-  </div>
-  <div class="container footer-bottom">
-    <p>© {{ site.since }}–{{ year }} {{ site.author }}. 保留所有权利。</p>
-    <p class="footer-beian"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{{ site.beian }}</a><span>本站部署于中国大陆，请勿发布违反国家法律信息。</span></p>
   </div>
 </footer>
 <div class="to-top" id="toTop">

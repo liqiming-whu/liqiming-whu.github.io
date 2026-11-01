@@ -1,28 +1,23 @@
 {% extends 'base.html' %}
 {% set page_title = '标签' %}
 {% block main %}
-<main id="main">
-  {% set hero_key = 'tags' %}{% set hero_n = stats.tags %}{% include '_hero.html' %}
+<main id="main" class="wrap">
+  {% set head_key = 'tags' %}{% set head_n = stats.tags %}{% include '_head.html' %}
   <section class="section">
-    <div class="container">
-      <div class="tag-cloud">
-        {% set top = tags[0].count if tags else 1 %}
-        {% for t in tags %}<a class="tag-pill size-{{ 3 if t.count * 2 > top else (2 if t.count > 1 else 1) }}" href="/articles.html?tag={{ t.name|qurl }}"># {{ t.name }} <span>{{ t.count }}</span></a>{% endfor %}
-      </div>
-      <div class="tag-groups">
-        {% for t in tags %}
-        <section class="tag-group" data-reveal>
-          <div class="tag-group-head">
-            <h2># {{ t.name }}</h2>
-            <span>{{ t.count }} 篇</span>
-          </div>
-          <ul class="tag-post-list">
-            {% for p in t.posts %}<li><a href="{{ p.url }}"><time>{{ p.date|dot }}</time><span>{{ p.title }}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a></li>{% endfor %}
-          </ul>
-        </section>
-        {% endfor %}
-      </div>
+    <div class="tag-cloud">
+      {% for t in tags %}<a class="tag-pill" href="#tag-{{ loop.index }}"># {{ t.name }} <span>{{ t.count }}</span></a>{% endfor %}
     </div>
+    {% for t in tags %}
+    <section class="cat-block" id="tag-{{ loop.index }}" style="--c:var(--rule-strong)">
+      <div>
+        <h2># {{ t.name }}</h2>
+        <p class="count">{{ t.count }} 篇，<a href="/articles.html?tag={{ t.name|qurl }}">在文章列表里筛选</a></p>
+      </div>
+      <ul class="mini-list">
+        {% for p in t.posts %}<li><a href="{{ p.url }}"><time class="date">{{ p.date|dot }}</time><span>{{ p.title }}</span></a></li>{% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
   </section>
 </main>
 {% endblock %}

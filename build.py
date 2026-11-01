@@ -201,6 +201,40 @@ def kfmt(n):
     return f"{n / 1000:.1f}k" if n >= 1000 else str(n)
 
 
+SPARE_COLORS = ["#2357C6", "#2E8B57", "#C98A12", "#C4423A", "#7462B0", "#1F8A8A"]
+
+
+def month_add(d, n):
+    m = d.month - 1 + n
+    return date(d.year + m // 12, m % 12 + 1, 1)
+
+
+def genome_track(posts, categories):
+    """首页的"基因组轨道"：横轴是时间，一行一个分类，每篇文章是一个色块。"""
+    if not posts:
+        return None
+    start = date(posts[-1]["date"].year, posts[-1]["date"].month, 1)
+    end = month_add(posts[0]["date"], 1)
+    span = (end - start).days or 1
+    months = (end.year - start.year) * 12 + end.month - start.month
+    step = 1 if months <= 18 else (3 if months <= 48 else 12)
+
+    def x(d):
+        return round((d - start).days / span * 100, 2)
+
+    ticks, t = [], start
+    while t <= end:
+        if step == 12 and t.month != 1 and t != start:
+            t = date(t.year + 1, 1, 1)
+            continue
+        ticks.append({"x": x(t), "label": f"{t.year}" if step == 12 else f"{t.year}.{t.month:02d}"})
+        t = month_add(t, step)
+    rows = [{"name": c["name"], "color": c["color"],
+             "items": [{"post": p, "x": x(p["date"])} for p in c["posts"]]} for c in categories]
+    return {"ticks": ticks, "rows": rows,
+            "from": posts[-1]["date"], "to": posts[0]["date"]}
+
+
 def build():
     site = yaml.safe_load((ROOT / "site.yaml").read_text(encoding="utf-8"))
     posts = load_posts()
@@ -210,11 +244,15 @@ def build():
     # keep the order from site.yaml, then any new category by size
     cat_order = [c for c in site.get("categories", {}) if c in cat_count]
     cat_order += [c for c, _ in cat_count.most_common() if c not in cat_order]
+    cat_conf = site.get("categories", {})
     categories = [{
         "name": c, "count": cat_count[c],
-        "desc": site.get("categories", {}).get(c, ""),
+        "desc": (cat_conf.get(c) or {}).get("desc", ""),
+        "color": (cat_conf.get(c) or {}).get("color") or SPARE_COLORS[i % len(SPARE_COLORS)],
         "posts": [p for p in posts if c in p["categories"]],
-    } for c in cat_order]
+    } for i, c in enumerate(cat_order)]
+    color_of = {c["name"]: c["color"] for c in categories}
+    track = genome_track(posts, categories)
     tags = [{"name": t, "count": n, "posts": [p for p in posts if t in p["tags"]]} for t, n in tag_count.most_common()]
 
     archive = OrderedDict()
@@ -232,7 +270,8 @@ def build():
     env = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=select_autoescape(["html", "xml"]),
                       trim_blocks=True, lstrip_blocks=True)
     env.filters.update(dot=dot, cn_date=cn_date, qurl=qurl, truncate_text=lambda s, n=400: s[:n])
-    env.globals.update(site=site, stats=stats, categories=categories, tags=tags, fmt=fmt, year=date.today().year)
+    env.globals.update(site=site, stats=stats, categories=categories, tags=tags, fmt=fmt, year=date.today().year,
+                       color_of=color_of, track=track)
 
     if DIST.exists():
         shutil.rmtree(DIST)
@@ -265,7 +304,7 @@ def build():
     search = [{
         "title": p["title"], "url": p["url"], "date": p["date"].isoformat(),
         "categories": p["categories"], "tags": p["tags"], "excerpt": p["description"],
-        "cover": p["cover"], "text": p["text"],
+        "cover": p["cover"], "color": color_of.get(p["categories"][0], ""), "text": p["text"],
     } for p in posts]
     (DIST / "search.json").write_text(json.dumps(search, ensure_ascii=False), encoding="utf-8")
 

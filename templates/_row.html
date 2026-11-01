@@ -1,0 +1,11 @@
+<li class="post-row" data-category="{{ p.categories|join('|') }}" data-tag="{{ p.tags|join('|') }}" data-title="{{ p.title }}" data-text="{{ p.text|truncate_text }}">
+  <a href="{{ p.url }}">
+    <time class="date" datetime="{{ p.date.isoformat() }}">{{ p.date|dot }}</time>
+    <span class="post-row-title">{{ p.title }}</span>
+    <span class="post-row-meta">
+      <span class="cat" style="--c:{{ color_of[p.categories[0]] }}">{{ p.categories[0] }}</span>
+      <span class="mins">{{ p.minutes }} 分钟</span>
+    </span>
+    {% if p.description %}<span class="post-row-desc">{{ p.description }}</span>{% endif %}
+  </a>
+</li>
