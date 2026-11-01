@@ -56,7 +56,7 @@ tag_groups:
   生信: [pybiotk, BAM, GTF, BED, RNA-seq, pysam, bedtools, PubMed]
   Python: [pandas, 造轮子, 小技巧]
   终端与环境: [zsh, oh-my-zsh, vim, git, 代理, WSL, Arch Linux]
-  AI 工具: [Operit, SillyTavern, ComfyUI, DeepSeek, Agent Skills, 提示词, 角色扮演]
+  AI 工具: [Operit, SillyTavern, ComfyUI, DeepSeek, Agent Skills, 提示词, 角色扮演, 论文写作]
   其他: [建站, 吐槽]
 
 # ---------- 各页面标题下的一句话 ----------

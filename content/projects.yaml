@@ -29,6 +29,7 @@ groups:
       - { repo: comfyui-skills, desc: "ComfyUI 工作流、Krea 2 提示词和 LoRA 训练评估的一套 Skills。", lang: Python, since: "2026-09", updated: "2026-10" }
       - { repo: comfyui-resolution-by-index, desc: "ComfyUI 小节点：按索引从 YAML 里挑分辨率，方便循环出图。", lang: Python, since: "2026-09", updated: "2026-09" }
       - { repo: writer-novel-style-distiller, desc: "中文小说文风蒸馏、主角魅力分析和完结收束设计的 Skill。", lang: Python, since: "2026-08", updated: "2026-10" }
+      - { repo: agent-skills, desc: "通用 Agent Skill 合集，目前收录 de-astra：把 AI 腔的科研文稿改回自然表达。", lang: Markdown, since: "2026-11", updated: "2026-11" }
       - { repo: gpt-image-2-female-character-prompt-skill, desc: "给 gpt-image-2 写角色封面和宣传插画提示词的 Skill。", lang: Markdown, since: "2026-08", updated: "2026-08" }
   - name: 生信与文献挖掘
     desc: 老本行。从当年的文献分类、词云，到一直在维护的 pybiotk。
