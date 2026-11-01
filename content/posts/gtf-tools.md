@@ -1,8 +1,8 @@
 ---
 title: "gtf转bed，提取intron.bed以及一个处理gtf的轮子"
 date: 2021-04-06
-categories: ["python", "生信入门"]
-tags: ["原创", "生信"]
+categories: ["生信", "python"]
+tags: ["GTF", "BED", "bedtools", "造轮子"]
 description: "如果你只需要把gtf转成bed12，下载ucsc的两个软件genePredToBed，gtfToGenePred一行代码就完事了。如果你想看看怎么用python实现它，可以看看这个。"
 cover: /assets/img/bg4.jpg
 ---

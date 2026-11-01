@@ -1,0 +1,55 @@
+# 项目页的数据。since/updated 是首次和最近一次提交的年月，新项目照着格式加一条即可。
+groups:
+  - name: Operit 插件与 Skills
+    desc: 给安卓上的 AI Agent「Operit」写的插件和技能包，占了这两年的大头。
+    items:
+      - { repo: character-memory-engine, desc: "角色长期记忆引擎：SQLite 存储加向量检索，自动语义去重，按角色隔离。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
+      - { repo: character-memory-system, desc: "记忆系统插件的重构版，能自动从聊天记录里提炼长期记忆。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
+      - { repo: rp-xml-renderer, desc: "角色扮演用的标签渲染器，支持标签内正则替换和动态提示词。", lang: JavaScript, since: "2026-10", updated: "2026-10" }
+      - { repo: Operit-Environment-Context-Injector, desc: "对话前注入时间、日期、日历、纪念日等环境信息。", lang: TypeScript, since: "2026-08", updated: "2026-10" }
+      - { repo: codex-control, desc: "通过 Operit 的终端会话遥控电脑上的 Codex CLI，附带任务编排 Skill。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
+      - { repo: deepseek-responses-provider, desc: "让 Operit 用上 DeepSeek 的 Responses 协议。", lang: JavaScript, since: "2026-08", updated: "2026-10" }
+      - { repo: deepseek_balance_watch, desc: "DeepSeek 余额快照，余额太低时提醒充值。", lang: TypeScript, since: "2026-08", updated: "2026-08" }
+      - { repo: opencode_go_quota, desc: "查看 OpenCode Go 的 5 小时、周、月额度，快用完时提醒。", lang: TypeScript, since: "2026-08", updated: "2026-08" }
+      - { repo: operit-plugin-dev-skill, desc: "Operit 插件开发指南 Skill，把踩过的坑都记了进去。", lang: TypeScript, since: "2026-08", updated: "2026-10" }
+      - { repo: my-operit-skills, desc: "在 Operit 上写的一组 Agent Skills，部分可以移植到别的平台。", lang: Python, since: "2026-09", updated: "2026-10" }
+  - name: 其他 Agent 与聊天客户端
+    desc: 同样的想法搬到别的宿主上：让模型知道「现在」是什么时候、在哪儿。
+    items:
+      - { repo: SillyTavern-PresetLab, desc: "SillyTavern 预设编辑器，能看清最终发给模型的上下文和 Token 分布。", lang: JavaScript, since: "2026-06", updated: "2026-10" }
+      - { repo: SillyTavern-Environment-Context, desc: "给 SillyTavern 注入时间、天气、地点、节假日等现实信息。", lang: JavaScript, since: "2026-08", updated: "2026-10" }
+      - { repo: dsh-environment-context, desc: "DeepSeek Harness 的环境上下文插件。", lang: TypeScript, since: "2026-08", updated: "2026-10" }
+      - { repo: dsh-status-card, desc: "给 DeepSeek Harness 的每次回复加一张状态卡片，内置六款模板。", lang: JavaScript, since: "2026-08", updated: "2026-10" }
+      - { repo: environment_provider, desc: "Hermes Agent 的环境信息注入插件，只改请求副本，不污染聊天记录。", lang: Python, since: "2026-08", updated: "2026-10" }
+      - { repo: rikkahub, desc: "安卓 LLM 客户端 RikkaHub 的个人增强版（fork）。", lang: Kotlin, since: "2026-05", updated: "2026-08", fork: true }
+      - { repo: cline-pass-switcher, desc: "Cline Pass 上游测速与管理控制台的 V2 版（fork）。", lang: JavaScript, since: "2026-09", updated: "2026-09", fork: true }
+  - name: 写作与 AI 绘图
+    desc: 提示词工程和工作流，拿来写小说、画图、炼 LoRA。
+    items:
+      - { repo: comfyui-skills, desc: "ComfyUI 工作流、Krea 2 提示词和 LoRA 训练评估的一套 Skills。", lang: Python, since: "2026-09", updated: "2026-10" }
+      - { repo: comfyui-resolution-by-index, desc: "ComfyUI 小节点：按索引从 YAML 里挑分辨率，方便循环出图。", lang: Python, since: "2026-09", updated: "2026-09" }
+      - { repo: writer-novel-style-distiller, desc: "中文小说文风蒸馏、主角魅力分析和完结收束设计的 Skill。", lang: Python, since: "2026-08", updated: "2026-10" }
+      - { repo: gpt-image-2-female-character-prompt-skill, desc: "给 gpt-image-2 写角色封面和宣传插画提示词的 Skill。", lang: Markdown, since: "2026-08", updated: "2026-08" }
+  - name: 生信与文献挖掘
+    desc: 老本行。从当年的文献分类、词云，到一直在维护的 pybiotk。
+    items:
+      - { repo: pybiotk, desc: "生信数据处理工具包：FASTA/FASTQ、BAM、BED、GTF、BigWig，已发布到 PyPI。", lang: Python, since: "2022-07", updated: "2026-09" }
+      - { repo: DaPars2, desc: "多样本 RNA-seq 可变多聚腺苷酸化分析，DaPars2 的修改版。", lang: Python, since: "2024-03", updated: "2024-03" }
+      - { repo: queryncbi, desc: "命令行检索 PubMed，可按年份、期刊、MeSH 过滤。", lang: Python, since: "2022-04", updated: "2023-11" }
+      - { repo: pdb_parse, desc: "PDB 蛋白结构文件解析脚本。", lang: Python, since: "2020-11", updated: "2020-12" }
+      - { repo: SRG_wordcloud, desc: "从文献摘要生成关键词词云的流程。", lang: Python, since: "2020-10", updated: "2021-05" }
+      - { repo: research_paper_classfication, desc: "用 SVM 根据摘要给文献自动分类。", lang: Python, since: "2019-09", updated: "2019-09" }
+      - { repo: text-classification, desc: "基于 attention 的 CNN 文本分类实验。", lang: Python, since: "2019-03", updated: "2019-04" }
+      - { repo: FirstAuthor-Mine, desc: "第一作者信息挖掘系统，Django 写的。", lang: JavaScript, since: "2019-10", updated: "2019-10" }
+  - name: 小工具
+    desc: 顺手做的，自己用着方便。
+    items:
+      - { repo: bilibili-download-extension, desc: "B 站视频下载 Chrome 扩展，支持多种清晰度。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
+      - { repo: memorandum, desc: "常用命令和资料的备忘录，从 2018 年记到现在。", lang: Markdown, since: "2018-11", updated: "2026-03" }
+early:   # 早年练手的小仓库，只列名字
+  - RBP_wordcloud
+  - Pubmed_author
+  - test_entrezpy
+  - CNS_system
+  - LaTex_learning
+  - hexo-blog

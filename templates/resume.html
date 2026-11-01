@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% set page_title = '简历' %}
+{% set page_desc = resume.summary %}
+{% block main %}
+<main id="main" class="wrap resume">
+  <header class="page-head resume-head">
+    <div>
+      <h1>{{ site.author }}</h1>
+      <p class="resume-role">{{ site.profile_role }}</p>
+      <p class="resume-summary">{{ resume.summary }}</p>
+    </div>
+    <ul class="resume-contact">
+      <li><a href="mailto:{{ site.email }}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg> {{ site.email }}</a></li>
+      <li><a href="{{ site.github }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> github.com/liqiming-whu</a></li>
+      <li><a href="/projects.html"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg> 开源项目 {{ stats.projects }} 个</a></li>
+      <li class="no-print"><button class="btn btn-sm" type="button" onclick="window.print()"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg> 打印或存为 PDF</button></li>
+    </ul>
+  </header>
+
+  {% if resume.featured %}
+  <section class="resume-section">
+    <h2>项目</h2>
+    <div>
+      <ul class="proj-list proj-list--home">
+        {% for it in resume.featured %}
+        <li style="--c:{{ it.color }}"><a href="{{ it.url }}" target="_blank" rel="noopener">
+          <span class="proj-name">{{ it.repo }}</span>
+          <span class="proj-desc">{{ it.desc }}</span>
+          <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.span }}</span></span>
+        </a></li>
+        {% endfor %}
+      </ul>
+      <p class="paper-note">更多见<a href="/projects.html">项目页</a>，共 {{ stats.projects }} 个。</p>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="resume-section">
+    <h2>技能</h2>
+    <dl class="skill-list">
+      {% for sk in resume.skills %}
+      <div><dt>{{ sk.name }}</dt><dd>{{ sk.html|safe }}</dd></div>
+      {% endfor %}
+    </dl>
+  </section>
+
+  <section class="resume-section">
+    <h2>论文</h2>
+    <div>
+      <ol class="paper-list">
+        {% for p in resume.papers %}
+        <li>
+          <span class="date">{{ p.year }}</span>
+          <div>
+            <a class="paper-title" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a>
+            <p class="paper-authors">{{ p.authors_html|safe }}</p>
+            <p class="paper-venue"><span><em>{{ p.journal }}</em>. {{ p.cite }}.</span>
+              {% if p.co_first %}<span class="badge badge-strong">共同第一作者</span>{% endif %}
+              {% if p.rank %}<span class="badge">{{ p.rank }}</span>{% endif %}
+            </p>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      {% if resume.in_progress %}
+      <ul class="paper-pending">
+        {% for t in resume.in_progress %}<li>{{ t }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      <p class="paper-note"># 表示共同第一作者；分区为中科院分区。</p>
+    </div>
+  </section>
+
+
+  {% if resume.awards %}
+  <section class="resume-section">
+    <h2>获奖</h2>
+    <ul class="award-list">{% for a in resume.awards %}<li>{{ a }}</li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

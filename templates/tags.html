@@ -4,20 +4,25 @@
 <main id="main" class="wrap">
   {% set head_key = 'tags' %}{% set head_n = stats.tags %}{% include '_head.html' %}
   <section class="section">
-    <div class="tag-cloud">
-      {% for t in tags %}<a class="tag-pill" href="#tag-{{ loop.index }}"># {{ t.name }} <span>{{ t.count }}</span></a>{% endfor %}
-    </div>
-    {% for t in tags %}
-    <section class="cat-block" id="tag-{{ loop.index }}" style="--c:var(--rule-strong)">
-      <div>
-        <h2># {{ t.name }}</h2>
-        <p class="count">{{ t.count }} 篇，<a href="/articles.html?tag={{ t.name|qurl }}">在文章列表里筛选</a></p>
+    {% for g in tag_groups %}
+    <section class="tag-group" style="--c:{{ color_of.get(g.name) or color_of.get(g.name|lower) or 'var(--rule-strong)' }}">
+      <h2>{{ g.name }}</h2>
+      <div class="tag-cloud">
+        {% for t in g.tags %}<a class="tag-pill" href="#tag-{{ t.name|qurl }}"># {{ t.name }} <span>{{ t.count }}</span></a>{% endfor %}
       </div>
-      <ul class="mini-list">
-        {% for p in t.posts %}<li><a href="{{ p.url }}"><time class="date">{{ p.date|dot }}</time><span>{{ p.title }}</span></a></li>{% endfor %}
-      </ul>
     </section>
     {% endfor %}
+
+    <div class="tag-index">
+      {% for g in tag_groups %}{% for t in g.tags %}
+      <section class="tag-entry" id="tag-{{ t.name|qurl }}">
+        <h3># {{ t.name }} <small>{{ t.count }} 篇</small></h3>
+        <ul class="mini-list">
+          {% for p in t.posts %}<li><a href="{{ p.url }}"><time class="date">{{ p.date|dot }}</time><span>{{ p.title }}</span></a></li>{% endfor %}
+        </ul>
+      </section>
+      {% endfor %}{% endfor %}
+    </div>
   </section>
 </main>
 {% endblock %}

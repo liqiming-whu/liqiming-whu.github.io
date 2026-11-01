@@ -16,8 +16,9 @@ python build.py new my-new-post        # 生成 content/posts/my-new-post.md
 ---
 title: 文章标题
 date: 2026-11-01
-categories: [python]        # 第一个分类会显示在卡片上
-tags: [原创]
+categories: [python]        # 第一个分类会显示在列表上；可选：生信、python、终端与环境、AI 工具、没事瞎写的
+tags: [pandas, 造轮子]       # 写具体的工具或主题；新标签记得加到 site.yaml 的 tag_groups 里归类
+# source: 转载              # 转载的文章加上这一行，会显示一个小标记
 description: 一句话介绍，显示在卡片和搜索结果里
 cover: /assets/img/bg5.jpg  # 封面图，放在 public/assets/img/
 draft: true                 # 写完删掉这一行就会发布
@@ -49,7 +50,7 @@ draft: true                 # 写完删掉这一行就会发布
 
 ## 改网站上的文字
 
-首页介绍、各页面标题、分类说明和颜色、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`。页面结构在 `templates/`，样式和脚本在 `public/assets/`。
+首页介绍、各页面标题、分类说明和颜色、标签分组、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`，「项目」页的数据在 `content/projects.yaml`（新项目照格式加一条，`since`/`updated` 填首次和最近提交的年月）。页面结构在 `templates/`，样式和脚本在 `public/assets/`。
 
 ## 本地预览
 

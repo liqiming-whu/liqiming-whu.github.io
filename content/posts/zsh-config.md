@@ -1,8 +1,8 @@
 ---
 title: "大幅度提升终端使用体验——zsh安装与配置"
 date: 2021-04-01
-categories: ["linux"]
-tags: ["原创"]
+categories: ["终端与环境"]
+tags: ["zsh", "oh-my-zsh"]
 description: "如果你没用过zsh，那么你需要这篇文章，如果你没用过oh-my-zsh，那你更需要这篇文章。如果你不用oh-my-zsh，那没事了。"
 cover: /assets/img/bg6.jpg
 ---

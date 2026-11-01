@@ -1,8 +1,9 @@
 ---
 title: "git撤销操作，添加代理以及wget设置代理"
 date: 2021-04-09
-categories: ["linux"]
-tags: ["转载"]
+categories: ["终端与环境"]
+tags: ["git", "代理"]
+source: 转载   # 转载的文章会显示一个小标记
 description: "这些东西都能搜到，但也容易忘记，记录在此方便查阅。"
 cover: /assets/img/bg10.jpg
 ---

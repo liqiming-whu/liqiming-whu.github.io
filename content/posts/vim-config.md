@@ -1,8 +1,8 @@
 ---
 title: "配置你的vim，让它成为能用的编辑器"
 date: 2021-03-31
-categories: ["linux"]
-tags: ["原创"]
+categories: ["终端与环境"]
+tags: ["vim"]
 description: "很多服务器上的至今仍然装着vim7，没有基本的配置，vim是很难用的，经常会遇到空格和tab混用的问题。使用vim，需要先从配置开始。"
 cover: /assets/img/bg2.jpg
 ---

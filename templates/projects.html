@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% set page_title = '项目' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'projects' %}{% set head_n = stats.projects %}{% include '_head.html' %}
+
+  <figure class="track project-track" aria-labelledby="projCaption" style="margin-left:0;margin-right:0">
+    <div class="track-head">
+      <span><strong>github.com/liqiming-whu</strong>:{{ projects.ticks[0].label }}–{{ projects.ticks[-1].label|int - 1 }}</span>
+      <span>{{ stats.projects }} 个项目 / {{ projects.groups|length }} 条轨道</span>
+    </div>
+    <div class="track-body">
+      <div class="track-ruler" aria-hidden="true">
+        {% for t in projects.ticks %}<span class="track-tick" style="left:{{ t.x }}%"><span>{{ t.label }}</span></span>{% endfor %}
+      </div>
+      {% for g in projects.groups %}
+      <div class="track-row track-row--stack" style="--n:{{ g['items']|length }}">
+        <a class="track-label" href="#group-{{ loop.index }}">{{ g.name }}</a>
+        <div class="track-lane">
+          {% for it in g['items'] %}
+          <a class="feature feature--span" href="#{{ it.repo }}" style="left:{{ it.x }}%;width:{{ it.w }}%;--c:{{ it.color }};--i:{{ loop.index0 }}" aria-label="{{ it.repo }}（{{ it.span }}）">
+            <span class="feature-tip" aria-hidden="true"><span class="date">{{ it.span }}</span>{{ it.repo }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <figcaption class="track-foot" id="projCaption">每一条是一个项目，从第一次提交画到最近一次提交，一行一个领域。点一下跳到它的介绍。</figcaption>
+  </figure>
+
+  <section class="section">
+    {% for g in projects.groups %}
+    <section class="proj-group" id="group-{{ loop.index }}" style="--c:{{ g.color }}">
+      <div class="proj-group-head">
+        <h2>{{ g.name }}</h2>
+        <p>{{ g.desc }}</p>
+      </div>
+      <ul class="proj-list">
+        {% for it in g['items'] %}
+        <li id="{{ it.repo }}"><a href="{{ it.url }}" target="_blank" rel="noopener">
+          <span class="proj-name">{{ it.repo }}{% if it.fork %} <span class="badge">fork</span>{% endif %}</span>
+          <span class="proj-desc">{{ it.desc }}</span>
+          <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.span }}</span></span>
+        </a></li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+    {% if projects.early %}
+    <p class="proj-early">早年练手的小仓库：{% for r in projects.early %}<a href="https://github.com/liqiming-whu/{{ r }}" target="_blank" rel="noopener">{{ r }}</a>{{ '、' if not loop.last }}{% endfor %}。</p>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}

@@ -2,7 +2,7 @@
 title: "python按长度拆分容器"
 date: 2021-04-14
 categories: ["python"]
-tags: ["原创"]
+tags: ["小技巧"]
 description: "一个python烂活，输入任意长度列表，根据长度列表对容器进行拆分。"
 cover: /assets/img/bg2.jpg
 ---

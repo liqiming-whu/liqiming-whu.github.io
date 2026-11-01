@@ -166,6 +166,7 @@ def load_posts():
             "date": d,
             "categories": cats if isinstance(cats, list) else [cats],
             "tags": meta.get("tags") or [],
+            "source": meta.get("source") or "",
             "description": meta.get("description", ""),
             "cover": meta.get("cover") or "/assets/img/bg5.jpg",
             "html": html_body,
@@ -235,6 +236,80 @@ def genome_track(posts, categories):
             "from": posts[-1]["date"], "to": posts[0]["date"]}
 
 
+PROJECT_COLORS = ["#1F8A8A", "#7462B0", "#C4423A", "#C98A12", "#2357C6", "#2E8B57"]
+
+
+def ym(s):
+    y, m = str(s).split("-")[:2]
+    return date(int(y), int(m), 1)
+
+
+def load_projects():
+    """content/projects.yaml -> 分组的项目列表，以及按年份画的项目轨道。"""
+    path = CONTENT / "projects.yaml"
+    if not path.exists():
+        return None
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    groups = data.get("groups") or []
+    items = [it for g in groups for it in g["items"]]
+    if not items:
+        return None
+    start = date(min(ym(it["since"]) for it in items).year, 1, 1)
+    end = date(max(ym(it["updated"]) for it in items).year + 1, 1, 1)
+    span = (end - start).days
+
+    def x(d):
+        return round((d - start).days / span * 100, 2)
+
+    for gi, g in enumerate(groups):
+        g["color"] = g.get("color") or PROJECT_COLORS[gi % len(PROJECT_COLORS)]
+        g["items"].sort(key=lambda it: str(it["updated"]), reverse=True)
+        for it in g["items"]:
+            it["url"] = it.get("url") or f"https://github.com/liqiming-whu/{it['repo']}"
+            a, b = ym(it["since"]), month_add(ym(it["updated"]), 1)
+            it["x"], it["w"] = x(a), max(round(x(b) - x(a), 2), 0.8)
+            it["color"] = g["color"]
+            it["span"] = it["since"].replace("-", ".") if it["since"] == it["updated"] else f'{it["since"].replace("-", ".")}–{it["updated"].replace("-", ".")}'
+    ticks = [{"x": x(date(y, 1, 1)), "label": str(y)} for y in range(start.year, end.year + 1)]
+    recent = sorted(items, key=lambda it: str(it["updated"]), reverse=True)
+    return {"groups": groups, "ticks": ticks, "recent": recent, "early": data.get("early") or []}
+
+
+def load_resume():
+    path = CONTENT / "resume.yaml"
+    if not path.exists():
+        return None
+    r = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    me = r.get("me", "")
+    for p in r.get("papers") or []:
+        names = [a.strip() for a in str(p["authors"]).split(",")]
+        p["authors_html"] = ", ".join(
+            f"<strong>{html.escape(n)}</strong>" if n.rstrip("#*") == me else html.escape(n) for n in names)
+        p["co_first"] = any(n.rstrip("*").endswith("#") and n.rstrip("#*") == me for n in names)
+    r["papers"] = sorted(r.get("papers") or [], key=lambda p: p["year"], reverse=True)
+    for sk in r.get("skills") or []:
+        sk["html"] = re.sub(r"^<p>|</p>$", "", render_md(sk["text"]).strip())
+    return r
+
+
+def group_tags(tags, groups):
+    by_name = {t["name"]: t for t in tags}
+    out, used = [], set()
+    for gname, names in groups.items():
+        members = [by_name[n] for n in names if n in by_name and n not in used]
+        used.update(t["name"] for t in members)
+        if members:
+            out.append({"name": gname, "tags": members})
+    rest = [t for t in tags if t["name"] not in used]
+    if rest:
+        other = next((g for g in out if g["name"] == "其他"), None)
+        if other:
+            other["tags"] += rest
+        else:
+            out.append({"name": "其他", "tags": rest})
+    return out
+
+
 def build():
     site = yaml.safe_load((ROOT / "site.yaml").read_text(encoding="utf-8"))
     posts = load_posts()
@@ -251,9 +326,12 @@ def build():
         "color": (cat_conf.get(c) or {}).get("color") or SPARE_COLORS[i % len(SPARE_COLORS)],
         "posts": [p for p in posts if c in p["categories"]],
     } for i, c in enumerate(cat_order)]
-    color_of = {c["name"]: c["color"] for c in categories}
+    color_of = {c: (v or {}).get("color") for c, v in cat_conf.items() if (v or {}).get("color")}
+    color_of.update({c["name"]: c["color"] for c in categories})
     track = genome_track(posts, categories)
     tags = [{"name": t, "count": n, "posts": [p for p in posts if t in p["tags"]]} for t, n in tag_count.most_common()]
+    tag_groups = group_tags(tags, site.get("tag_groups") or {})
+    projects = load_projects()
 
     archive = OrderedDict()
     for p in posts:
@@ -265,13 +343,14 @@ def build():
         "words": kfmt(sum(p["words"] for p in posts)),
         "updated": dot(posts[0]["date"]) if posts else "",
         "start": f"{oldest.year} 年 {oldest.month} 月",
+        "projects": sum(len(g["items"]) for g in projects["groups"]) if projects else 0,
     }
 
     env = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=select_autoescape(["html", "xml"]),
                       trim_blocks=True, lstrip_blocks=True)
     env.filters.update(dot=dot, cn_date=cn_date, qurl=qurl, truncate_text=lambda s, n=400: s[:n])
     env.globals.update(site=site, stats=stats, categories=categories, tags=tags, fmt=fmt, year=date.today().year,
-                       color_of=color_of, track=track)
+                       color_of=color_of, track=track, tag_groups=tag_groups, projects=projects)
 
     if DIST.exists():
         shutil.rmtree(DIST)
@@ -290,6 +369,14 @@ def build():
     write("about.html", "about.html", page="about",
           about_html=render_md((CONTENT / "about.md").read_text(encoding="utf-8")))
     write("links.html", "links.html", page="links")
+    resume = load_resume()
+    if resume and projects:
+        by_repo = {it["repo"]: it for g in projects["groups"] for it in g["items"]}
+        resume["featured"] = [by_repo[r] for r in resume.get("featured_projects") or [] if r in by_repo]
+    if resume:
+        write("resume.html", "resume.html", page="resume", resume=resume)
+    if projects:
+        write("projects.html", "projects.html", page="projects")
     write("message.html", "message.html", page="message")
     write("404.html", "404.html", page="404")
 
@@ -320,7 +407,7 @@ def new_post(slug):
     if path.exists():
         sys.exit(f"{path} 已经存在")
     path.write_text(
-        f"---\ntitle: 新文章标题\ndate: {date.today().isoformat()}\ncategories: [python]\ntags: [原创]\n"
+        f"---\ntitle: 新文章标题\ndate: {date.today().isoformat()}\ncategories: [python]\ntags: [造轮子]\n"
         f"description: 一句话介绍这篇文章，会显示在卡片和搜索结果里。\ncover: /assets/img/bg5.jpg\n"
         f"draft: true   # 写完删掉这一行就会发布\n---\n\n正文从这里开始。\n",
         encoding="utf-8",

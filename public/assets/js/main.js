@@ -409,6 +409,27 @@
     })
   })
 
+  /* ---------- rotating poem in the footer ---------- */
+
+  const quoteData = $('#quoteData')
+  if (quoteData) {
+    let quotes = []
+    try { quotes = JSON.parse(quoteData.textContent) } catch (e) {}
+    const text = $('#quoteText'), source = $('#quoteSource'), next = $('#quoteNext')
+    let qi = 0
+    const show = i => {
+      qi = (i + quotes.length) % quotes.length
+      text.textContent = quotes[qi].text
+      source.textContent = quotes[qi].source
+    }
+    if (quotes.length > 1) {
+      show(Math.floor(Math.random() * quotes.length))
+      next.addEventListener('click', () => show(qi + 1 + Math.floor(Math.random() * (quotes.length - 1))))
+    } else if (next) {
+      next.hidden = true
+    }
+  }
+
   /* ---------- misc ---------- */
 
   if (toTop) {

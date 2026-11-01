@@ -1,8 +1,8 @@
 ---
 title: "统计bam文件中的fragments长度分布"
 date: 2021-04-16
-categories: ["python", "生信入门"]
-tags: ["原创", "生信"]
+categories: ["生信", "python"]
+tags: ["BAM", "RNA-seq", "pysam", "造轮子"]
 description: "输入bam文件，输出两列，一列是fragment的长度，一列是数量。不愧是python，就是慢。"
 cover: /assets/img/bg.jpg
 ---

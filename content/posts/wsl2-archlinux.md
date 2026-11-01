@@ -1,8 +1,9 @@
 ---
 title: "在WSL2中安装ArchLinux并进行本地化配置"
 date: 2021-04-09
-categories: ["windows"]
-tags: ["转载"]
+categories: ["终端与环境"]
+tags: ["WSL", "Arch Linux"]
+source: 转载   # 转载的文章会显示一个小标记
 description: "微软商店没有ArchLinux官方版本的WSL，不过我们可以使用LxRunOffline安装。"
 cover: /assets/img/bg3.jpg
 ---
