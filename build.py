@@ -370,6 +370,9 @@ def build():
           about_html=render_md((CONTENT / "about.md").read_text(encoding="utf-8")))
     write("links.html", "links.html", page="links")
     resume = load_resume()
+    if resume and projects:
+        by_repo = {it["repo"]: it for g in projects["groups"] for it in g["items"]}
+        resume["featured"] = [by_repo[r] for r in resume.get("featured_projects") or [] if r in by_repo]
     if resume:
         write("resume.html", "resume.html", page="resume", resume=resume)
     if projects:

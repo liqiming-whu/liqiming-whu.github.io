@@ -31,7 +31,7 @@ quotes:
 # ---------- 首页 ----------
 home:
   headline: 白天跟测序数据较劲，晚上给 AI 写插件。
-  intro: 从生信脚本、终端配置，一路折腾到 Operit、SillyTavern 和 ComfyUI。这里收着踩过的坑、造过的轮子，还有一些没什么用但挺好玩的东西。
+  intro: 武汉大学生物信息学博士，即将毕业，正在找 AI 方向的工作。从生信脚本、终端配置一路折腾到 AI Agent 插件、长期记忆和 ComfyUI，这里收着做过的项目、踩过的坑，还有一些没什么用但挺好玩的东西。
   track_caption: 每个色块是一篇笔记，按写下的日期排在时间轴上，一行一个分类。点一下就能打开。
   recent_title: 最近的笔记
   projects_title: 最近在做

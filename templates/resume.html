@@ -17,6 +17,33 @@
     </ul>
   </header>
 
+  {% if resume.featured %}
+  <section class="resume-section">
+    <h2>项目</h2>
+    <div>
+      <ul class="proj-list proj-list--home">
+        {% for it in resume.featured %}
+        <li style="--c:{{ it.color }}"><a href="{{ it.url }}" target="_blank" rel="noopener">
+          <span class="proj-name">{{ it.repo }}</span>
+          <span class="proj-desc">{{ it.desc }}</span>
+          <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.span }}</span></span>
+        </a></li>
+        {% endfor %}
+      </ul>
+      <p class="paper-note">更多见<a href="/projects.html">项目页</a>，共 {{ stats.projects }} 个。</p>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="resume-section">
+    <h2>技能</h2>
+    <dl class="skill-list">
+      {% for sk in resume.skills %}
+      <div><dt>{{ sk.name }}</dt><dd>{{ sk.html|safe }}</dd></div>
+      {% endfor %}
+    </dl>
+  </section>
+
   <section class="resume-section">
     <h2>论文</h2>
     <div>
@@ -44,14 +71,6 @@
     </div>
   </section>
 
-  <section class="resume-section">
-    <h2>技能</h2>
-    <dl class="skill-list">
-      {% for sk in resume.skills %}
-      <div><dt>{{ sk.name }}</dt><dd>{{ sk.html|safe }}</dd></div>
-      {% endfor %}
-    </dl>
-  </section>
 
   {% if resume.awards %}
   <section class="resume-section">
