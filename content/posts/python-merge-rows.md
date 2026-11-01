@@ -2,7 +2,7 @@
 title: "python将列表按指定的列去重，并合并其它行的内容"
 date: 2021-04-29
 categories: ["python"]
-tags: ["原创"]
+tags: ["pandas", "造轮子"]
 description: "pandas的drop_duplicates在按某列去重时，其他列每组只能保留其中一行。如何把这一组的若干行合并在一行，是本文主要解决的问题。"
 cover: /assets/img/bg9.jpg
 ---

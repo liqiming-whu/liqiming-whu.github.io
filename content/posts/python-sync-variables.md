@@ -2,7 +2,7 @@
 title: "Python如何让两个变量保持同步"
 date: 2021-04-08
 categories: ["python"]
-tags: ["原创"]
+tags: ["小技巧", "吐槽"]
 description: "python就这？连个引用都没有。卖课公众号还好意思吹什么无所不能的编程语言呢。就这？"
 cover: /assets/img/bg3.jpg
 ---

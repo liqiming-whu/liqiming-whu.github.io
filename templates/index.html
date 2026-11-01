@@ -6,7 +6,7 @@
     <p>{{ site.home.intro }}</p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="/articles.html">翻翻笔记</a>
-      <a class="btn" href="/about.html">认识一下我</a>
+      <a class="btn" href="/projects.html">看看项目</a>
     </div>
   </section>
 
@@ -48,6 +48,24 @@
       {% for p in posts[:6] %}{% include '_row.html' %}{% endfor %}
     </ol>
   </section>
+
+  {% if projects %}
+  <section class="section">
+    <div class="section-head">
+      <h2>{{ site.home.projects_title }}</h2>
+      <a href="/projects.html">全部 {{ stats.projects }} 个项目</a>
+    </div>
+    <ul class="proj-list proj-list--home">
+      {% for it in projects.recent[:4] %}
+      <li style="--c:{{ it.color }}"><a href="{{ it.url }}" target="_blank" rel="noopener">
+        <span class="proj-name">{{ it.repo }}</span>
+        <span class="proj-desc">{{ it.desc }}</span>
+        <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.updated|replace('-', '.') }}</span></span>
+      </a></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
 
   <section class="home-about">
     <img src="/assets/img/tx.jpg" alt="{{ site.author }} 的头像" width="400" height="400">
