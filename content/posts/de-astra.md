@@ -52,7 +52,7 @@ Skill 只有一个 `SKILL.md`，没有脚本，规则大致是这几条：
 
 改完：
 
-> 用 MACS2 callpeak 对 ChIP-seq reads call peak，并将 peak 与 input 的 bigWig 信号一起载入基因组 track 查看。peak 数量只能粗略反映结合位点的多少。
+> 用 MACS2 callpeak 对 ChIP-seq reads call peak，并将 peak 与 input 的覆盖度信号一起载入基因组 track 查看。peak 数量只能粗略反映结合位点的多少，而且不直接反映结合强度。
 
 ## 安装和使用
 
