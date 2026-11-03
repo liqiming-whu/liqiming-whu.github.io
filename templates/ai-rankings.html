@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% set page_title = 'AI 排行榜' %}
+{% block main %}
+<main id="main" class="wrap">
+  {% set head_key = 'ai_rankings' %}{% set head_n = posts|length %}{% include '_head.html' %}
+  <section class="section">
+    <ol class="post-list">
+      {% for p in posts %}{% include '_row.html' %}{% endfor %}
+    </ol>
+  </section>
+</main>
+{% endblock %}

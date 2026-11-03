@@ -363,6 +363,8 @@ def build():
 
     write("index.html", "index.html", page="home", posts=posts)
     write("articles.html", "articles.html", page="articles", posts=posts)
+    write("ai-rankings.html", "ai-rankings.html", page="ai_rankings",
+          posts=[p for p in posts if "AI 排行榜" in p["categories"]])
     write("archives.html", "archives.html", page="archives", archive=archive)
     write("categories.html", "categories.html", page="categories")
     write("tags.html", "tags.html", page="tags")

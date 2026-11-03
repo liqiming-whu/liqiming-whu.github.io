@@ -16,7 +16,7 @@ python build.py new my-new-post        # 生成 content/posts/my-new-post.md
 ---
 title: 文章标题
 date: 2026-11-01
-categories: [python]        # 第一个分类会显示在列表上；可选：生信、python、终端与环境、AI 工具、没事瞎写的
+categories: [python]        # 第一个分类会显示在列表上；可选：生信、python、终端与环境、AI 工具、AI 排行榜、没事瞎写的
 tags: [pandas, 造轮子]       # 写具体的工具或主题；新标签记得加到 site.yaml 的 tag_groups 里归类
 # source: 转载              # 转载的文章加上这一行，会显示一个小标记
 description: 一句话介绍，显示在卡片和搜索结果里
@@ -26,6 +26,8 @@ draft: true                 # 写完删掉这一行就会发布
 ```
 
 写完推送到 `main`，GitHub Actions 会自动构建并发布，首页、归档、分类、标签、搜索和 RSS 都会自动更新。
+
+AI 排行榜文章使用 `categories: ["AI 排行榜"]`，会自动收录到导航中的「AI 排行榜」栏目，按日期从新到旧排列。
 
 ### 可以用的特殊写法
 

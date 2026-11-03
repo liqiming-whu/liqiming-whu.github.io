@@ -49,6 +49,7 @@ categories:
   python: { color: "#2357C6", desc: 脚本、数据处理，外加一些不太正经的奇技淫巧。 }
   终端与环境: { color: "#2E8B57", desc: zsh、vim、git、WSL，让手指少敲几下的配置。 }
   AI 工具: { color: "#1F8A8A", desc: Agent 插件、Skills、提示词和 AI 绘图的折腾记录。 }
+  AI 排行榜: { color: "#C4423A", desc: 只评自己用过和关注的模型，记下每一期的主观排名和使用感受。 }
   没事瞎写的: { color: "#7462B0", desc: 随笔，以及一些没什么用但就是想写的东西。 }
 
 # ---------- 标签分组：标签按领域归堆显示，没列到的标签会放进「其他」----------
@@ -57,11 +58,13 @@ tag_groups:
   Python: [pandas, 造轮子, 小技巧]
   终端与环境: [zsh, oh-my-zsh, vim, git, 代理, WSL, Arch Linux]
   AI 工具: [Operit, SillyTavern, ComfyUI, DeepSeek, Agent Skills, 提示词, 角色扮演, 论文写作]
+  AI 排行榜: [大模型, 模型评测]
   其他: [建站, 吐槽]
 
 # ---------- 各页面标题下的一句话 ----------
 pages:
   articles: { title: 文章, desc: "{n} 篇笔记，从最新踩的坑开始往回翻。" }
+  ai_rankings: { title: AI 排行榜, desc: "个人体感野榜，只评自己用过和关注的模型。已更新 {n} 期，不定期更新。" }
   archives: { title: 归档, desc: "从 {start} 写到现在，一共 {n} 篇。时间线上的每个点，都是一次折腾。" }
   categories: { title: 分类, desc: 笔记按主题分好了堆，挑一堆翻翻看。 }
   tags: { title: 标签, desc: "{n} 个标签，按领域归了堆。点一个，看看同一件事我折腾过几回。" }

@@ -101,7 +101,7 @@ kbd {
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: inline-flex; }
 .menu-toggle { display: none; }
 
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
   .nav-desktop { display: none; }
   .menu-toggle { display: inline-flex; }
   .header-inner { justify-content: space-between; gap: 12px; }
