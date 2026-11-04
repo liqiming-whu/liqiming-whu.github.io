@@ -606,4 +606,5 @@ a.cat:hover { color: var(--ink); }
 .prose figure { margin: 1.8em 0; }
 .prose figure .figure-link { display: block; text-decoration: none; }
 .prose figure img { display: block; margin: 0 auto; width: auto; max-height: 80vh; border: 1px solid var(--rule); background: #fff; }
+.prose figure.small img { max-width: min(100%, 360px); }
 .prose figcaption { margin-top: 10px; text-align: center; font-size: 14px; color: var(--muted); line-height: 1.6; }

@@ -65,7 +65,11 @@ python build.py img ~/Downloads/梗图.png my-post boss-meme
 ![图片描述，给读屏软件和加载失败时看](/assets/img/posts/my-post/boss-meme.webp "图注，显示在图片下方，可省略")
 ```
 
-单独占一段的图片会显示成带图注的居中大图，点击可以看原图。
+单独占一段的图片会显示成带图注的居中大图，点击可以看原图。手机截图、界面截图这类不需要占满整栏的，在路径末尾加 `#small`，会显示成窄图：
+
+```markdown
+![插件界面](/assets/img/posts/my-post/screenshot.webp#small "图注")
+```
 
 ## 改网站上的文字
 
