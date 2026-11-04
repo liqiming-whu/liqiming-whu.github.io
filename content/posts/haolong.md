@@ -17,6 +17,8 @@ cover: /assets/img/bg11.jpg
 
 下面依次是原作、两份点评，以及揭晓答案之后的对话。AI 的回复都照录原文，只调整了排版。
 
+![六家大模型的拟人插画：Claude、GPT、DeepSeek、Kimi、Gemini、Grok 各是一位坐在书桌前的少女](/assets/img/posts/haolong/ai-cast.webp "今天的两位评委：左上的 Claude，和右上的 GPT。")
+
 ## 原作：好龙
 
 **一**
