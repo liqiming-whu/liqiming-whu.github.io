@@ -3,7 +3,7 @@
 title: Venusleeyous
 brand: [Venuslee, yous]          # 品牌字样，第二段显示为强调色
 author: Venuslee
-url: https://liqiming-whu.github.io
+url: https://blog.venuslee.top   # 主域名：RSS、canonical 和分享链接都用它
 email: 1914658215@qq.com
 github: https://github.com/liqiming-whu
 old_site: https://venuslee.vercel.app/

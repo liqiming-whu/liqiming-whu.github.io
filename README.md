@@ -2,7 +2,7 @@
 
 一个不太聪明的年轻人的博客：生信、Python、Linux，以及折腾它们时踩过的坑。
 
-线上地址：<https://liqiming-whu.github.io>
+线上地址：<https://blog.venuslee.top>（GitHub Pages 镜像：<https://liqiming-whu.github.io>）
 
 ## 写一篇新文章
 
