@@ -4,6 +4,8 @@
     python build.py              构建整站到 dist/
     python build.py serve        构建并在 http://localhost:8000 预览
     python build.py new <slug>   新建一篇文章草稿
+    python build.py img <图片> <slug> [名字]
+                                 压缩图片放进 public/assets/img/posts/<slug>/，并打印 Markdown 写法
 
 文章放在 content/posts/*.md，站点文字在 site.yaml，页面模板在 templates/。
 """
@@ -95,6 +97,23 @@ def enhance(html_text):
             for i, it in enumerate(items)
         )
         tabs.replace_with(BeautifulSoup(f'<div class="tabs" id="{gid}"><ul class="nav-tabs">{nav}</ul><div class="tab-contents">{panes}</div></div>', "html.parser"))
+
+    # 单独成段的图片 -> <figure>，图片标题（![说明](路径 "标题")）作为图注；点开看原图
+    for img in soup.find_all("img"):
+        img["loading"] = "lazy"
+        img["decoding"] = "async"
+        p = img.parent
+        if p.name == "p" and not p.get_text(strip=True) and len(p.find_all("img")) == 1:
+            caption = img.attrs.pop("title", "")
+            fig = soup.new_tag("figure")
+            link = soup.new_tag("a", href=img["src"], attrs={"class": "figure-link"})
+            link.append(img.extract())
+            fig.append(link)
+            if caption:
+                cap = soup.new_tag("figcaption")
+                cap.string = caption
+                fig.append(cap)
+            p.replace_with(fig)
 
     for a in soup.find_all("a", href=True):
         if a["href"].startswith(("http://", "https://")):
@@ -407,6 +426,28 @@ def build():
     print(f"✓ 已生成 {len(posts)} 篇文章 → {DIST.relative_to(ROOT)}/")
 
 
+def add_image(src, slug, name=None):
+    """把图片压缩成 WebP（最宽 1600px），放进 public/assets/img/posts/<slug>/。"""
+    try:
+        from PIL import Image, ImageOps
+    except ImportError:
+        sys.exit("需要 Pillow：pip install pillow")
+    src = Path(src)
+    name = re.sub(r"[^\w.-]+", "-", (name or src.stem)).strip("-").lower() or "image"
+    folder = PUBLIC / "assets" / "img" / "posts" / slug
+    folder.mkdir(parents=True, exist_ok=True)
+    out = folder / f"{name}.webp"
+    im = ImageOps.exif_transpose(Image.open(src))
+    if im.mode not in ("RGB", "RGBA"):
+        im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
+    if im.width > 1600:
+        im = im.resize((1600, round(im.height * 1600 / im.width)), Image.LANCZOS)
+    im.save(out, "WEBP", quality=82, method=6)
+    url = "/" + out.relative_to(PUBLIC).as_posix()
+    print(f"✓ {src.name} → {out.relative_to(ROOT)}（{im.width}×{im.height}，{out.stat().st_size // 1024} KB）")
+    print(f"\n在文章里这样写（引号里是图注，可省略）：\n\n![图片描述]({url} \"图注\")\n")
+
+
 def new_post(slug):
     path = CONTENT / "posts" / f"{slug}.md"
     if path.exists():
@@ -437,5 +478,7 @@ if __name__ == "__main__":
         serve()
     elif cmd == "new" and len(sys.argv) > 2:
         new_post(sys.argv[2])
+    elif cmd == "img" and len(sys.argv) > 3:
+        add_image(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else None)
     else:
         sys.exit(__doc__)
