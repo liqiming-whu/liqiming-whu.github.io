@@ -50,6 +50,23 @@ AI 排行榜文章使用 `categories: ["AI 排行榜"]`，会自动收录到导�
   </div>
   ```
 
+## 在文章里加图片
+
+图片统一放在 `public/assets/img/posts/<文章 slug>/` 下，一篇文章一个文件夹。用下面的命令导入，会自动压缩成 WebP（最宽 1600px）、放进对应文件夹，并打印出 Markdown 写法：
+
+```bash
+pip install pillow                       # 只在本地导入图片时需要
+python build.py img ~/Downloads/梗图.png my-post boss-meme
+```
+
+然后把打印出来的那行贴进文章：
+
+```markdown
+![图片描述，给读屏软件和加载失败时看](/assets/img/posts/my-post/boss-meme.webp "图注，显示在图片下方，可省略")
+```
+
+单独占一段的图片会显示成带图注的居中大图，点击可以看原图。
+
 ## 改网站上的文字
 
 首页介绍、各页面标题、分类说明和颜色、标签分组、友链等都在 `site.yaml` 里，「关于」页正文在 `content/about.md`，「项目」页的数据在 `content/projects.yaml`（新项目照格式加一条，`since`/`updated` 填首次和最近提交的年月）。页面结构在 `templates/`，样式和脚本在 `public/assets/`。

@@ -111,6 +111,8 @@ Grok4.7 平平无奇，但马圣不限制地区，支持支付宝，（搜片高
 
 ## 本期榜单
 
+![三行素描：Claude、GPT、Grok 各代模型分别对应 Amodei、Altman、Musk 的画像，有的写实，有的像小孩涂鸦](/assets/img/posts/AI-benchmark-v20261103/boss-portraits.webp "三家老板，历代模型：画风全看版本号。")
+
 | 本期选手 | 致知·推理 | 致知·Agent | 主观排名 |
 | --- | ---: | ---: | ---: |
 | GPT-6-Astra | 1 | 2 | 1 |
