@@ -357,6 +357,9 @@ def build():
     shutil.copytree(PUBLIC, DIST)
 
     def write(rel, template, **ctx):
+        # 每个页面在主域名下的规范地址，用于 canonical 和 og:url
+        path = "/" + rel.removesuffix("index.html")
+        ctx.setdefault("canonical", site["url"].rstrip("/") + path)
         out = DIST / rel
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(env.get_template(template).render(**ctx), encoding="utf-8")
