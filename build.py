@@ -106,6 +106,10 @@ def enhance(html_text):
         if p.name == "p" and not p.get_text(strip=True) and len(p.find_all("img")) == 1:
             caption = img.attrs.pop("title", "")
             fig = soup.new_tag("figure")
+            # 路径末尾加 #small，显示成窄图（适合手机截图、界面截图）
+            if img["src"].endswith("#small"):
+                img["src"] = img["src"][: -len("#small")]
+                fig["class"] = "small"
             link = soup.new_tag("a", href=img["src"], attrs={"class": "figure-link"})
             link.append(img.extract())
             fig.append(link)
