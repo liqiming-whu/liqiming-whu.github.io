@@ -59,6 +59,8 @@ pip install pillow                       # 只在本地导入图片时需要
 python build.py img ~/Downloads/梗图.png my-post boss-meme
 ```
 
+如果这篇文章里已经有同名图片，命令会停下来，不会覆盖。确实要换掉旧图时加 `--force`。
+
 然后把打印出来的那行贴进文章：
 
 ```markdown

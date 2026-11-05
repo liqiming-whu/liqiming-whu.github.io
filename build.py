@@ -4,8 +4,9 @@
     python build.py              构建整站到 dist/
     python build.py serve        构建并在 http://localhost:8000 预览
     python build.py new <slug>   新建一篇文章草稿
-    python build.py img <图片> <slug> [名字]
-                                 压缩图片放进 public/assets/img/posts/<slug>/，并打印 Markdown 写法
+    python build.py img <图片> <slug> [名字] [--force]
+                                 压缩图片放进 public/assets/img/posts/<slug>/，并打印 Markdown 写法；
+                                 同名图片已存在时不覆盖，确实要替换加 --force
 
 文章放在 content/posts/*.md，站点文字在 site.yaml，页面模板在 templates/。
 """
@@ -430,7 +431,7 @@ def build():
     print(f"✓ 已生成 {len(posts)} 篇文章 → {DIST.relative_to(ROOT)}/")
 
 
-def add_image(src, slug, name=None):
+def add_image(src, slug, name=None, force=False):
     """把图片压缩成 WebP（最宽 1600px），放进 public/assets/img/posts/<slug>/。"""
     try:
         from PIL import Image, ImageOps
@@ -441,6 +442,8 @@ def add_image(src, slug, name=None):
     folder = PUBLIC / "assets" / "img" / "posts" / slug
     folder.mkdir(parents=True, exist_ok=True)
     out = folder / f"{name}.webp"
+    if out.exists() and not force:
+        sys.exit(f"{out.relative_to(ROOT)} 已经存在，没有覆盖。换个名字，或者确实要替换就加 --force。")
     im = ImageOps.exif_transpose(Image.open(src))
     if im.mode not in ("RGB", "RGBA"):
         im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
@@ -482,7 +485,8 @@ if __name__ == "__main__":
         serve()
     elif cmd == "new" and len(sys.argv) > 2:
         new_post(sys.argv[2])
-    elif cmd == "img" and len(sys.argv) > 3:
-        add_image(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else None)
+    elif cmd == "img" and len([a for a in sys.argv[2:] if a != "--force"]) >= 2:
+        args = [a for a in sys.argv[2:] if a != "--force"]
+        add_image(args[0], args[1], args[2] if len(args) > 2 else None, force="--force" in sys.argv)
     else:
         sys.exit(__doc__)
