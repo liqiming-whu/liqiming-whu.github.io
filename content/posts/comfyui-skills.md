@@ -100,12 +100,23 @@ python scripts/lint_captions.py "<数据集目录>" --trigger "<触发词>" --st
 
 ## 安装
 
+Linux / macOS：
+
 ```bash
 git clone https://github.com/liqiming-whu/comfyui-skills.git
+mkdir -p ~/.codex/skills
 cp -r comfyui-skills/skills/comfyui-workflow ~/.codex/skills/
 ```
 
-Windows 上把 `cp -r` 换成 `Copy-Item -Recurse`，目标是 `%USERPROFILE%\.codex\skills\`。需要哪个 Skill 就复制哪个目录，记得复制整个目录，不要只拷 `SKILL.md`。装好后开个新会话就能用。
+Windows（PowerShell）：
+
+```powershell
+git clone https://github.com/liqiming-whu/comfyui-skills.git
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
+Copy-Item -Recurse comfyui-skills\skills\comfyui-workflow "$env:USERPROFILE\.codex\skills\"
+```
+
+需要哪个 Skill 就复制哪个目录，记得复制整个目录，不要只拷 `SKILL.md`。装好后开个新会话就能用。
 
 顺带一提，分辨率按索引轮换的小节点我单独放在了 [comfyui-resolution-by-index](https://github.com/liqiming-whu/comfyui-resolution-by-index)，批量出不同尺寸的图时很方便。
 
