@@ -59,7 +59,7 @@ tag_groups:
   终端与环境: [zsh, oh-my-zsh, vim, git, 代理, WSL, Arch Linux]
   AI 工具: [Operit, SillyTavern, ComfyUI, DeepSeek, Agent Skills, 提示词, 角色扮演, 论文写作]
   AI 排行榜: [大模型, 模型评测]
-  其他: [建站, 吐槽]
+  其他: [建站, 吐槽, 信息论]
 
 # ---------- 各页面标题下的一句话 ----------
 pages:
