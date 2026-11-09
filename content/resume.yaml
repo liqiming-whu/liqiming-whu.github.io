@@ -6,8 +6,8 @@ summary: 生物信息学博士（武汉大学），即将毕业。熟悉深度�
 # 「AI 项目」一节展示的仓库，按顺序显示，介绍取自 projects.yaml
 featured_projects:
   - character-memory-engine
-  - SillyTavern-PresetLab
-  - codex-control
+  - rp-xml-renderer
+  - writer-novel-style-distiller
   - comfyui-skills
   - pybiotk
 
