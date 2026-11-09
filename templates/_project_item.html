@@ -1,0 +1,5 @@
+{% if it.private %}<div class="proj-item">{% else %}<a href="{{ it.url }}" target="_blank" rel="noopener">{% endif %}
+  <span class="proj-name">{{ it.repo }}{% if it.fork %} <span class="badge">fork</span>{% endif %}{% if it.private %} <span class="badge">未公开</span>{% endif %}</span>
+  <span class="proj-desc">{{ it.desc }}</span>
+  <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ project_date }}</span></span>
+{% if it.private %}</div>{% else %}</a>{% endif %}

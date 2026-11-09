@@ -19,11 +19,7 @@
     </div>
     <ul class="proj-list proj-list--home">
       {% for it in projects.recent[:4] %}
-      <li style="--c:{{ it.color }}"><a href="{{ it.url }}" target="_blank" rel="noopener">
-        <span class="proj-name">{{ it.repo }}</span>
-        <span class="proj-desc">{{ it.desc }}</span>
-        <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.updated|replace('-', '.') }}</span></span>
-      </a></li>
+      <li style="--c:{{ it.color }}">{% set project_date = it.updated|replace('-', '.') %}{% include '_project_item.html' %}</li>
       {% endfor %}
     </ul>
   </section>

@@ -62,7 +62,7 @@ pages:
   archives: { title: 归档, desc: "从 {start} 写到现在，一共 {n} 篇。时间线上的每个点，都是一次折腾。" }
   categories: { title: 分类, desc: 笔记按主题分好了堆，挑一堆翻翻看。 }
   tags: { title: 标签, desc: "{n} 个标签，按领域归了堆。点一个，看看同一件事我折腾过几回。" }
-  projects: { title: 项目, desc: "{n} 个自己写或改过的开源项目。从生信工具到 AI Agent 插件，大致就是这几年的轨迹。" }
+  projects: { title: 项目, desc: "{n} 个自己写或改过的项目。从生信工具到 AI Agent 插件，大致就是这几年的轨迹。" }
   about: { title: 关于, desc: 一个不太聪明，但很能折腾的年轻人。 }
   links: { title: 友链, desc: 一起写东西的朋友，和平时常逛的网站。 }
   message: { title: 留言板, desc: 有话想说？这里随时欢迎。 }

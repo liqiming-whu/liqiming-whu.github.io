@@ -38,11 +38,7 @@
       </div>
       <ul class="proj-list">
         {% for it in g['items'] %}
-        <li id="{{ it.repo }}">{% if it.private %}<div class="proj-item">{% else %}<a href="{{ it.url }}" target="_blank" rel="noopener">{% endif %}
-          <span class="proj-name">{{ it.repo }}{% if it.fork %} <span class="badge">fork</span>{% endif %}{% if it.private %} <span class="badge">未公开</span>{% endif %}</span>
-          <span class="proj-desc">{{ it.desc }}</span>
-          <span class="proj-meta"><span>{{ it.lang }}</span><span class="date">{{ it.span }}</span></span>
-        {% if it.private %}</div>{% else %}</a>{% endif %}</li>
+        <li id="{{ it.repo }}">{% set project_date = it.span %}{% include '_project_item.html' %}</li>
         {% endfor %}
       </ul>
     </section>
