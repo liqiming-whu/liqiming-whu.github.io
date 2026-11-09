@@ -35,6 +35,9 @@ groups:
     desc: 老本行。从当年的文献分类、词云，到一直在维护的 pybiotk。
     items:
       - { repo: pybiotk, desc: "生信数据处理工具包：FASTA/FASTQ、BAM、BED、GTF、BigWig，已发布到 PyPI。", lang: Python, since: "2022-07", updated: "2026-09" }
+      - { repo: chimefinder, desc: "嵌合 RNA 测序分析工具包，文章配套软件。前后手搓了四年，中间彻底重构过一次，还换了名字。", lang: Python, since: "2022-09", updated: "2026-11", private: true }
+      - { repo: eclash, desc: "用 ChimeFinder 分析小鼠 piRNA–靶标嵌合 RNA 的 Snakemake 流程，文章配套，从 chimefinder 里拆出来的。", lang: Python, since: "2026-06", updated: "2026-11", private: true }
+      - { repo: spred, desc: "小 RNA 靶标预测模型的训练与消融实验，毕业论文项目。", lang: Python, since: "2026-03", updated: "2026-11", private: true }
       - { repo: DaPars2, desc: "多样本 RNA-seq 可变多聚腺苷酸化分析，DaPars2 的修改版。", lang: Python, since: "2024-03", updated: "2024-03" }
       - { repo: queryncbi, desc: "命令行检索 PubMed，可按年份、期刊、MeSH 过滤。", lang: Python, since: "2022-04", updated: "2023-11" }
       - { repo: pdb_parse, desc: "PDB 蛋白结构文件解析脚本。", lang: Python, since: "2020-11", updated: "2020-12" }

@@ -61,13 +61,13 @@ in_progress:
 
 skills:
   - name: 深度学习与大模型
-    text: 用 PyTorch 开发和训练 CNN、ResNet、Transformer 等深度学习模型；熟悉大模型的使用，开发过多个 AI Agent 插件和 Skills（见[项目](/projects.html)）。
+    text: 用 PyTorch 开发和训练 CNN、ResNet、Transformer 等深度学习模型；在小 RNA 靶标预测（毕业论文项目）中训练并比较了 Transformer、CNN、ResNet、CBAM-ResNet、DenseNet、EfficientNet，用消融实验验证了碱基配对概率、Watson–Crick 配对、碱基编码和区域编码的贡献；熟悉大模型的使用，开发过多个 AI Agent 插件和 Skills（见[项目](/projects.html)）。
   - name: 自然语言处理
     text: 用 TensorFlow、scikit-learn 构建机器学习模型，对文献进行筛选和分类；熟悉分词、词向量、词频分析、文本特征提取等技术。
   - name: 编程与系统
     text: 用 Python 和 R 实现各种个性化分析需求；熟练使用和维护 Linux 系统。
   - name: 生信分析
-    text: 分析 RNA-seq、ChIP-seq、CLIP-seq、CUT&Tag、GRO-seq、RIC-seq、CLASH 等测序数据，以及蛋白质组 IP/MS 数据，构建蛋白互作网络。独立开发并维护生信分析 Python 工具包 [pybiotk](https://pypi.org/project/pybiotk/)。
+    text: 分析 RNA-seq、ChIP-seq、CLIP-seq、CUT&Tag、GRO-seq、RIC-seq、CLASH 等测序数据，以及蛋白质组 IP/MS 数据，构建蛋白互作网络。独立开发并维护生信分析 Python 工具包 [pybiotk](https://pypi.org/project/pybiotk/)；独立开发嵌合 RNA 测序分析工具包 ChimeFinder 及配套的 Snakemake 流程（随文章投稿，暂未公开）。
   - name: Web 开发
     text: 为武汉大学高等研究院开发文献数据库内部网站（初版见项目 FirstAuthor-Mine），用爬虫为数据库做文献调研；开发了小鼠 piRNA 与靶标互作数据库 piTAR（pitar.cn），内嵌基因组浏览器，是投稿中的 eCLASH 文章的配套网站，文章发表前暂不公开；熟悉网站的服务器部署和维护；有多人协作开发项目的经验。
 
