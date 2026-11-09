@@ -57,6 +57,7 @@
             <p class="paper-venue"><span><em>{{ p.journal }}</em>. {{ p.cite }}.</span>
               {% if p.co_first %}<span class="badge badge-strong">共同第一作者</span>{% endif %}
               {% if p.rank %}<span class="badge">{{ p.rank }}</span>{% endif %}
+              {% if p.impact %}<span class="badge">IF {{ p.impact }}</span>{% endif %}
             </p>
           </div>
         </li>
@@ -67,7 +68,7 @@
         {% for t in resume.in_progress %}<li>{{ t }}</li>{% endfor %}
       </ul>
       {% endif %}
-      <p class="paper-note"># 表示共同第一作者；分区为中科院分区。</p>
+      <p class="paper-note"># 表示共同第一作者；分区为 2026 新锐期刊分区（大类），影响因子为 2026 年 6 月发布的 JCR。</p>
     </div>
   </section>
 

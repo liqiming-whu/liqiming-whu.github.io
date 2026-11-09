@@ -19,6 +19,7 @@ papers:
     year: 2026
     url: https://doi.org/10.1038/s44318-025-00663-2
     rank: 生物学 1 区 Top
+    impact: "8.4"
   - title: DOT1L/H3K79me2 represses HIV-1 reactivation via recruiting DCAF1
     authors: Liang F, Jin J, Li Q, Duan J, Jiang A, Chen X, Geng H, Wu K, Yu F, Zhao X, Zhou Y, Hu D, Chen L
     journal: Cell Rep
@@ -26,13 +27,15 @@ papers:
     year: 2024
     url: https://doi.org/10.1016/j.celrep.2024.114368
     rank: 生物学 1 区 Top
+    impact: "7.7"
   - title: "MVIP: multi-omics portal of viral infection"
     authors: "Tang Z#, Fan W#, Li Q#, Wang D, Wen M, Wang J, Li X, Zhou Y"
     journal: Nucleic Acids Res
     cite: 2022 Jan 7;50(D1):D817-D827
     year: 2022
     url: https://doi.org/10.1093/nar/gkab958
-    rank: 生物学 2 区 Top
+    rank: 生物学 1 区 Top
+    impact: "15.0"
   - title: Transcriptome-wide profiling of N6-methyladenosine via a selective chemical labeling method
     authors: Xie Y, Han S, Li Q, Fang Z, Yang W, Wei Q, Wang Y, Zhou Y, Weng X, Zhou X
     journal: Chem Sci
@@ -40,13 +43,15 @@ papers:
     year: 2022
     url: https://doi.org/10.1039/d2sc03181g
     rank: 化学 1 区 Top
+    impact: "8.1"
   - title: "ASER: Animal Sex Reversal Database"
     authors: Li Y, Chen Z, Liu H, Li Q, Lin X, Ji S, Li R, Li S, Fan W, Zhao H, Zhu Z, Hu W, Zhou Y, Luo D
     journal: Genomics Proteomics Bioinformatics
     cite: 2021 Dec;19(6):873-881
     year: 2021
     url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9402789/
-    rank: 生物学 2 区
+    rank: 生物学 1 区
+    impact: "7.2"
   - title: "NEPdb: A Database of T-Cell Experimentally-Validated Neoantigens and Pan-Cancer Predicted Neoepitopes for Cancer Immunotherapy"
     authors: Xia J, Bai P, Fan W, Li Q, Li Y, Wang D, Yin L, Zhou Y
     journal: Front Immunol
@@ -54,10 +59,11 @@ papers:
     year: 2021
     url: https://doi.org/10.3389/fimmu.2021.644637
     rank: 医学 2 区 Top
+    impact: "7.0"
 
 in_progress:
-  - 共同第一作者（排名第二），Nature Cell Biology，投稿中
-  - 共同第一作者（排名第三），Nature Communications，返修中
+  - 共同第一作者（排名第二），Nature Cell Biology（生物学 1 区 Top，IF 22.7），投稿中
+  - 共同第一作者（排名第三），Nature Communications（综合性期刊 1 区 Top，IF 18.1），返修中
 
 skills:
   - name: 深度学习与大模型
