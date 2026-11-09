@@ -9,7 +9,7 @@ cover: /assets/img/bg5.jpg
 
 2021 年这个博客刚开张的时候，我写过几个"轮子"：[gtf 转 bed](/posts/gtf-tools/)、[统计 bam 文件的 fragment 长度](/posts/bam-fragment-length/)、[表格按指定列去重再合并](/posts/python-merge-rows/)。写完就散落在各个文件夹里，下次要用还得先翻半天，翻到了还得想起来它要什么参数。
 
-后来实在受不了，2022 年干脆把它们收拢成一个 Python 包，这就是 [pybiotk](https://github.com/liqiming-whu/pybiotk)。四年下来攒了 200 多次提交，现在是 1.3.6 版，装好之后有 30 个命令行工具，也能当 Python 库直接 import。
+后来实在受不了，2022 年干脆把它们收拢成一个 Python 包，这就是 [pybiotk](https://github.com/liqiming-whu/pybiotk)。四年下来攒了 200 多次提交，现在是 1.3.7 版，装好之后有 30 个命令行工具，也能当 Python 库直接 import。
 
 这篇挑几个最常用的介绍一下。
 
