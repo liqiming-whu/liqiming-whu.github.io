@@ -56,7 +56,7 @@ papers:
     rank: 医学 2 区 Top
 
 in_progress:
-  - 共同第一作者（排名第二），Nature Cell Biology，计划投稿
+  - 共同第一作者（排名第二），Nature Cell Biology，投稿中
   - 共同第一作者（排名第三），Nature Communications，返修中
 
 skills:
@@ -69,7 +69,7 @@ skills:
   - name: 生信分析
     text: 分析 RNA-seq、ChIP-seq、CLIP-seq、CUT&Tag、GRO-seq、RIC-seq、CLASH 等测序数据，以及蛋白质组 IP/MS 数据，构建蛋白互作网络。独立开发并维护生信分析 Python 工具包 [pybiotk](https://pypi.org/project/pybiotk/)。
   - name: Web 开发
-    text: 为武汉大学高等研究院开发文献数据库内部网站，用爬虫为数据库做文献调研；有多人协作开发项目的经验。
+    text: 为武汉大学高等研究院开发文献数据库内部网站（初版见项目 FirstAuthor-Mine），用爬虫为数据库做文献调研；开发了小鼠 piRNA 与靶标互作数据库 piTAR（pitar.cn），内嵌基因组浏览器，是投稿中的 eCLASH 文章的配套网站，文章发表前暂不公开；熟悉网站的服务器部署和维护；有多人协作开发项目的经验。
 
 awards:
   - 优秀博士学业奖学金一等奖

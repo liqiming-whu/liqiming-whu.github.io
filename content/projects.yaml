@@ -40,12 +40,11 @@ groups:
       - { repo: pdb_parse, desc: "PDB 蛋白结构文件解析脚本。", lang: Python, since: "2020-11", updated: "2020-12" }
       - { repo: SRG_wordcloud, desc: "从文献摘要生成关键词词云的流程。", lang: Python, since: "2020-10", updated: "2021-05" }
       - { repo: research_paper_classfication, desc: "用 SVM 根据摘要给文献自动分类。", lang: Python, since: "2019-09", updated: "2019-09" }
-      - { repo: text-classification, desc: "基于 attention 的 CNN 文本分类实验。", lang: Python, since: "2019-03", updated: "2019-04" }
-      - { repo: FirstAuthor-Mine, desc: "第一作者信息挖掘系统，Django 写的。", lang: JavaScript, since: "2019-10", updated: "2019-10" }
+      - { repo: text-classification, desc: "本科计算机双学位的毕业论文项目：基于 attention 的 CNN 文本分类。", lang: Python, since: "2019-03", updated: "2019-04" }
+      - { repo: FirstAuthor-Mine, desc: "武汉大学高等研究院内部文献数据库的初版：第一作者信息挖掘系统，Django 写的。", lang: JavaScript, since: "2019-10", updated: "2019-10" }
   - name: 小工具
     desc: 顺手做的，自己用着方便。
     items:
-      - { repo: bilibili-download-extension, desc: "B 站视频下载 Chrome 扩展，支持多种清晰度。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
       - { repo: memorandum, desc: "常用命令和资料的备忘录，从 2018 年记到现在。", lang: Markdown, since: "2018-11", updated: "2026-03" }
 early:   # 早年练手的小仓库，只列名字
   - RBP_wordcloud
