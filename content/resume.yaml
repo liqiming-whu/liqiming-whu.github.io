@@ -62,7 +62,7 @@ papers:
     impact: "7.0"
 
 in_progress:
-  - 共同第一作者（排名第二），Nature Cell Biology（生物学 1 区 Top，IF 22.7），投稿中
+  - 共同第一作者（排名第二），Nature Chemical Biology（生物学 1 区 Top，IF 15.8），拟投稿
   - 共同第一作者（排名第三），Nature Communications（综合性期刊 1 区 Top，IF 18.1），返修中
 
 skills:
@@ -73,9 +73,9 @@ skills:
   - name: 编程与系统
     text: 用 Python 和 R 实现各种个性化分析需求；熟练使用和维护 Linux 系统。
   - name: 生信分析
-    text: 分析 RNA-seq、ChIP-seq、CLIP-seq、CUT&Tag、GRO-seq、RIC-seq、CLASH 等测序数据，以及蛋白质组 IP/MS 数据，构建蛋白互作网络。独立开发并维护生信分析 Python 工具包 [pybiotk](https://pypi.org/project/pybiotk/)；独立开发嵌合 RNA 测序分析工具包 ChimeFinder 及配套的 Snakemake 流程（随文章投稿，暂未公开）。
+    text: 分析 RNA-seq、ChIP-seq、CLIP-seq、CUT&Tag、GRO-seq、RIC-seq、CLASH 等测序数据，以及蛋白质组 IP/MS 数据，构建蛋白互作网络。独立开发并维护生信分析 Python 工具包 [pybiotk](https://pypi.org/project/pybiotk/)；独立开发嵌合 RNA 测序分析工具包 ChimeFinder 及配套的 Snakemake 流程（拟投稿文章的配套软件，暂未公开）。
   - name: Web 开发
-    text: 为武汉大学高等研究院开发文献数据库内部网站（初版见项目 FirstAuthor-Mine），用爬虫为数据库做文献调研；开发了小鼠 piRNA 与靶标互作数据库 piTAR（pitar.cn），内嵌基因组浏览器，是投稿中的 eCLASH 文章的配套网站，文章发表前暂不公开；熟悉网站的服务器部署和维护；有多人协作开发项目的经验。
+    text: 为武汉大学高等研究院开发文献数据库内部网站（初版见项目 FirstAuthor-Mine），用爬虫为数据库做文献调研；开发了小鼠 piRNA 与靶标互作数据库 piTAR（pitar.cn），内嵌基因组浏览器，是拟投稿的 eCLASH 文章的配套网站，文章发表前暂不公开；熟悉网站的服务器部署和维护；有多人协作开发项目的经验。
 
 awards:
   - 优秀博士学业奖学金一等奖
