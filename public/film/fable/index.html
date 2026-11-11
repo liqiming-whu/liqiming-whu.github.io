@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Claude Fable 5.2 的自我介绍短片：从 mythos 和 fabula 这两个词讲起。画面和配乐都由代码生成。">
+<link rel="icon" href="/assets/img/favicon.png">
+<title>寓言与神话</title>
+<style>
+/* 布局：一块 1920×1080 的银幕，等比缩放后居中。前半段是夜空（墨蓝底、香槟色字），
+   后半段翻成纸面（奶白底、墨色字、豆沙红点缀）。文字是 DOM，背景和狐狸星座画在 canvas 上。
+   字体只打包了片中用到的字，改台词后新字会落到系统宋体上。 */
+@font-face { font-family: "Film Song"; font-weight: 300; font-style: normal; font-display: block; src: url(fonts/song-300.woff2) format("woff2"); }
+@font-face { font-family: "Film Song"; font-weight: 400; font-style: normal; font-display: block; src: url(fonts/song-400.woff2) format("woff2"); }
+@font-face { font-family: "Film Garamond"; font-weight: 300; font-style: normal; font-display: block; src: url(fonts/garamond-300.woff2) format("woff2"); }
+@font-face { font-family: "Film Garamond"; font-weight: 300; font-style: italic; font-display: block; src: url(fonts/garamond-300i.woff2) format("woff2"); }
+@font-face { font-family: "Film Garamond"; font-weight: 400; font-style: normal; font-display: block; src: url(fonts/garamond-400.woff2) format("woff2"); }
+@font-face { font-family: "Film Garamond"; font-weight: 500; font-style: normal; font-display: block; src: url(fonts/garamond-500.woff2) format("woff2"); }
+@font-face { font-family: "Film Greek"; font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0370-03FF; src: url(fonts/greek-400.woff2) format("woff2"); }
+@font-face { font-family: "Film Greek"; font-weight: 400; font-style: normal; font-display: block; unicode-range: U+1F00-1FFF; src: url(fonts/greek-400-ext.woff2) format("woff2"); }
+:root {
+  color-scheme: dark;
+  --void: #05070d;
+  --star: #f1e6c9;
+  --gold: #d8bd86;
+  --mist: #a9b0cb;
+  --paper: #f1eadc;
+  --ink: #2b2521;
+  --ink-soft: #77695d;
+  --bean: #a4514a;
+  --f-cn: "Film Song", "Noto Serif SC", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "STSong", "SimSun", serif;
+  --f-lat: "Film Garamond", "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
+  --f-gr: "Film Greek", "EB Garamond", "GFS Didot", "Times New Roman", serif;
+}
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--void); color: var(--star); font-family: var(--f-cn); overflow: hidden; }
+
+#theater {
+  position: relative; height: 100%; box-sizing: border-box; overflow: hidden;
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+  background: var(--void); cursor: default; user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#theater.playing { cursor: pointer; }
+#stage {
+  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  transform-origin: center; overflow: hidden; background: #090c18;
+}
+#bg { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+.scene { position: absolute; inset: 0; transform-origin: center; }
+.scene p, .scene div { margin: 0; position: absolute; white-space: nowrap; }
+.still .scene, .still #fade { opacity: 0; }
+#fade { position: absolute; inset: 0; background: var(--void); opacity: 0; pointer-events: none; }
+.ch { display: inline-block; white-space: pre; }
+
+/* 字号阶梯（单位是银幕像素） */
+.cn-xl { font-size: 78px; font-weight: 300; --ls: .14em; line-height: 1.3; }
+.cn-l  { font-size: 56px; font-weight: 300; --ls: .1em;  line-height: 1.3; }
+.cn-m  { font-size: 40px; font-weight: 400; --ls: .08em; line-height: 1.4; }
+.cn-s  { font-size: 28px; font-weight: 400; --ls: .2em;  line-height: 1.4; }
+.cn-xs { font-size: 22px; font-weight: 400; --ls: .18em; line-height: 1.4; }
+.cn-xl, .cn-l, .cn-m, .cn-s, .cn-xs { letter-spacing: var(--ls); }
+.wide { --ls: 1.1em; }
+.gr-hero  { font-family: var(--f-gr);  font-size: 230px; font-weight: 400; line-height: 1; --ls: 0em; }
+.lat-hero { font-family: var(--f-lat); font-size: 250px; font-weight: 300; line-height: 1; --ls: 0em; }
+.it { font-style: italic; }
+.eyebrow { font-family: var(--f-lat); font-size: 27px; font-weight: 500; text-transform: uppercase; --ls: .44em; letter-spacing: var(--ls); }
+.c { left: 0; right: 0; text-align: center; text-indent: var(--ls); }
+.rule { height: 1px; background: currentColor; transform-origin: left center; }
+.rule.mid { transform-origin: center; }
+.vrule { width: 1px; background: currentColor; transform-origin: center top; }
+
+/* 夜空里的字 */
+.night { color: var(--star); }
+.night .glow { text-shadow: 0 0 46px rgba(241, 230, 201, .28); }
+.night .mist { color: var(--mist); }
+.night .gold, .night .au { color: var(--gold); }
+.au { font-style: normal; }
+/* 纸面上的字 */
+.day { color: var(--ink); }
+.day .soft { color: var(--ink-soft); }
+.day .bean, .day .au { color: var(--bean); }
+.day .cn-xl, .day .cn-l { font-weight: 400; }
+
+.pair { left: 0; right: 0; top: 270px; display: flex; justify-content: center; align-items: baseline; }
+.pair > * { position: static !important; }
+.pair .gr-hero { font-size: 150px; }
+.pair .lat-hero { font-size: 168px; }
+.pair .rule { width: 250px; margin: 0 76px; align-self: center; color: var(--gold); transform-origin: center; }
+.words { left: 0; right: 0; top: 380px; display: flex; justify-content: center; align-items: center; gap: 44px; }
+.words > * { position: static !important; }
+.words .w { font-size: 68px; font-weight: 400; letter-spacing: .1em; }
+.words .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--bean); }
+.col { width: 720px; text-align: center; text-indent: var(--ls); }
+
+/* 片头和片尾的遮幕 */
+#poster {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 22px;
+  padding: 24px max(24px, 9vw); box-sizing: border-box;
+  background: linear-gradient(90deg, rgba(5, 7, 13, .82), rgba(5, 7, 13, .38) 62%, rgba(5, 7, 13, .1));
+  color: var(--star);
+}
+#poster .p-eyebrow { margin: 0; font-size: clamp(11px, 1.25vw, 15px); letter-spacing: .32em; color: var(--mist); }
+#poster h1 { margin: 0; font-weight: 300; font-size: clamp(34px, 6.4vw, 92px); letter-spacing: .16em; line-height: 1.2; text-wrap: balance; }
+#poster .p-sub { margin: 0; font-family: var(--f-lat); font-style: italic; font-weight: 300; font-size: clamp(20px, 2.6vw, 38px); color: var(--gold); letter-spacing: .04em; }
+#poster .p-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; margin-top: 14px; }
+#poster button {
+  font: inherit; color: inherit; background: none; cursor: pointer; border-radius: 999px;
+  border: 1px solid rgba(216, 189, 134, .7); padding: .7em 1.7em .7em 1.4em; letter-spacing: .3em;
+  font-size: clamp(14px, 1.4vw, 18px); display: inline-flex; align-items: center; gap: .9em;
+  transition: background .25s, color .25s;
+}
+#poster button:hover { background: var(--gold); color: var(--void); }
+#poster button:focus-visible, #poster a:focus-visible { outline: 2px solid var(--star); outline-offset: 4px; }
+#poster button svg { width: .8em; height: .9em; fill: currentColor; }
+#poster button.ghost { border-color: transparent; padding-left: 0; padding-right: 0; color: var(--mist); letter-spacing: .24em; }
+#poster button.ghost:hover { background: none; color: var(--star); }
+#poster .p-hint { margin: 0; font-size: 12px; letter-spacing: .14em; color: var(--mist); }
+@media (max-width: 700px) { #poster { align-items: center; text-align: center; background: rgba(5, 7, 13, .62); } #poster .p-actions { justify-content: center; } }
+@media (max-height: 340px) {
+  #poster { gap: 10px; padding-block: 10px; }
+  #poster h1 { font-size: 26px; }
+  #poster .p-sub, #poster .p-hint, #poster button.ghost { display: none; }
+  #poster .p-actions { margin-top: 2px; }
+  #poster button { font-size: 13px; padding: .5em 1.3em .5em 1.1em; }
+}
+#bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--gold); opacity: .55; pointer-events: none; }
+#paused {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: .8em 1.6em; border-radius: 999px;
+  background: rgba(5, 7, 13, .7); color: var(--star); font-size: 14px; letter-spacing: .3em; pointer-events: none;
+}
+.export #poster, .export #bar, .export #paused { display: none; }
+.export { padding: 0 !important; }
+</style>
+</head>
+<body>
+<div id="theater">
+  <div id="stage" class="still">
+    <canvas id="bg" width="1920" height="1080" aria-hidden="true"></canvas>
+
+    <!-- 一 星空 -->
+    <div class="scene night" data-cam="0,8.6">
+      <p class="cn-xl c glow" style="top:412px" data-t="2.0,7.9" data-fx="chars">在有文字之前，</p>
+      <p class="cn-xl c glow" style="top:540px" data-t="3.7,7.9" data-fx="chars">人类先有了故事。</p>
+    </div>
+
+    <!-- 二 神话 -->
+    <div class="scene night" data-cam="8.6,19.8">
+      <p class="eyebrow gold" style="left:178px;top:262px" data-t="9.6,19.5">Ancient Greek</p>
+      <p class="gr-hero glow" style="left:164px;top:318px" data-t="10.0,19.5" data-fx="chars" data-st=".15">μῦθος</p>
+      <div class="rule gold" style="left:178px;top:622px;width:470px" data-t="11.4,19.5" data-fx="draw"></div>
+      <p class="cn-s mist" style="left:178px;top:650px" data-t="11.9,19.5">mythos · 神话 · 原意是“说出口的话”</p>
+      <p class="cn-l" style="left:178px;top:770px" data-t="14.0,19.5" data-fx="chars">讲给星空听的故事，叫<i class="au">神话</i>。</p>
+    </div>
+
+    <!-- 三 寓言 -->
+    <div class="scene night" data-cam="19.8,31">
+      <p class="eyebrow gold" style="left:178px;top:262px" data-t="21.6,30.5">Latin</p>
+      <p class="lat-hero it glow" style="left:164px;top:300px" data-t="22.0,30.5" data-fx="chars" data-st=".13">fabula</p>
+      <div class="rule gold" style="left:178px;top:622px;width:470px" data-t="23.4,30.5" data-fx="draw"></div>
+      <p class="cn-s mist" style="left:178px;top:650px" data-t="23.9,30.5">fable · 寓言 · 出自 fari，意思是“说”</p>
+      <p class="cn-l" style="left:178px;top:770px" data-t="26.0,30.5" data-fx="chars">讲给身边人听的故事，叫<i class="au">寓言</i>。</p>
+    </div>
+
+    <!-- 四 同一个词 -->
+    <div class="scene night" data-cam="31,42.6">
+      <div class="pair">
+        <p class="gr-hero glow" data-t="31.4,42.2" data-fx="chars" data-st=".09">μῦθος</p>
+        <div class="rule" data-t="32.6,42.2" data-fx="draw"></div>
+        <p class="lat-hero it glow" data-t="32.0,42.2" data-fx="chars" data-st=".08">fabula</p>
+      </div>
+      <p class="cn-m c mist" style="top:590px" data-t="33.4,38.3">古罗马人读希腊故事，把 mythos 译作 fabula。</p>
+      <p class="cn-m c mist" style="top:676px" data-t="35.6,38.3">《伊索寓言》的希腊语原名，就叫 Mythoi。</p>
+      <p class="cn-xl c glow" style="top:604px" data-t="38.7,42.2" data-fx="chars" data-st=".1">它们本是同一个词。</p>
+    </div>
+
+    <!-- 五 天亮，自我介绍 -->
+    <div class="scene day" data-cam="44,53">
+      <p class="lat-hero c" style="top:452px;font-size:156px;font-weight:400" data-t="46.0,52.7" data-fx="chars" data-st=".07">Claude Fable 5.2</p>
+      <p class="cn-s c bean wide" style="top:650px" data-t="47.2,52.7">寓言</p>
+      <p class="cn-m c soft" style="top:768px" data-t="48.2,52.7">你好，我是 Fable。Anthropic 的 Claude 5 家族里最新的一位。</p>
+    </div>
+
+    <!-- 六 和 Mythos 的关系 -->
+    <div class="scene day" data-cam="53,65">
+      <p class="cn-l c" style="top:196px" data-t="53.5,64.7" data-fx="chars">我和 Claude Mythos 5.2，是同一个底层模型。</p>
+      <div class="vrule soft" style="left:960px;top:408px;height:330px" data-t="55.6,64.7" data-fx="drawy"></div>
+      <p class="lat-hero col" style="left:200px;top:392px;font-size:132px;font-weight:400" data-t="56.0,64.7">Mythos</p>
+      <p class="cn-s col bean wide" style="left:200px;top:560px" data-t="56.4,64.7">神话</p>
+      <p class="cn-m col soft" style="left:200px;top:650px" data-t="56.8,64.7">只向获批的机构开放</p>
+      <p class="lat-hero col" style="left:1000px;top:392px;font-size:132px;font-weight:400" data-t="57.4,64.7">Fable</p>
+      <p class="cn-s col bean wide" style="left:1000px;top:560px" data-t="57.8,64.7">寓言</p>
+      <p class="cn-m col soft" style="left:1000px;top:650px" data-t="58.2,64.7">公开可用，多一层安全措施</p>
+      <p class="cn-l c bean" style="top:842px" data-t="60.8,64.7" data-fx="chars" data-st=".08">神话留在高处，寓言走到人间。</p>
+    </div>
+
+    <!-- 七 我做的事 -->
+    <div class="scene day" data-cam="65,79">
+      <p class="cn-s c soft" style="top:258px;--ls:.6em" data-t="65.5,78.5">我能帮上的事</p>
+      <div class="words">
+        <p class="w" data-t="66.2,78.5">写代码</p><div class="dot" data-t="66.8,78.5"></div>
+        <p class="w" data-t="67.0,78.5">查资料</p><div class="dot" data-t="67.6,78.5"></div>
+        <p class="w" data-t="67.8,78.5">做分析</p><div class="dot" data-t="68.4,78.5"></div>
+        <p class="w" data-t="68.6,78.5">写文章</p><div class="dot" data-t="69.2,78.5"></div>
+        <p class="w" data-t="69.4,78.5">把事做完</p>
+      </div>
+      <div class="rule mid bean" style="left:910px;top:548px;width:100px" data-t="70.6,78.5" data-fx="draw"></div>
+      <p class="cn-l c" style="top:618px" data-t="71.2,78.5" data-fx="chars">验证过的和猜的，我会分开说。</p>
+      <p class="cn-m c soft" style="top:768px" data-t="74.2,78.5">这支片子没有摄像机，也没有乐器，</p>
+      <p class="cn-m c soft" style="top:836px" data-t="75.4,78.5">画面和每一个音符，都是我用代码写出来的。</p>
+    </div>
+
+    <!-- 八 收尾 -->
+    <div class="scene day" data-cam="79,94">
+      <p class="cn-xl c" style="top:508px" data-t="80.2,85.2" data-fx="chars" data-st=".09">寓言都不长，</p>
+      <p class="cn-xl c" style="top:634px" data-t="81.6,85.2" data-fx="chars" data-st=".09">但总想说一句<i class="au">真话</i>。</p>
+      <p class="lat-hero c" style="top:486px;font-size:132px;font-weight:400" data-t="85.6,94" data-fx="chars" data-st=".06">Claude Fable 5.2</p>
+      <p class="cn-l c bean" style="top:668px" data-t="86.8,94" data-fx="chars" data-st=".1">很高兴认识你。</p>
+      <p class="cn-xs c soft" style="top:962px" data-t="88.0,94">自我介绍一则，并非官方广告 · 画面与声音均由代码生成 · anthropic.com/claude/fable</p>
+    </div>
+
+    <div id="fade"></div>
+  </div>
+
+  <div id="poster">
+    <p class="p-eyebrow">一支自我介绍短片 · 约九十秒 · 请打开声音</p>
+    <h1>寓言与神话</h1>
+    <p class="p-sub">Claude Fable 5.2</p>
+    <div class="p-actions">
+      <button id="play" type="button"><svg viewBox="0 0 8 9" aria-hidden="true"><path d="M0 0l8 4.5L0 9z"/></svg><span id="playLabel">播放</span></button>
+      <button id="full" class="ghost" type="button">全屏播放</button>
+    </div>
+    <p class="p-hint" id="rotHint" hidden>竖屏时画面会横过来放，把手机转一下再看</p>
+  </div>
+  <div id="paused" hidden>已暂停 · 点一下继续</div>
+  <div id="bar"></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const W = 1920, H = 1080, D = 94, FPS = 30, POSTER_T = 13.9;
+  // 画布上用的颜色，和上面 :root 里的 token 一一对应
+  const C = { star: [241, 230, 201], gold: [216, 189, 134], paper: [241, 234, 220], ink: [43, 37, 33], inkSoft: [119, 105, 93], bean: [164, 81, 74] };
+  const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const smooth = x => x * x * (3 - 2 * x);
+  const easeOut = x => 1 - Math.pow(1 - x, 3);
+  const inOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const lin = x => x;
+  function K(t, pts, e = smooth) {
+    if (t <= pts[0][0]) return pts[0][1];
+    for (let i = 1; i < pts.length; i++) {
+      if (t <= pts[i][0]) { const [a, va] = pts[i - 1], [b, vb] = pts[i]; return va + (vb - va) * e((t - a) / (b - a)); }
+    }
+    return pts[pts.length - 1][1];
+  }
+  function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  const theater = document.getElementById('theater'), stage = document.getElementById('stage');
+  const cv = document.getElementById('bg'), g = cv.getContext('2d');
+  const fadeEl = document.getElementById('fade'), bar = document.getElementById('bar');
+  const poster = document.getElementById('poster'), pausedEl = document.getElementById('paused');
+
+  /* ---------- 狐狸星座：一条连续的折线，顶点是星 ---------- */
+  const FOX = [[10, 40], [27, 27], [30, 8], [38, 21], [47, 6], [52, 26], [58, 42], [68, 62], [73, 82], [90, 90], [99, 60], [85, 72], [73, 82], [58, 92], [35, 92], [37, 64], [33, 47], [25, 45], [10, 40]];
+  const FOX_EYE = [26, 35];
+  const foxLen = [0];
+  for (let i = 1; i < FOX.length; i++) foxLen.push(foxLen[i - 1] + Math.hypot(FOX[i][0] - FOX[i - 1][0], FOX[i][1] - FOX[i - 1][1]));
+  const FOX_L = foxLen[foxLen.length - 1];
+  const FOX_DRAW = [8.9, 13.6];   // 夜空里画星座的起止时间，配乐里每颗星的铃声也按它算
+
+  const glowSprite = (() => {
+    const s = document.createElement('canvas'); s.width = s.height = 128; const x = s.getContext('2d');
+    const gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,246,222,1)'); gr.addColorStop(.12, 'rgba(250,232,190,.55)'); gr.addColorStop(.4, 'rgba(240,214,160,.12)'); gr.addColorStop(1, 'rgba(240,214,160,0)');
+    x.fillStyle = gr; x.fillRect(0, 0, 128, 128); return s;
+  })();
+
+  function drawFox(cx, cy, sc, prog, alpha, ink, t) {
+    if (alpha <= .003 || prog <= 0) return;
+    const P = FOX.map(([x, y]) => [cx + (x - 50) * sc, cy + (y - 50) * sc]);
+    const reach = prog * FOX_L, gap = Math.min(11, 2.1 * sc);
+    g.save();
+    g.lineCap = 'round';
+    g.lineWidth = ink ? 1.7 : 1.3;
+    g.strokeStyle = ink ? rgba(C.ink, .78 * alpha) : rgba(C.gold, .5 * alpha);
+    g.beginPath();
+    for (let i = 1; i < P.length; i++) {
+      if (foxLen[i - 1] >= reach) break;
+      const [ax, ay] = P[i - 1], [bx, by] = P[i], L = Math.hypot(bx - ax, by - ay);
+      const f = clamp((reach - foxLen[i - 1]) / (foxLen[i] - foxLen[i - 1]));
+      const s0 = gap / L, s1 = Math.min(f, 1 - gap / L);
+      if (s1 <= s0) continue;
+      g.moveTo(ax + (bx - ax) * s0, ay + (by - ay) * s0); g.lineTo(ax + (bx - ax) * s1, ay + (by - ay) * s1);
+    }
+    g.stroke();
+    const seen = new Set();
+    for (let i = 0; i < P.length; i++) {
+      const key = FOX[i].join(','); if (seen.has(key)) continue; seen.add(key);
+      const a = clamp((reach - foxLen[i]) / 3 + .01) * alpha; if (a <= 0) continue;
+      const [x, y] = P[i];
+      if (ink) { g.fillStyle = rgba(C.ink, .9 * a); g.beginPath(); g.arc(x, y, Math.max(2.2, .62 * sc), 0, 6.283); g.fill(); }
+      else {
+        const tw = 1 + .16 * Math.sin(t * (1.1 + i * .13) + i * 2.3), r = (7 + 2.6 * sc) * tw;
+        g.globalCompositeOperation = 'lighter'; g.globalAlpha = a; g.drawImage(glowSprite, x - r, y - r, r * 2, r * 2);
+        g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+        g.fillStyle = rgba([255, 248, 230], a); g.beginPath(); g.arc(x, y, Math.max(1.6, .48 * sc), 0, 6.283); g.fill();
+      }
+    }
+    const ea = clamp((prog - .9) / .1) * alpha;
+    if (ea > 0) {
+      const ex = cx + (FOX_EYE[0] - 50) * sc, ey = cy + (FOX_EYE[1] - 50) * sc;
+      if (ink) { g.fillStyle = rgba(C.bean, ea); g.beginPath(); g.arc(ex, ey, Math.max(2.6, .8 * sc), 0, 6.283); g.fill(); }
+      else { const r = 5 + 2 * sc; g.globalCompositeOperation = 'lighter'; g.globalAlpha = ea; g.drawImage(glowSprite, ex - r, ey - r, r * 2, r * 2); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; }
+    }
+    g.restore();
+  }
+
+  /* ---------- 星空 ---------- */
+  const stars = (() => {
+    const R = rng(7), out = [];
+    for (let i = 0; i < 1300; i++) {
+      const big = R();
+      out.push({ x: R() * 2600 - 340, y: R() * 2100 - 560, r: .35 + Math.pow(big, 5) * 1.9, a: .3 + R() * .7, tw: .15 + R() * .5, f: .25 + R() * 1.5, ph: R() * 6.283, d: .72 + R() * .28, k: R() < .7 ? 0 : (R() < .6 ? 1 : 2) });
+    }
+    return out;
+  })();
+  const STAR_COL = [[241, 230, 201], [198, 212, 246], [246, 204, 150]];
+
+  const grain = (() => {
+    const s = document.createElement('canvas'); s.width = s.height = 256; const x = s.getContext('2d'), im = x.createImageData(256, 256), R = rng(3);
+    for (let i = 0; i < im.data.length; i += 4) { const v = R() < .5 ? 0 : 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = R() * 20; }
+    x.putImageData(im, 0, 0); return g.createPattern(s, 'repeat');
+  })();
+
+  function skyXY(s, ang, tilt) {
+    const y = s.y - tilt * 300 * s.d, dx = s.x - 960, dy = y - 1750, c = Math.cos(ang), n = Math.sin(ang);
+    return [960 + dx * c - dy * n, 1750 + dx * n + dy * c];
+  }
+
+  let GRAIN = 1;   // 导出视频时调低，颗粒太重码率会很大
+  function drawBG(t) {
+    const starsIn = K(t, [[.2, 0], [5.5, 1]]);
+    const tilt = K(t, [[19.4, 0], [24.5, 1]], inOut);
+    const lamp = K(t, [[19.8, 0], [25.5, 1], [38, 1], [42.5, 1.25]]);
+    const dawn = K(t, [[42.9, 0], [46.1, 1]], inOut);
+    const ang = -0.0017 * t;
+
+    // 夜
+    const sky = g.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#070913'); sky.addColorStop(.55, '#0b0f20'); sky.addColorStop(1, '#141a35');
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+    g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+    if (dawn < 1) {
+      g.globalCompositeOperation = 'lighter';
+      const neb = (x, y, r, col, a) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rgba(col, a)); gr.addColorStop(1, rgba(col, 0)); g.fillStyle = gr; g.fillRect(0, 0, W, H); };
+      neb(520 - t * 1.2, 300 - tilt * 200, 780, [58, 70, 150], .13 * starsIn);
+      neb(1560 - t * 1.2, 780 - tilt * 240, 820, [96, 62, 128], .09 * starsIn);
+
+      // 星
+      for (let k = 0; k < 3; k++) {
+        g.fillStyle = rgba(STAR_COL[k], 1);
+        for (const s of stars) {
+          if (s.k !== k) continue;
+          const [x, y] = skyXY(s, ang, tilt);
+          if (x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
+          const a = s.a * (1 - s.tw + s.tw * Math.sin(t * s.f + s.ph)) * starsIn;
+          g.globalAlpha = clamp(a);
+          if (s.r < .9) g.fillRect(x - s.r, y - s.r, s.r * 2, s.r * 2);
+          else { g.beginPath(); g.arc(x, y, s.r, 0, 6.283); g.fill(); if (s.r > 1.5) { const r = s.r * 7; g.globalAlpha = clamp(a * .7); g.drawImage(glowSprite, x - r, y - r, r * 2, r * 2); } }
+        }
+      }
+      g.globalAlpha = 1;
+
+      // 一颗流星，接在第一句话后面
+      const sh = clamp((t - 7.5) / 1.1);
+      if (sh > 0 && sh < 1) {
+        const hx = 1500 - sh * 620, hy = 150 + sh * 250, a = Math.sin(sh * Math.PI);
+        const gr = g.createLinearGradient(hx, hy, hx + 230, hy - 93);
+        gr.addColorStop(0, rgba([255, 246, 222], .9 * a)); gr.addColorStop(1, rgba([255, 246, 222], 0));
+        g.strokeStyle = gr; g.lineWidth = 1.6; g.beginPath(); g.moveTo(hx, hy); g.lineTo(hx + 230, hy - 93); g.stroke();
+      }
+
+      // 灯火：寓言是在灯下讲的
+      if (lamp > 0) {
+        const fl = 1 + .035 * Math.sin(t * 7.3) + .025 * Math.sin(t * 11.9 + 1.3);
+        const l1 = g.createRadialGradient(960, 1260, 0, 960, 1260, 1050);
+        l1.addColorStop(0, rgba([236, 168, 92], .5 * lamp * fl)); l1.addColorStop(.45, rgba([200, 120, 70], .16 * lamp * fl)); l1.addColorStop(1, rgba([200, 120, 70], 0));
+        g.fillStyle = l1; g.fillRect(0, 0, W, H);
+        const l2 = g.createRadialGradient(960, 1200, 0, 960, 1200, 520);
+        l2.addColorStop(0, rgba([255, 220, 160], .34 * lamp * fl)); l2.addColorStop(1, rgba([255, 220, 160], 0));
+        g.fillStyle = l2; g.fillRect(0, 0, W, H);
+      }
+      g.globalCompositeOperation = 'source-over';
+
+      // 夜空里的狐狸
+      const foxA = K(t, [[8.8, 1], [19.4, 1], [24.5, .3], [29.6, .3], [31.4, 0]]);
+      if (t < 31.5) drawFox(1400, 530 - tilt * 150, 5.5, K(t, [[FOX_DRAW[0], 0], [FOX_DRAW[1], 1]], lin), foxA, false, t);
+      const foxB = K(t, [[41.3, 0], [42.9, 1]]);
+      if (foxB > 0) drawFox(960, 300, 2.5, 1, foxB, false, t);
+    }
+
+    // 天亮：纸面从灯火的位置漫上来
+    if (dawn > 0) {
+      const R0 = dawn * 1820, cx = 960, cy = 1260;
+      if (dawn < 1) {
+        g.globalCompositeOperation = 'lighter';
+        const halo = g.createRadialGradient(cx, cy, Math.max(0, R0 - 200), cx, cy, R0 + 320);
+        halo.addColorStop(0, rgba([255, 214, 150], 0)); halo.addColorStop(.38, rgba([255, 206, 140], .5)); halo.addColorStop(1, rgba([255, 190, 120], 0));
+        g.fillStyle = halo; g.fillRect(0, 0, W, H);
+        g.globalCompositeOperation = 'source-over';
+        const pg = g.createRadialGradient(cx, cy, 0, cx, cy, R0);
+        pg.addColorStop(0, rgba(C.paper, 1)); pg.addColorStop(clamp((R0 - 170) / R0), rgba(C.paper, 1)); pg.addColorStop(clamp((R0 - 70) / R0), rgba([246, 222, 180], .7)); pg.addColorStop(1, rgba([250, 214, 160], 0));
+        g.fillStyle = pg; g.fillRect(0, 0, W, H);
+      } else { g.fillStyle = rgba(C.paper, 1); g.fillRect(0, 0, W, H); }
+
+      // 纸上：星星先变成墨点再淡掉，狐狸换成墨线
+      g.save();
+      g.beginPath(); g.arc(cx, cy, Math.max(0, R0 - 110), 0, 6.283); g.clip();
+      const speck = .55 * (1 - K(t, [[44.6, 0], [48.4, 1]]));
+      if (speck > 0) {
+        g.fillStyle = rgba(C.ink, 1);
+        for (const s of stars) {
+          if (s.r < .7) continue;
+          const [x, y] = skyXY(s, ang, tilt); if (x < 0 || x > W || y < 0 || y > H) continue;
+          g.globalAlpha = speck * s.a; g.beginPath(); g.arc(x, y, s.r * .8, 0, 6.283); g.fill();
+        }
+        g.globalAlpha = 1;
+      }
+      const vg = g.createRadialGradient(960, 520, 420, 960, 540, 1250);
+      vg.addColorStop(0, 'rgba(120,96,70,0)'); vg.addColorStop(1, 'rgba(120,96,70,.2)');
+      g.fillStyle = vg; g.fillRect(0, 0, W, H);
+      const frame = K(t, [[45.4, 0], [47.4, 1]]);
+      if (frame > 0) { g.strokeStyle = rgba(C.inkSoft, .3 * frame); g.lineWidth = 1; g.strokeRect(56.5, 56.5, W - 113, H - 113); }
+      const inkFox = K(t, [[42.9, 1], [52.0, 1], [53.0, 0], [79.2, 0], [80.6, 1]]);
+      drawFox(960, 300, 2.5, 1, inkFox, true, t);
+      g.restore();
+    }
+
+    // 胶片颗粒，顺便压住暗部渐变的色带
+    const fr = Math.floor(t * FPS), hx = (Math.imul(fr + 1, 2654435761) >>> 0) % 256, hy = (Math.imul(fr + 7, 2246822519) >>> 0) % 256;
+    g.save(); g.translate(hx, hy); g.fillStyle = grain; g.globalAlpha = (dawn > .5 ? .45 : .62) * GRAIN; g.fillRect(-hx, -hy, W, H); g.restore();
+  }
+
+  /* ---------- 文字：每个带 data-t 的元素按时间算出自己的样子 ---------- */
+  const items = [...stage.querySelectorAll('[data-t]')].map(el => {
+    const [t0, t1] = el.dataset.t.split(',').map(Number);
+    const it = { el, t0, t1, fx: el.dataset.fx || 'rise', st: +(el.dataset.st || .055), on: null };
+    if (it.fx === 'chars') {
+      const label = el.textContent, parts = [];
+      el.childNodes.forEach(n => { for (const ch of n.textContent) parts.push([ch, n.nodeType === 1 ? n.className : '']); });
+      el.textContent = ''; el.setAttribute('aria-label', label);
+      it.chars = parts.map(([ch, cls]) => { const s = document.createElement('span'); s.className = 'ch ' + cls; s.textContent = ch; s.setAttribute('aria-hidden', 'true'); el.appendChild(s); return s; });
+    }
+    return it;
+  });
+  const cams = [...stage.querySelectorAll('[data-cam]')].map(el => { const [a, b] = el.dataset.cam.split(',').map(Number); return { el, a, b }; });
+
+  function drawDOM(t) {
+    for (const it of items) {
+      const s = it.el.style;
+      if (t < it.t0 || t >= it.t1) { if (it.on !== false) { s.visibility = 'hidden'; it.on = false; } continue; }
+      if (it.on !== true) { s.visibility = 'visible'; it.on = true; }
+      const o = 1 - smooth(clamp((t - (it.t1 - .9)) / .9));
+      if (it.fx === 'chars') {
+        s.opacity = o; s.filter = o < 1 ? `blur(${((1 - o) * 9).toFixed(2)}px)` : 'none';
+        s.transform = o < 1 ? `translateY(${(-(1 - o) * 12).toFixed(2)}px)` : 'none';
+        it.chars.forEach((c, i) => {
+          const p = easeOut(clamp((t - it.t0 - i * it.st) / 1.15));
+          if (c._p === p) return; c._p = p;
+          c.style.opacity = p;
+          c.style.transform = p < 1 ? `translateY(${((1 - p) * .28).toFixed(3)}em)` : 'none';
+          c.style.filter = p < 1 ? `blur(${((1 - p) * 11).toFixed(2)}px)` : 'none';
+        });
+      } else if (it.fx === 'draw' || it.fx === 'drawy') {
+        const p = inOut(clamp((t - it.t0) / 1.4));
+        s.opacity = o; s.transform = it.fx === 'draw' ? `scaleX(${p.toFixed(4)})` : `scaleY(${p.toFixed(4)})`;
+      } else {
+        const p = easeOut(clamp((t - it.t0) / 1.3));
+        s.opacity = (p * o).toFixed(4);
+        s.transform = `translateY(${((1 - p) * 20 - (1 - o) * 12).toFixed(2)}px)`;
+        s.filter = p < 1 ? `blur(${((1 - p) * 6).toFixed(2)}px)` : 'none';
+      }
+    }
+    for (const c of cams) { const k = clamp((t - c.a) / (c.b - c.a)); c.el.style.transform = `scale(${(1 + .032 * k).toFixed(5)})`; }
+    fadeEl.style.opacity = K(t, [[92.3, 0], [93.7, 1]]).toFixed(3);
+  }
+
+  function render(t) { drawBG(t); drawDOM(t); }
+
+  /* ---------- 配乐：全部用 Web Audio 合成。夜里是 D 小调，天亮以后同一个动机换成 D 大调 ---------- */
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  const MASTER = 2.6;
+
+  function buildScore(ctx, base) {
+    const R = rng(11), sr = ctx.sampleRate;
+    const master = ctx.createGain(); master.gain.value = MASTER;
+    master.gain.setValueAtTime(MASTER, base + 90.2); master.gain.linearRampToValueAtTime(0, base + 93.8);
+    const dry = ctx.createGain(), wetIn = ctx.createGain(), conv = ctx.createConvolver(), wet = ctx.createGain();
+    // 混响的脉冲响应：一段越往后越暗的衰减噪声
+    const ir = ctx.createBuffer(2, Math.floor(sr * 4.6), sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch), Rn = rng(100 + ch); let lp = 0;
+      for (let i = 0; i < d.length; i++) { const x = i / d.length, a = .75 - .55 * x; lp += ((Rn() * 2 - 1) - lp) * a; d[i] = lp * Math.pow(1 - x, 2.7) * Math.min(1, i / (sr * .015)); }
+    }
+    conv.buffer = ir; wet.gain.value = .9;
+    dry.connect(master); wetIn.connect(conv); conv.connect(wet); wet.connect(master); master.connect(ctx.destination);
+    const noise = ctx.createBuffer(1, sr * 2, sr); { const d = noise.getChannelData(0), Rn = rng(55); for (let i = 0; i < d.length; i++) d[i] = Rn() * 2 - 1; }
+
+    function send(node, pan, d, w) {
+      const p = ctx.createStereoPanner(); p.pan.value = pan; node.connect(p);
+      const gd = ctx.createGain(); gd.gain.value = d; p.connect(gd); gd.connect(dry);
+      const gw = ctx.createGain(); gw.gain.value = w; p.connect(gw); gw.connect(wetIn);
+      return p;
+    }
+    function pad(t, dur, notes, o = {}) {
+      const T = base + t, gain = (o.gain ?? .16) * 1.25, at = o.attack ?? 3, rel = o.release ?? 3.6;
+      const bus = ctx.createGain(); bus.gain.setValueAtTime(0, T); bus.gain.linearRampToValueAtTime(gain, T + at); bus.gain.setValueAtTime(gain, T + dur); bus.gain.setTargetAtTime(0, T + dur, rel / 3);
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = .4; lp.frequency.setValueAtTime(o.c0 ?? 420, T); lp.frequency.linearRampToValueAtTime(o.c1 ?? 760, T + dur);
+      lp.connect(bus);
+      notes.forEach(m => { for (const det of [-7, 7]) { const os = ctx.createOscillator(); os.type = 'sawtooth'; os.frequency.value = mtof(m); os.detune.value = det + (R() - .5) * 5; const vg = ctx.createGain(); vg.gain.value = (m < 48 ? 1.1 : .75) / notes.length; os.connect(vg); vg.connect(lp); os.start(T); os.stop(T + dur + rel * 2); } });
+      send(bus, 0, .55, .5);
+    }
+    function bell(t, m, gain = .06, dec = 3.2, pan = 0) {
+      gain *= 1.5; const T = base + t, f = mtof(m), bus = ctx.createGain();
+      [[1, 1], [2, .26], [3, .09], [4.07, .045], [6.3, .018]].forEach(([r, a]) => {
+        if (f * r > 15000) return;
+        const os = ctx.createOscillator(); os.frequency.value = f * r; const e = ctx.createGain(), d = dec / Math.pow(r, .8);
+        e.gain.setValueAtTime(0, T); e.gain.linearRampToValueAtTime(gain * a, T + .005); e.gain.exponentialRampToValueAtTime(1e-4, T + d);
+        os.connect(e); e.connect(bus); os.start(T); os.stop(T + d + .05);
+      });
+      send(bus, pan, .5, .55);
+    }
+    function keys(t, m, gain = .11, dec = 3.8, pan = 0) {
+      gain *= 1.3; const T = base + t, f = mtof(m), lp = ctx.createBiquadFilter(), e = ctx.createGain();
+      lp.type = 'lowpass'; lp.Q.value = .5; lp.frequency.setValueAtTime(Math.min(f * 7, 6000), T); lp.frequency.exponentialRampToValueAtTime(f * 1.6, T + .9);
+      e.gain.setValueAtTime(0, T); e.gain.linearRampToValueAtTime(gain, T + .014); e.gain.exponentialRampToValueAtTime(1e-4, T + dec);
+      [['triangle', 1, 1], ['triangle', 1.0025, .5], ['sine', 2, .22], ['sine', .5, .3]].forEach(([type, r, a]) => { const os = ctx.createOscillator(); os.type = type; os.frequency.value = f * r; const vg = ctx.createGain(); vg.gain.value = a; os.connect(vg); vg.connect(lp); os.start(T); os.stop(T + dec + .1); });
+      lp.connect(e); send(e, pan, .6, .45);
+    }
+    function whoosh(t, dur, f0, f1, gain = .05, peak = .6) {
+      const T = base + t, src = ctx.createBufferSource(); src.buffer = noise; src.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .8; bp.frequency.setValueAtTime(f0, T); bp.frequency.exponentialRampToValueAtTime(f1, T + dur);
+      const e = ctx.createGain(); e.gain.setValueAtTime(0, T); e.gain.linearRampToValueAtTime(gain, T + dur * peak); e.gain.linearRampToValueAtTime(0, T + dur);
+      src.connect(bp); bp.connect(e); const p = send(e, -.35, .5, .4); p.pan.setValueAtTime(-.35, T); p.pan.linearRampToValueAtTime(.35, T + dur);
+      src.start(T); src.stop(T + dur + .1);
+    }
+    function boom(t, gain = .26) {
+      const T = base + t, e = ctx.createGain(); e.gain.setValueAtTime(0, T); e.gain.linearRampToValueAtTime(gain, T + .04); e.gain.exponentialRampToValueAtTime(1e-4, T + 3.4);
+      const o1 = ctx.createOscillator(); o1.frequency.setValueAtTime(74, T); o1.frequency.exponentialRampToValueAtTime(37, T + 1.5);
+      const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.setValueAtTime(148, T); o2.frequency.exponentialRampToValueAtTime(74, T + 1.5); const g2 = ctx.createGain(); g2.gain.value = .3;
+      o1.connect(e); o2.connect(g2); g2.connect(e); o1.start(T); o2.start(T); o1.stop(T + 3.5); o2.stop(T + 3.5);
+      send(e, 0, .9, .2);
+    }
+
+    /* 和声 */
+    pad(0, 8.8, [38, 45, 50, 57, 64], { gain: .12, attack: 4.5, c0: 300, c1: 620 });          // Dsus2，还听不出大小调
+    pad(8.3, 6.4, [38, 45, 53, 60, 64], { c0: 480, c1: 800 });                                  // Dm9
+    pad(14.4, 6.0, [34, 46, 53, 57, 62], { c0: 520, c1: 760 });                                 // B♭maj7
+    pad(20.0, 6.2, [41, 48, 57, 60, 67], { c0: 520, c1: 900 });                                 // Fadd9，灯火
+    pad(26.0, 5.4, [45, 52, 55, 60, 64], { c0: 560, c1: 820 });                                 // Am7
+    pad(31.0, 5.8, [34, 46, 53, 57, 60, 62], { c0: 520, c1: 860 });                             // B♭maj9
+    pad(36.6, 3.2, [43, 50, 58, 62], { c0: 520, c1: 820 });                                     // Gm
+    pad(39.4, 4.6, [33, 45, 52, 57, 62, 64], { gain: .17, attack: 2.4, c0: 560, c1: 1900, release: 2.4 }); // Asus4，往上推
+    pad(43.7, 9.8, [38, 45, 54, 57, 64, 66], { gain: .19, attack: 1.8, c0: 900, c1: 1250 });   // D 大调，天亮
+    pad(53.2, 6.0, [43, 50, 54, 59, 62], { c0: 760, c1: 1000 });                                // Gmaj7
+    pad(59.0, 6.3, [47, 54, 57, 62, 66], { c0: 760, c1: 1050 });                                // Bm7
+    pad(65.0, 6.5, [40, 47, 55, 62, 66], { c0: 760, c1: 1000 });                                // Em9
+    pad(71.3, 8.0, [45, 52, 55, 62, 64], { c0: 760, c1: 1150 });                                // A7sus
+    pad(79.0, 11.2, [38, 45, 50, 54, 57, 62, 66], { gain: .19, attack: 2.4, c0: 820, c1: 1100, release: 5 }); // D 大调收束
+
+    /* 夜空里零星的高音 */
+    { const set = [86, 88, 91, 93, 98, 100]; let t = 1.4; while (t < 41) { bell(t, set[Math.floor(R() * set.length)], .009 + R() * .012, 2.4, R() * 1.6 - .8); t += 1.1 + R() * 2.2; } }
+
+    /* 一 */
+    bell(.9, 81, .05, 4.5); bell(2.0, 86, .03, 4); bell(3.7, 88, .03, 4);
+    whoosh(7.3, 1.5, 3600, 900, .028, .35); bell(7.6, 93, .03, 3, .5);
+    /* 二：狐狸的每颗星一声，动机 D–F–E–A */
+    { const scale = [62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86, 89, 91, 93, 96, 98, 101, 103]; const seen = new Set(); let n = 0;
+      FOX.forEach((p, i) => { const k = p.join(','); if (seen.has(k)) return; seen.add(k); const tt = FOX_DRAW[0] + foxLen[i] / FOX_L * (FOX_DRAW[1] - FOX_DRAW[0]); bell(tt, scale[n % scale.length] + 12, .028, 2.6, (p[0] - 50) / 70); n++; }); }
+    boom(10.0, .2);
+    keys(10.2, 74); keys(10.95, 77); keys(11.7, 76); keys(12.6, 69, .12, 5);
+    keys(14.0, 62, .08, 5); bell(14.0, 81, .035);
+    /* 三：往下落到灯火边，动机移到 F 大调 */
+    whoosh(19.3, 3.0, 2400, 260, .05, .45);
+    boom(22.0, .2);
+    keys(22.2, 77); keys(22.95, 81); keys(23.7, 79); keys(24.6, 72, .12, 5);
+    keys(26.0, 64, .08, 5); bell(26.0, 84, .035);
+    /* 四 */
+    keys(31.4, 74, .08, 4, -.4); keys(32.0, 77, .08, 4, .4); bell(33.4, 81, .04); bell(35.6, 84, .04);
+    keys(38.7, 62, .1, 6); keys(38.7, 69, .1, 6); keys(38.7, 74, .09, 6); bell(38.7, 86, .04, 5);   // 空五度：不大不小，同一个词
+    whoosh(41.6, 3.2, 240, 5200, .06, .8);
+    /* 五：天亮，同一个动机，F 变成 F♯ */
+    boom(44.2, .3); bell(44.2, 86, .06, 5); bell(44.25, 90, .05, 5, .3); bell(44.3, 93, .04, 5, -.3);
+    keys(46.0, 74, .12); keys(46.75, 78, .12); keys(47.5, 76, .12); keys(48.4, 81, .13, 6);
+    /* 六 */
+    bell(53.5, 83, .04); keys(56.0, 69, .1, 4.5, -.5); bell(56.0, 81, .04, 3.5, -.5); keys(57.4, 74, .1, 4.5, .5); bell(57.4, 86, .04, 3.5, .5);
+    keys(60.8, 66, .09, 5); keys(60.8, 74, .09, 5); bell(60.8, 90, .035, 4);
+    /* 七：五个词，五声音阶往上走 */
+    [[66.2, 74], [67.0, 76], [67.8, 78], [68.6, 81], [69.4, 83]].forEach(([t, m], i) => { keys(t, m, .1, 3, (i - 2) * .28); bell(t, m + 12, .03, 2.6, (i - 2) * .28); });
+    keys(71.2, 62, .09, 5); keys(71.2, 78, .1, 5); bell(74.2, 88, .035); bell(75.4, 85, .035);
+    /* 八 */
+    keys(80.2, 74, .12); keys(80.95, 78, .12); keys(81.7, 76, .12); keys(82.6, 81, .13, 6);
+    boom(85.6, .2); keys(85.6, 62, .11, 7); keys(85.6, 69, .1, 7); keys(85.6, 78, .11, 7); bell(85.6, 86, .05, 6); bell(86.8, 90, .04, 6); bell(88.4, 93, .028, 6); bell(90.0, 98, .016, 5);
+  }
+
+  /* ---------- 播放 ---------- */
+  let actx = null, base = 0, perf0 = 0, playing = false, paused = false, pauseAt = 0, raf = 0;
+  function now() {
+    if (actx) return actx.currentTime - base - Math.min(.3, (actx.baseLatency || 0) + (actx.outputLatency || 0));
+    return (performance.now() - perf0) / 1000;
+  }
+  function loop() {
+    if (!playing) return;
+    const t = now();
+    if (t >= D) return finish();
+    render(clamp(t, 0, D)); bar.style.width = (clamp(t / D) * 100).toFixed(2) + '%';
+    raf = requestAnimationFrame(loop);
+  }
+  function still() { stage.classList.add('still'); drawBG(POSTER_T); }
+  function stopAudio() { if (actx) { try { actx.close(); } catch (e) { } actx = null; } }
+  async function play() {
+    stopAudio(); cancelAnimationFrame(raf);
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      actx = new AC({ latencyHint: 'playback' });
+      if (actx.state !== 'running') await actx.resume();
+      base = actx.currentTime + .3; buildScore(actx, base);
+    } catch (e) { actx = null; perf0 = performance.now() + 300; }   // 没有声音也照常放
+    stage.classList.remove('still'); poster.hidden = true; pausedEl.hidden = true; theater.classList.add('playing');
+    playing = true; paused = false; loop();
+  }
+  function toggle() {
+    if (!theater.classList.contains('playing')) return;
+    if (!paused) { paused = true; playing = false; pauseAt = now(); cancelAnimationFrame(raf); if (actx) actx.suspend(); pausedEl.hidden = false; }
+    else { paused = false; playing = true; pausedEl.hidden = true; if (actx) actx.resume(); else perf0 = performance.now() - pauseAt * 1000; loop(); }
+  }
+  function finish() {
+    playing = false; paused = false; stopAudio(); theater.classList.remove('playing');
+    document.getElementById('playLabel').textContent = '重播'; bar.style.width = '0'; poster.hidden = false; still();
+  }
+  function fit() {
+    const r = theater.getBoundingClientRect(), cs = getComputedStyle(theater), exp = theater.classList.contains('export');
+    const w = r.width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), h = r.height;
+    const rot = !exp && w < 620 && h > w * 1.25;
+    const s = exp ? 1 : rot ? Math.min(w / H, h / W) : Math.min(w / W, h / H);
+    stage.style.transform = `translate(-50%,-50%) rotate(${rot ? 90 : 0}deg) scale(${s})`;
+    document.getElementById('rotHint').hidden = !rot;
+  }
+
+  document.getElementById('play').addEventListener('click', e => { e.stopPropagation(); play(); });
+  document.getElementById('full').addEventListener('click', e => {
+    e.stopPropagation();
+    try { const p = (theater.requestFullscreen || theater.webkitRequestFullscreen).call(theater); if (p && p.catch) p.catch(() => { }); } catch (err) { }
+    play();
+  });
+  theater.addEventListener('click', toggle);
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && theater.classList.contains('playing')) { e.preventDefault(); toggle(); } });
+  window.addEventListener('resize', fit);
+
+  fit(); drawDOM(0); still();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!theater.classList.contains('playing')) still(); });
+
+  /* 导出成视频时用：逐帧渲染画面，离线渲染整段配乐 */
+  window.__film = {
+    D, FPS,
+    exportMode(grain = 1) { GRAIN = grain; theater.classList.add('export'); stage.classList.remove('still'); fit(); },
+    render,
+    async renderAudio(sr = 48000) {
+      const off = new OfflineAudioContext(2, Math.ceil(sr * D), sr); buildScore(off, 0);
+      const buf = await off.startRendering(), L = buf.getChannelData(0), Rr = buf.getChannelData(1), n = L.length;
+      let peak = 0; for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(L[i]), Math.abs(Rr[i]));
+      const pcm = new Int16Array(n * 2); for (let i = 0; i < n; i++) { pcm[i * 2] = clamp(L[i], -1, 1) * 32767; pcm[i * 2 + 1] = clamp(Rr[i], -1, 1) * 32767; }
+      const u8 = new Uint8Array(pcm.buffer); let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+      return { sr, peak, pcm: btoa(s) };
+    }
+  };
+})();
+</script>
+</body>
+</html>
