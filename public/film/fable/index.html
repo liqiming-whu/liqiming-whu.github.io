@@ -12,7 +12,6 @@
    字体只打包了片中用到的字，改台词后新字会落到系统宋体上。 */
 @font-face { font-family: "Film Song"; font-weight: 300; font-style: normal; font-display: block; src: url(fonts/song-300.woff2) format("woff2"); }
 @font-face { font-family: "Film Song"; font-weight: 400; font-style: normal; font-display: block; src: url(fonts/song-400.woff2) format("woff2"); }
-@font-face { font-family: "Film Garamond"; font-weight: 300; font-style: normal; font-display: block; src: url(fonts/garamond-300.woff2) format("woff2"); }
 @font-face { font-family: "Film Garamond"; font-weight: 300; font-style: italic; font-display: block; src: url(fonts/garamond-300i.woff2) format("woff2"); }
 @font-face { font-family: "Film Garamond"; font-weight: 400; font-style: normal; font-display: block; src: url(fonts/garamond-400.woff2) format("woff2"); }
 @font-face { font-family: "Film Garamond"; font-weight: 500; font-style: normal; font-display: block; src: url(fonts/garamond-500.woff2) format("woff2"); }
@@ -664,6 +663,11 @@ body { margin: 0; background: var(--void); color: var(--star); font-family: var(
   window.addEventListener('resize', fit);
 
   fit(); drawDOM(0); still();
+  // 字体提前取好，免得放到一半才去加载
+  if (document.fonts && document.fonts.load) {
+    ['300 1em "Film Song"', '400 1em "Film Song"', 'italic 300 1em "Film Garamond"', '400 1em "Film Garamond"', '500 1em "Film Garamond"'].forEach(f => document.fonts.load(f, '寓a').catch(() => { }));
+    document.fonts.load('400 1em "Film Greek"', 'μῦθος').catch(() => { });
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!theater.classList.contains('playing')) still(); });
 
   /* 导出成视频时用：逐帧渲染画面，离线渲染整段配乐 */
