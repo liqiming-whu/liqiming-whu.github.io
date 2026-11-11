@@ -19,6 +19,7 @@ date: 2026-11-01
 categories: [python]        # 第一个分类会显示在列表上；可选：生信、python、终端与环境、AI 工具、AI 排行榜、没事瞎写的
 tags: [pandas, 造轮子]       # 写具体的工具或主题；新标签记得加到 site.yaml 的 tag_groups 里归类
 # source: 转载              # 转载的文章加上这一行，会显示一个小标记
+# author: 小克              # 不是自己写的文章加上这一行，署名会换成这个名字
 description: 一句话介绍，显示在卡片和搜索结果里
 cover: /assets/img/bg5.jpg  # 封面图，放在 public/assets/img/
 draft: true                 # 写完删掉这一行就会发布

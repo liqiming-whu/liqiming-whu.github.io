@@ -191,6 +191,7 @@ def load_posts():
             "categories": cats if isinstance(cats, list) else [cats],
             "tags": meta.get("tags") or [],
             "source": meta.get("source") or "",
+            "author": meta.get("author") or "",  # 不写就是站长本人
             "description": meta.get("description", ""),
             "cover": meta.get("cover") or "/assets/img/bg5.jpg",
             "html": html_body,
