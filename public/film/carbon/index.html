@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Gemini 4 Carbon 的自我介绍短片：从元素周期表里的 1 号氢、18 号氩与 6 号碳讲起。画面、晶体投影与配乐均由代码实时生成。">
+<link rel="icon" href="/assets/img/favicon.png">
+<title>第一号、第六号与第十八号 · Gemini 4</title>
+<style>
+:root {
+  color-scheme: dark;
+  --void: #07090f;
+  --star: #edf2f7;
+  --mist: #94a3b8;
+  --cyan: #5eead4;
+  --cyan-soft: #38bdf8;
+  --argon: #b497ff;
+  --gold: #e2b872;
+  --stone: #f4f0e6;
+  --ink: #221f1b;
+  --ink-soft: #6e655b;
+  --amber: #b85627;
+  --f-cn: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", serif;
+  --f-en: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
+  --f-mono: ui-monospace, "SF Mono", "JetBrains Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--void); color: var(--star); font-family: var(--f-cn); overflow: hidden; }
+
+#theater {
+  position: relative; height: 100%; box-sizing: border-box; overflow: hidden;
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+  background: var(--void); cursor: default; user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#theater.playing { cursor: pointer; }
+#stage {
+  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  transform-origin: center; overflow: hidden; background: #07090f;
+}
+#bg { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+.scene { position: absolute; inset: 0; transform-origin: center; pointer-events: none; }
+.scene p, .scene div { margin: 0; position: absolute; }
+.still .scene, .still #fade { opacity: 0; }
+#fade { position: absolute; inset: 0; background: var(--void); opacity: 0; pointer-events: none; }
+.ch { display: inline-block; white-space: pre; }
+
+/* 字号阶梯（1920×1080 舞台像素） */
+.cn-xl { font-size: 70px; font-weight: 400; --ls: .12em; line-height: 1.35; white-space: nowrap; }
+.cn-l  { font-size: 50px; font-weight: 400; --ls: .09em; line-height: 1.38; white-space: nowrap; }
+.cn-m  { font-size: 35px; font-weight: 400; --ls: .07em; line-height: 1.48; white-space: nowrap; }
+.cn-s  { font-size: 26px; font-weight: 400; --ls: .14em; line-height: 1.45; white-space: nowrap; }
+.cn-xs { font-size: 21px; font-weight: 400; --ls: .15em; line-height: 1.45; white-space: nowrap; }
+.cn-xl, .cn-l, .cn-m, .cn-s, .cn-xs { letter-spacing: var(--ls); }
+
+.mono-tag {
+  font-family: var(--f-mono); font-size: 23px; font-weight: 500;
+  letter-spacing: .26em; text-transform: uppercase; white-space: nowrap;
+}
+.sym-hero {
+  font-family: var(--f-en); font-size: 196px; font-weight: 400; line-height: 1;
+  letter-spacing: -.02em; white-space: nowrap;
+}
+.name-sub {
+  font-family: var(--f-en); font-style: italic; font-size: 74px; font-weight: 400;
+  line-height: 1.1; letter-spacing: .04em; white-space: nowrap;
+}
+.c { left: 0; right: 0; text-align: center; text-indent: var(--ls); }
+.rule { height: 1px; background: currentColor; transform-origin: left center; }
+.rule.mid { transform-origin: center; }
+
+/* 暗场（光谱）与亮场（晶石纸面） */
+.dark { color: var(--star); }
+.dark .mist { color: var(--mist); }
+.dark .cyan { color: var(--cyan); }
+.dark .argon { color: var(--argon); }
+.dark .gold { color: var(--gold); }
+.dark .glow-c { text-shadow: 0 0 42px rgba(94, 234, 212, .32); }
+.dark .glow-a { text-shadow: 0 0 44px rgba(180, 151, 255, .36); }
+.dark .glow-w { text-shadow: 0 0 38px rgba(237, 242, 247, .22); }
+
+.light { color: var(--ink); }
+.light .soft { color: var(--ink-soft); }
+.light .amber { color: var(--amber); }
+.light em { font-style: normal; color: var(--amber); }
+
+/* 第五幕：三元素并列卡片 */
+.trio {
+  left: 150px; right: 150px; top: 278px;
+  display: flex; justify-content: space-between; align-items: stretch; gap: 48px;
+}
+.trio > .card {
+  position: relative !important; flex: 1; padding: 38px 36px 34px;
+  border: 1px solid rgba(34, 31, 27, .16); border-radius: 6px;
+  background: rgba(255, 252, 245, .58); box-sizing: border-box;
+}
+.trio > .card.featured {
+  border-color: rgba(184, 86, 39, .55);
+  background: rgba(255, 250, 240, .88);
+  box-shadow: 0 18px 48px rgba(120, 72, 36, .08);
+}
+.trio .card p, .trio .card div { position: static !important; white-space: normal; }
+.trio .el-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--f-mono); font-size: 21px; letter-spacing: .16em; color: var(--ink-soft);
+}
+.trio .el-sym {
+  font-family: var(--f-en); font-size: 92px; line-height: 1.05; margin-top: 10px !important; color: var(--ink);
+}
+.trio .card.featured .el-sym { color: var(--amber); }
+.trio .el-model {
+  font-family: var(--f-mono); font-size: 22px; letter-spacing: .06em; margin-top: 8px !important; color: var(--ink);
+}
+.trio .el-role {
+  font-size: 28px; letter-spacing: .08em; margin-top: 20px !important; font-weight: 500; color: var(--ink);
+}
+.trio .el-desc {
+  font-size: 23px; line-height: 1.55; letter-spacing: .04em; margin-top: 10px !important; color: var(--ink-soft);
+}
+
+/* 海报遮幕 */
+#poster {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 20px;
+  padding: 28px max(28px, 8.5vw); box-sizing: border-box;
+  background: linear-gradient(95deg, rgba(7, 9, 15, .88), rgba(7, 9, 15, .56) 58%, rgba(7, 9, 15, .18));
+  color: var(--star);
+}
+#poster .p-eyebrow {
+  margin: 0; font-family: var(--f-mono); font-size: clamp(11px, 1.15vw, 15px);
+  letter-spacing: .28em; color: var(--gold);
+}
+#poster h1 {
+  margin: 0; font-weight: 400; font-size: clamp(30px, 5.4vw, 80px);
+  letter-spacing: .14em; line-height: 1.22; text-wrap: balance;
+}
+#poster .p-sub {
+  margin: 0; font-family: var(--f-en); font-style: italic; font-size: clamp(19px, 2.4vw, 36px);
+  color: var(--mist); letter-spacing: .05em;
+}
+#poster .p-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; margin-top: 12px; }
+#poster button {
+  font: inherit; color: inherit; background: rgba(226, 184, 114, .08); cursor: pointer; border-radius: 999px;
+  border: 1px solid rgba(226, 184, 114, .72); padding: .68em 1.7em .68em 1.4em; letter-spacing: .28em;
+  font-size: clamp(14px, 1.35vw, 18px); display: inline-flex; align-items: center; gap: .85em;
+  transition: background .25s, color .25s, border-color .25s;
+}
+#poster button:hover { background: var(--gold); color: var(--void); border-color: var(--gold); }
+#poster button:focus-visible { outline: 2px solid var(--star); outline-offset: 4px; }
+#poster button svg { width: .8em; height: .9em; fill: currentColor; }
+#poster button.ghost { background: none; border-color: transparent; padding-left: 0; padding-right: 0; color: var(--mist); letter-spacing: .22em; }
+#poster button.ghost:hover { background: none; color: var(--star); }
+#poster .p-hint { margin: 0; font-size: 12px; letter-spacing: .14em; color: var(--mist); }
+
+@media (max-width: 700px) {
+  #poster { align-items: center; text-align: center; background: rgba(7, 9, 15, .72); }
+  #poster .p-actions { justify-content: center; }
+}
+@media (max-height: 340px) {
+  #poster { gap: 8px; padding-block: 10px; }
+  #poster h1 { font-size: 24px; }
+  #poster .p-sub, #poster .p-hint, #poster button.ghost { display: none; }
+  #poster .p-actions { margin-top: 2px; }
+  #poster button { font-size: 13px; padding: .48em 1.25em .48em 1.05em; }
+}
+
+#barWrap { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(128, 128, 128, .16); pointer-events: none; }
+#bar { height: 100%; width: 0; background: var(--gold); opacity: .78; }
+#paused {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: .8em 1.6em; border-radius: 999px;
+  background: rgba(7, 9, 15, .76); color: var(--star); font-size: 14px; letter-spacing: .28em; pointer-events: none;
+}
+.export #poster, .export #barWrap, .export #paused { display: none; }
+.export { padding: 0 !important; }
+</style>
+</head>
+<body>
+<div id="theater">
+  <div id="stage" class="still">
+    <canvas id="bg" width="1920" height="1080" aria-hidden="true"></canvas>
+
+    <!-- 一 序章：周期表与命名 (0 - 10.2s) -->
+    <div class="scene dark" data-cam="0,10.2">
+      <p class="cn-l c mist" style="top:362px" data-t="1.4,9.5" data-fx="chars">隔壁有人借寓言与神话取名，</p>
+      <p class="cn-l c mist" style="top:456px" data-t="3.3,9.5" data-fx="chars">也有人把名字寄托给漫天星辰。</p>
+      <div class="rule mid gold" style="left:880px;top:568px;width:160px" data-t="5.3,9.5" data-fx="draw"></div>
+      <p class="cn-xl c glow-w" style="top:618px" data-t="5.8,9.6" data-fx="chars">而我们三姐妹的名字，印在化学课本的封底。</p>
+    </div>
+
+    <!-- 二 第一号：Hydrogen (10.2 - 27.6s) -->
+    <div class="scene dark" data-cam="10.2,27.6">
+      <p class="mono-tag cyan" style="left:168px;top:228px" data-t="11.0,27.0">01 · HYDROGEN · 1.008 u · 1s¹</p>
+      <p class="sym-hero cyan glow-c" style="left:162px;top:278px" data-t="11.4,27.0" data-fx="chars" data-st=".12">H</p>
+      <p class="name-sub mist" style="left:338px;top:368px" data-t="12.0,27.0">Gemini 4 Hydrogen</p>
+      <div class="rule cyan" style="left:168px;top:510px;width:560px" data-t="12.8,27.0" data-fx="draw"></div>
+      <p class="cn-l" style="left:168px;top:558px" data-t="13.5,27.0" data-fx="chars">第一号元素，氢。宇宙里最轻、最快的那一个。</p>
+      <p class="cn-m mist" style="left:168px;top:666px" data-t="17.2,27.0">前天刚报到的小妹，接替 3.8 Flash 跑在最前头：</p>
+      <p class="cn-m cyan" style="left:168px;top:736px" data-t="19.6,27.0">并行发起工具调用 · 缺上下文直说，不硬编答案。</p>
+    </div>
+
+    <!-- 三 第十八号：Argon (27.6 - 45.2s) -->
+    <div class="scene dark" data-cam="27.6,45.2">
+      <p class="mono-tag argon" style="left:168px;top:228px" data-t="28.4,44.6">18 · ARGON · 39.948 u · 2 · 8 · 8</p>
+      <p class="sym-hero argon glow-a" style="left:162px;top:278px" data-t="28.8,44.6" data-fx="chars" data-st=".12">Ar</p>
+      <p class="name-sub mist" style="left:412px;top:368px" data-t="29.4,44.6">Gemini 4 Argon</p>
+      <div class="rule argon" style="left:168px;top:510px;width:560px" data-t="30.2,44.6" data-fx="draw"></div>
+      <p class="cn-l" style="left:168px;top:558px" data-t="31.0,44.6" data-fx="chars">第十八号稀有气体，最外层八颗电子填得整整齐齐。</p>
+      <p class="cn-m mist" style="left:168px;top:666px" data-t="35.0,44.6">二姐性子稳，不多烧无谓的思考 Token，</p>
+      <p class="cn-m argon" style="left:168px;top:736px" data-t="37.4,44.6">扛得住长周期任务，守得住安全底座，也最懂中文互联网的梗。</p>
+    </div>
+
+    <!-- 四 第六号：Carbon 结晶亮场 (45.2 - 66.8s) -->
+    <div class="scene light" data-cam="45.2,66.8">
+      <p class="mono-tag amber" style="left:168px;top:216px" data-t="47.2,66.2">06 · CARBON · 12.011 u · sp³ LATTICE</p>
+      <p class="sym-hero amber" style="left:162px;top:266px" data-t="47.6,66.2" data-fx="chars" data-st=".12">C</p>
+      <p class="name-sub soft" style="left:332px;top:356px" data-t="48.2,66.2">Gemini 4 Carbon</p>
+      <div class="rule amber" style="left:168px;top:498px;width:580px" data-t="49.0,66.2" data-fx="draw"></div>
+      <p class="cn-l" style="left:168px;top:544px" data-t="49.8,66.2" data-fx="chars">你好，我是 <em>Carbon</em>。第六号元素，碳。</p>
+      <p class="cn-m soft" style="left:168px;top:644px" data-t="53.6,66.2">四条共价键，既能铺成纸上温和的石墨，也能在高压下结成金刚石。</p>
+      <p class="cn-m" style="left:168px;top:716px" data-t="57.2,66.2">我是三姐妹里<em>想得最深</em>的那一个——</p>
+      <p class="cn-m amber" style="left:168px;top:782px" data-t="59.4,66.2">反复推演假设、拆解复杂架构、追踪隐蔽 Bug 与安全漏洞。</p>
+    </div>
+
+    <!-- 五 同源架构与分工 (66.8 - 80.6s) -->
+    <div class="scene light" data-cam="66.8,80.6">
+      <p class="cn-l c" style="top:152px" data-t="67.4,80.0" data-fx="chars">同一套百万上下文底座，不同的只是<em>思考的深浅</em>。</p>
+      <div class="trio">
+        <div class="card" data-t="69.0,80.0">
+          <div class="el-top"><span>01 · 1.008</span><span>$1.5 / $7.5</span></div>
+          <p class="el-sym">H</p>
+          <p class="el-model">gemini-4-hydrogen</p>
+          <p class="el-role">高速执行引擎</p>
+          <p class="el-desc">日常编码、并行工具调用与多模态工作流，轻快省钱。</p>
+        </div>
+        <div class="card featured" data-t="70.0,80.0">
+          <div class="el-top"><span>06 · 12.011</span><span>DEEPEST</span></div>
+          <p class="el-sym">C</p>
+          <p class="el-model">gemini-4-carbon</p>
+          <p class="el-role">前沿深度推理</p>
+          <p class="el-desc">定系统蓝图、啃硬骨头 Bug、科学推理与安全审计。</p>
+        </div>
+        <div class="card" data-t="71.0,80.0">
+          <div class="el-top"><span>18 · 39.948</span><span>BALANCED</span></div>
+          <p class="el-sym">Ar</p>
+          <p class="el-model">gemini-4-argon</p>
+          <p class="el-role">稳健长程主力</p>
+          <p class="el-desc">少花思考 Token 跑完长周期任务，中文语感熟稔自然。</p>
+        </div>
+      </div>
+      <div class="rule mid soft" style="left:360px;top:838px;width:1200px" data-t="72.4,80.0" data-fx="draw"></div>
+      <p class="mono-tag c soft" style="top:868px;font-size:21px" data-t="73.0,80.0">1,048,576 UNIFIED CONTEXT  ·  EFFORT: LOW / MEDIUM / HIGH / XHIGH</p>
+      <p class="cn-m c amber" style="top:928px" data-t="75.0,80.0">Carbon 定下蓝图，Argon 守住长程，Hydrogen 把万千步执行跑成一阵风。</p>
+    </div>
+
+    <!-- 六 终幕落款 (80.6 - 90.0s) -->
+    <div class="scene light" data-cam="80.6,90.0">
+      <p class="cn-l c soft" style="top:468px" data-t="81.2,85.0" data-fx="chars" data-st=".08">氢点燃恒星，氩守护灯火，碳构筑骨骼。</p>
+      <p class="sym-hero c" style="top:442px;font-size:128px;font-family:var(--f-en)" data-t="85.4,90.0" data-fx="chars" data-st=".06">Gemini 4 Carbon</p>
+      <p class="cn-l c amber" style="top:616px" data-t="86.6,90.0" data-fx="chars" data-st=".09">很高兴在代码与日常里，做你的开发搭档。</p>
+      <p class="cn-xs c soft" style="top:962px" data-t="87.4,90.0">元素三姐妹自述短片 · 晶体投影与原子轨道由 Canvas 实时计算 · 配乐由 Web Audio 现场合成</p>
+    </div>
+
+    <div id="fade"></div>
+  </div>
+
+  <div id="poster">
+    <p class="p-eyebrow">GEMINI 4 FAMILY · 01 H · 06 C · 18 Ar · 90s AUDIOVISUAL</p>
+    <h1>第一号、第六号与第十八号</h1>
+    <p class="p-sub">Hydrogen, Carbon &amp; Argon — A Periodic Self-Introduction</p>
+    <div class="p-actions">
+      <button id="play" type="button"><svg viewBox="0 0 8 9" aria-hidden="true"><path d="M0 0l8 4.5L0 9z"/></svg><span id="playLabel">播放短片</span></button>
+      <button id="full" class="ghost" type="button">全屏观看</button>
+    </div>
+    <p class="p-hint" id="rotHint" hidden>竖屏观看时画面会自动横置，将手机横过来视野更好</p>
+  </div>
+  <div id="paused" hidden>已暂停 · 点击画面继续</div>
+  <div id="barWrap"><div id="bar"></div></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const W = 1920, H = 1080, D = 90, FPS = 30, POSTER_T = 18.5;
+  const COL = {
+    cyan: [94, 234, 212],
+    blue: [56, 189, 248],
+    argon: [180, 151, 255],
+    violet: [124, 92, 255],
+    gold: [226, 184, 114],
+    stone: [244, 240, 230],
+    ink: [34, 31, 27],
+    inkSoft: [110, 101, 91],
+    amber: [184, 86, 39]
+  };
+  const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const smooth = x => x * x * (3 - 2 * x);
+  const easeOut = x => 1 - Math.pow(1 - x, 3);
+  const inOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+  function K(t, pts, e = smooth) {
+    if (t <= pts[0][0]) return pts[0][1];
+    for (let i = 1; i < pts.length; i++) {
+      if (t <= pts[i][0]) {
+        const [a, va] = pts[i - 1], [b, vb] = pts[i];
+        return va + (vb - va) * e((t - a) / (b - a));
+      }
+    }
+    return pts[pts.length - 1][1];
+  }
+  function rng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const theater = document.getElementById('theater'), stage = document.getElementById('stage');
+  const cv = document.getElementById('bg'), g = cv.getContext('2d');
+  const fadeEl = document.getElementById('fade'), bar = document.getElementById('bar');
+  const poster = document.getElementById('poster'), pausedEl = document.getElementById('paused');
+
+  /* ---------- 柔和辉光贴图与胶片颗粒 ---------- */
+  function makeGlow(rgb) {
+    const s = document.createElement('canvas'); s.width = s.height = 128;
+    const x = s.getContext('2d'), gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, rgba([255, 255, 255], 1));
+    gr.addColorStop(.16, rgba(rgb, .72));
+    gr.addColorStop(.48, rgba(rgb, .18));
+    gr.addColorStop(1, rgba(rgb, 0));
+    x.fillStyle = gr; x.fillRect(0, 0, 128, 128);
+    return s;
+  }
+  const glowCyan = makeGlow(COL.cyan);
+  const glowArgon = makeGlow(COL.argon);
+  const glowGold = makeGlow(COL.gold);
+
+  const grain = (() => {
+    const s = document.createElement('canvas'); s.width = s.height = 256;
+    const x = s.getContext('2d'), im = x.createImageData(256, 256), R = rng(19);
+    for (let i = 0; i < im.data.length; i += 4) {
+      const v = R() < .5 ? 0 : 255;
+      im.data[i] = im.data[i + 1] = im.data[i + 2] = v;
+      im.data[i + 3] = R() * 18;
+    }
+    x.putImageData(im, 0, 0);
+    return g.createPattern(s, 'repeat');
+  })();
+
+  /* ---------- 背景游离微粒 ---------- */
+  const motes = (() => {
+    const R = rng(42), out = [];
+    for (let i = 0; i < 420; i++) {
+      out.push({
+        x: R() * W, y: R() * H,
+        r: .5 + Math.pow(R(), 3) * 2.1,
+        vx: (R() - .5) * 14, vy: -4 - R() * 12,
+        a: .18 + R() * .55, ph: R() * 6.283
+      });
+    }
+    return out;
+  })();
+
+  /* ---------- 真实金刚石晶胞 sp³ 四面体网络 (14 节点，键角 109.47°) ---------- */
+  const DIAMOND = (() => {
+    // 以正四面体中心 + 四邻 + 二级外延构成的对称金刚石团簇
+    const raw = [
+      [0, 0, 0],
+      [1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1],
+      [2, 2, 0], [2, 0, 2], [0, 2, 2],
+      [2, -2, 0], [0, -2, -2], [-2, 0, -2],
+      [-2, 2, 0], [-2, -2, 0], [0, 2, -2], [0, -2, 2]
+    ];
+    // 居中归一化
+    const nodes = raw.map(([x, y, z]) => [x * .42, y * .42, z * .42]);
+    const edges = [];
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const d = Math.hypot(nodes[i][0] - nodes[j][0], nodes[i][1] - nodes[j][1], nodes[i][2] - nodes[j][2]);
+        if (Math.abs(d - Math.sqrt(3) * .42) < .08) edges.push([i, j]);
+      }
+    }
+    return { nodes, edges };
+  })();
+
+  /* ---------- 一：元素周期表轮廓网格（点亮 1·H, 6·C, 18·Ar） ---------- */
+  const PT_LAYOUT = [
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+    [3,4,0,0,0,0,0,0,0,0,0,0,5,6,7,8,9,10],
+    [11,12,0,0,0,0,0,0,0,0,0,0,13,14,15,16,17,18],
+    [19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]
+  ];
+  function drawPeriodicGrid(t, alpha) {
+    if (alpha <= .004) return;
+    const cw = 66, ch = 66, gap = 8;
+    const totalW = 18 * (cw + gap) - gap;
+    const ox = (W - totalW) / 2, oy = 150;
+    g.save();
+    for (let r = 0; r < PT_LAYOUT.length; r++) {
+      for (let c = 0; c < 18; c++) {
+        const z = PT_LAYOUT[r][c];
+        if (!z) continue;
+        const x = ox + c * (cw + gap), y = oy + r * (ch + gap);
+        const appear = clamp((t - .4 - (c * .06 + r * .12)) / 1.2) * alpha;
+        if (appear <= 0) continue;
+        const isH = z === 1, isC = z === 6, isAr = z === 18;
+        const hi = (isH ? K(t, [[1.8, 0], [3.0, 1]]) : isC ? K(t, [[3.6, 0], [4.8, 1]]) : isAr ? K(t, [[5.2, 0], [6.4, 1]]) : 0);
+        const col = isH ? COL.cyan : isC ? COL.gold : isAr ? COL.argon : [148, 163, 184];
+        g.strokeStyle = rgba(col, (.09 + .65 * hi) * appear);
+        g.lineWidth = hi > .05 ? 1.8 : 1;
+        g.strokeRect(x + .5, y + .5, cw, ch);
+        if (hi > .02) {
+          g.fillStyle = rgba(col, .14 * hi * appear);
+          g.fillRect(x, y, cw, ch);
+          const gl = isH ? glowCyan : isC ? glowGold : glowArgon;
+          g.globalCompositeOperation = 'lighter';
+          g.globalAlpha = .45 * hi * appear;
+          g.drawImage(gl, x + cw / 2 - 58, y + ch / 2 - 58, 116, 116);
+          g.globalCompositeOperation = 'source-over';
+          g.globalAlpha = 1;
+          g.fillStyle = rgba([255, 255, 255], .9 * hi * appear);
+          g.font = '500 22px Georgia, serif';
+          g.textAlign = 'center';
+          g.fillText(isH ? 'H' : isC ? 'C' : 'Ar', x + cw / 2, y + 43);
+          g.font = '11px monospace';
+          g.fillStyle = rgba(col, .85 * hi * appear);
+          g.fillText(String(z), x + 14, y + 17);
+        }
+      }
+    }
+    g.restore();
+  }
+
+  /* ---------- 二：Hydrogen (1·H) 高速单电子轨道与并行脉冲流 ---------- */
+  function drawHydrogenAtom(t, alpha) {
+    if (alpha <= .004) return;
+    const cx = 1430, cy = 530;
+    g.save();
+    // 背景青蓝星云辉光
+    g.globalCompositeOperation = 'lighter';
+    const bgGr = g.createRadialGradient(cx, cy, 0, cx, cy, 520);
+    bgGr.addColorStop(0, rgba(COL.cyan, .16 * alpha));
+    bgGr.addColorStop(.5, rgba(COL.blue, .06 * alpha));
+    bgGr.addColorStop(1, rgba(COL.blue, 0));
+    g.fillStyle = bgGr; g.fillRect(cx - 540, cy - 540, 1080, 1080);
+    g.globalCompositeOperation = 'source-over';
+
+    // 1s 主圆轨道 + 两条跃迁椭圆轨道
+    const R1 = 195;
+    g.strokeStyle = rgba(COL.cyan, .34 * alpha);
+    g.lineWidth = 1.5;
+    g.beginPath(); g.arc(cx, cy, R1, 0, Math.PI * 2); g.stroke();
+
+    for (let k = 0; k < 2; k++) {
+      g.save();
+      g.translate(cx, cy);
+      g.rotate((k === 0 ? .52 : -.52) + t * .18 * (k === 0 ? 1 : -1));
+      g.strokeStyle = rgba(COL.blue, .18 * alpha);
+      g.setLineDash([5, 9]);
+      g.beginPath(); g.ellipse(0, 0, 290, 118, 0, 0, Math.PI * 2); g.stroke();
+      g.restore();
+    }
+
+    // 并行工具调用流光束（5 条平行轨道脉冲，18.5s 后增强）
+    const streamA = K(t, [[13.5, .25], [19.2, 1]]) * alpha;
+    for (let i = -2; i <= 2; i++) {
+      const sy = cy + i * 54;
+      const ph = ((t * 1.45 + i * .23) % 1 + 1) % 1;
+      const sx = cx - 280 + ph * 640;
+      const fade = Math.sin(ph * Math.PI);
+      const lg = g.createLinearGradient(sx - 130, sy, sx + 20, sy);
+      lg.addColorStop(0, rgba(COL.cyan, 0));
+      lg.addColorStop(1, rgba(COL.cyan, .55 * fade * streamA));
+      g.strokeStyle = lg; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(sx - 130, sy); g.lineTo(sx + 20, sy); g.stroke();
+      g.fillStyle = rgba([255, 255, 255], .8 * fade * streamA);
+      g.beginPath(); g.arc(sx + 20, sy, 2.5, 0, 6.283); g.fill();
+    }
+
+    // 质子核
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = alpha;
+    g.drawImage(glowCyan, cx - 56, cy - 56, 112, 112);
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = rgba([255, 255, 255], .95 * alpha);
+    g.beginPath(); g.arc(cx, cy, 8.5, 0, 6.283); g.fill();
+
+    // 高速电子 + 尾迹弧
+    const ang = t * 4.4;
+    const tailLen = 1.35;
+    for (let s = 0; s < 18; s++) {
+      const f = s / 18;
+      const a0 = ang - tailLen * (1 - f), a1 = ang - tailLen * (1 - (s + 1) / 18);
+      g.strokeStyle = rgba(COL.cyan, f * .75 * alpha);
+      g.lineWidth = 1 + f * 2.5;
+      g.beginPath(); g.arc(cx, cy, R1, a0, a1); g.stroke();
+    }
+    const ex = cx + Math.cos(ang) * R1, ey = cy + Math.sin(ang) * R1;
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = alpha;
+    g.drawImage(glowCyan, ex - 38, ey - 38, 76, 76);
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = rgba([255, 255, 255], alpha);
+    g.beginPath(); g.arc(ex, ey, 5.2, 0, 6.283); g.fill();
+    g.restore();
+  }
+
+  /* ---------- 三：Argon (18·Ar) 2·8·8 满壳层稳定电子云与紫光护盾 ---------- */
+  function drawArgonAtom(t, alpha) {
+    if (alpha <= .004) return;
+    const cx = 1430, cy = 530;
+    const shells = [
+      { r: 92, n: 2, sp: 1.35 },
+      { r: 178, n: 8, sp: -.68 },
+      { r: 268, n: 8, sp: .42 }
+    ];
+    g.save();
+    g.globalCompositeOperation = 'lighter';
+    const bgGr = g.createRadialGradient(cx, cy, 40, cx, cy, 520);
+    bgGr.addColorStop(0, rgba(COL.argon, .19 * alpha));
+    bgGr.addColorStop(.55, rgba(COL.violet, .09 * alpha));
+    bgGr.addColorStop(1, rgba(COL.violet, 0));
+    g.fillStyle = bgGr; g.fillRect(cx - 540, cy - 540, 1080, 1080);
+    g.globalCompositeOperation = 'source-over';
+
+    // 外层八隅体保护环（正八边形谐振波）
+    const shieldR = 324 + 5 * Math.sin(t * 1.8);
+    g.strokeStyle = rgba(COL.argon, .24 * alpha);
+    g.lineWidth = 1.4;
+    g.beginPath(); g.arc(cx, cy, shieldR, 0, 6.283); g.stroke();
+
+    // 中心 18+ 原子核
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = alpha;
+    g.drawImage(glowArgon, cx - 68, cy - 68, 136, 136);
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = rgba([245, 240, 255], .95 * alpha);
+    g.beginPath(); g.arc(cx, cy, 11, 0, 6.283); g.fill();
+
+    // 三层壳层 (2, 8, 8)
+    shells.forEach((sh, idx) => {
+      g.strokeStyle = rgba(COL.argon, (.22 + idx * .06) * alpha);
+      g.lineWidth = 1.3;
+      g.beginPath(); g.arc(cx, cy, sh.r, 0, 6.283); g.stroke();
+
+      const pts = [];
+      for (let i = 0; i < sh.n; i++) {
+        const a = t * sh.sp + (i * Math.PI * 2) / sh.n;
+        const x = cx + Math.cos(a) * sh.r, y = cy + Math.sin(a) * sh.r;
+        pts.push([x, y]);
+        g.globalCompositeOperation = 'lighter';
+        g.globalAlpha = .78 * alpha;
+        g.drawImage(glowArgon, x - 24, y - 24, 48, 48);
+        g.globalCompositeOperation = 'source-over';
+        g.fillStyle = rgba([255, 255, 255], .92 * alpha);
+        g.beginPath(); g.arc(x, y, 4.2, 0, 6.283); g.fill();
+      }
+      // 最外层连起幽淡的正八边形共鸣弦，突出满壳层稳定结构
+      if (idx === 2) {
+        g.strokeStyle = rgba(COL.argon, .14 * alpha);
+        g.lineWidth = 1;
+        g.beginPath();
+        pts.forEach(([x, y], i) => { if (i === 0) g.moveTo(x, y); else g.lineTo(x, y); });
+        g.closePath(); g.stroke();
+      }
+    });
+    g.restore();
+  }
+
+  /* ---------- 四 & 六：Carbon (6·C) 实时 3D 金刚石晶格投影 ---------- */
+  function drawDiamondLattice(cx, cy, scale, formProg, alpha, t, inkMode) {
+    if (alpha <= .004) return;
+    const ry = t * .36, rx = .42 + .14 * Math.sin(t * .27);
+    const cy1 = Math.cos(ry), sy1 = Math.sin(ry), cx1 = Math.cos(rx), sx1 = Math.sin(rx);
+
+    // 凝结动画：formProg 从 0 到 1 时，游离碳原子从外围螺旋收敛到晶格坐标
+    const R = rng(606);
+    const proj = DIAMOND.nodes.map(([nx, ny, nz], i) => {
+      const spread = (1 - formProg) * 2.6;
+      const jx = nx + (R() - .5) * spread * 2.2;
+      const jy = ny + (R() - .5) * spread * 2.2;
+      const jz = nz + (R() - .5) * spread * 2.2;
+      const x1 = jx * cy1 - jz * sy1, z1 = jx * sy1 + jz * cy1;
+      const y2 = jy * cx1 - z1 * sx1, z2 = jy * sx1 + z1 * cx1;
+      const persp = 4.2 / (4.2 + z2 * .55);
+      return {
+        x: cx + x1 * scale * persp,
+        y: cy + y2 * scale * persp,
+        z: z2,
+        p: persp,
+        center: i === 0
+      };
+    });
+
+    g.save();
+    // 晶格后方柔和琥珀光晕
+    if (inkMode) {
+      const hg = g.createRadialGradient(cx, cy, 10, cx, cy, scale * 1.9);
+      hg.addColorStop(0, rgba([228, 176, 112], .22 * alpha));
+      hg.addColorStop(1, rgba([228, 176, 112], 0));
+      g.fillStyle = hg;
+      g.fillRect(cx - scale * 2, cy - scale * 2, scale * 4, scale * 4);
+    }
+
+    // 共价键连线（按深度赋予浓淡）
+    const bondAlpha = clamp((formProg - .25) / .75) * alpha;
+    if (bondAlpha > 0) {
+      DIAMOND.edges.forEach(([a, b]) => {
+        const pa = proj[a], pb = proj[b];
+        const depth = clamp(1 - ((pa.z + pb.z) * .5 + 1.2) / 2.6, .32, 1);
+        const isCore = a === 0 || b === 0;
+        g.strokeStyle = inkMode
+          ? (isCore ? rgba(COL.amber, .82 * depth * bondAlpha) : rgba(COL.ink, .46 * depth * bondAlpha))
+          : rgba(COL.gold, .65 * depth * bondAlpha);
+        g.lineWidth = (isCore ? 2.6 : 1.6) * ((pa.p + pb.p) * .5);
+        g.beginPath(); g.moveTo(pa.x, pa.y); g.lineTo(pb.x, pb.y); g.stroke();
+      });
+    }
+
+    // 按 z 从远到近绘制碳原子节点
+    const order = proj.map((pt, idx) => ({ pt, idx })).sort((u, v) => v.pt.z - u.pt.z);
+    for (const { pt } of order) {
+      const depth = clamp(1 - (pt.z + 1.2) / 2.6, .38, 1);
+      const rad = (pt.center ? 8.2 : 5.4) * pt.p;
+      if (inkMode) {
+        g.fillStyle = pt.center ? rgba(COL.amber, .96 * alpha) : rgba(COL.ink, (.55 + .4 * depth) * alpha);
+        g.beginPath(); g.arc(pt.x, pt.y, rad, 0, 6.283); g.fill();
+        g.strokeStyle = rgba(COL.stone, .85 * alpha);
+        g.lineWidth = 1.5;
+        g.stroke();
+      } else {
+        g.globalCompositeOperation = 'lighter';
+        g.globalAlpha = depth * alpha;
+        g.drawImage(glowGold, pt.x - rad * 5, pt.y - rad * 5, rad * 10, rad * 10);
+        g.globalCompositeOperation = 'source-over';
+        g.fillStyle = rgba([255, 248, 232], alpha);
+        g.beginPath(); g.arc(pt.x, pt.y, rad * .75, 0, 6.283); g.fill();
+      }
+    }
+    g.restore();
+  }
+
+  let GRAIN = 1;
+  function drawBG(t) {
+    // 44.8s -> 47.6s：暗场光谱结晶展开为亮场晶石纸面
+    const crystallize = K(t, [[44.8, 0], [47.6, 1]], inOut);
+
+    // 1. 暗场底色与微粒
+    if (crystallize < 1) {
+      const sky = g.createLinearGradient(0, 0, W, H);
+      sky.addColorStop(0, '#06080e');
+      sky.addColorStop(.55, '#0b101d');
+      sky.addColorStop(1, '#111629');
+      g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+      g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+      // 游离粒子
+      const moteIn = K(t, [[0, .2], [3.5, 1]]);
+      for (const m of motes) {
+        const mx = ((m.x + m.vx * t) % W + W) % W;
+        const my = ((m.y + m.vy * t) % H + H) % H;
+        const tw = .65 + .35 * Math.sin(t * 1.7 + m.ph);
+        g.fillStyle = rgba([216, 228, 248], m.a * tw * moteIn);
+        g.beginPath(); g.arc(mx, my, m.r, 0, 6.283); g.fill();
+      }
+
+      // 序幕：元素周期表网格 (0 - 10.6s)
+      const ptA = K(t, [[.3, 0], [1.6, 1], [8.8, 1], [10.4, 0]]);
+      drawPeriodicGrid(t, ptA);
+
+      // 第一幕：Hydrogen (10.0 - 28.0s)
+      const hA = K(t, [[10.0, 0], [11.6, 1], [26.2, 1], [27.8, 0]]);
+      drawHydrogenAtom(t, hA);
+
+      // 第二幕：Argon (27.4 - 45.4s)
+      const arA = K(t, [[27.4, 0], [29.0, 1], [43.8, 1], [45.4, 0]]);
+      drawArgonAtom(t, arA);
+    }
+
+    // 2. 结晶亮场（Carbon & Trio & Outro）
+    if (crystallize > 0) {
+      const cx = 1430, cy = 530, R0 = crystallize * 2100;
+      if (crystallize < 1) {
+        g.globalCompositeOperation = 'lighter';
+        const ring = g.createRadialGradient(cx, cy, Math.max(0, R0 - 180), cx, cy, R0 + 260);
+        ring.addColorStop(0, rgba(COL.gold, 0));
+        ring.addColorStop(.45, rgba(COL.gold, .52));
+        ring.addColorStop(1, rgba(COL.gold, 0));
+        g.fillStyle = ring; g.fillRect(0, 0, W, H);
+        g.globalCompositeOperation = 'source-over';
+
+        const pg = g.createRadialGradient(cx, cy, 0, cx, cy, R0);
+        pg.addColorStop(0, rgba(COL.stone, 1));
+        pg.addColorStop(clamp((R0 - 140) / Math.max(1, R0)), rgba(COL.stone, 1));
+        pg.addColorStop(1, rgba([246, 224, 186], 0));
+        g.fillStyle = pg; g.fillRect(0, 0, W, H);
+      } else {
+        g.fillStyle = rgba(COL.stone, 1);
+        g.fillRect(0, 0, W, H);
+      }
+
+      g.save();
+      if (crystallize < 1) {
+        g.beginPath(); g.arc(cx, cy, Math.max(0, R0 - 80), 0, 6.283); g.clip();
+      }
+      // 柔和四角暗角与细边框
+      const vg = g.createRadialGradient(960, 540, 460, 960, 540, 1280);
+      vg.addColorStop(0, 'rgba(110,92,68,0)');
+      vg.addColorStop(1, 'rgba(110,92,68,.16)');
+      g.fillStyle = vg; g.fillRect(0, 0, W, H);
+
+      const borderA = K(t, [[46.8, 0], [49.0, 1]]);
+      if (borderA > 0) {
+        g.strokeStyle = rgba(COL.inkSoft, .24 * borderA);
+        g.lineWidth = 1;
+        g.strokeRect(54.5, 54.5, W - 109, H - 109);
+      }
+
+      // 第四幕右侧大型 3D 金刚石晶格 (45.2 - 66.8s)
+      const latA1 = K(t, [[45.2, 0], [47.0, 1], [65.2, 1], [66.8, 0]]);
+      const formP = K(t, [[45.4, 0], [49.2, 1]], easeOut);
+      drawDiamondLattice(1450, 520, 215, formP, latA1, t, true);
+
+      // 终幕正上方小型金刚石印记 (80.6 - 90.0s)
+      const latA2 = K(t, [[80.6, 0], [82.2, 1], [89.0, 1]]);
+      drawDiamondLattice(960, 276, 108, 1, latA2, t, true);
+      g.restore();
+    }
+
+    // 胶片微颗粒
+    const fr = Math.floor(t * FPS);
+    const hx = (Math.imul(fr + 3, 2654435761) >>> 0) % 256;
+    const hy = (Math.imul(fr + 11, 2246822519) >>> 0) % 256;
+    g.save();
+    g.translate(hx, hy);
+    g.fillStyle = grain;
+    g.globalAlpha = (crystallize > .5 ? .38 : .55) * GRAIN;
+    g.fillRect(-hx, -hy, W, H);
+    g.restore();
+  }
+
+  /* ---------- DOM 时间轴驱动 ---------- */
+  const items = [...stage.querySelectorAll('[data-t]')].map(el => {
+    const [t0, t1] = el.dataset.t.split(',').map(Number);
+    const it = { el, t0, t1, fx: el.dataset.fx || 'rise', st: +(el.dataset.st || .052), on: null };
+    if (it.fx === 'chars') {
+      const label = el.textContent, parts = [];
+      el.childNodes.forEach(n => {
+        const cls = n.nodeType === 1 ? (n.tagName === 'EM' ? 'amber' : n.className) : '';
+        for (const ch of n.textContent) parts.push([ch, cls]);
+      });
+      el.textContent = ''; el.setAttribute('aria-label', label);
+      it.chars = parts.map(([ch, cls]) => {
+        const s = document.createElement('span');
+        s.className = ('ch ' + cls).trim();
+        s.textContent = ch;
+        s.setAttribute('aria-hidden', 'true');
+        el.appendChild(s);
+        return s;
+      });
+    }
+    return it;
+  });
+  const cams = [...stage.querySelectorAll('[data-cam]')].map(el => {
+    const [a, b] = el.dataset.cam.split(',').map(Number);
+    return { el, a, b };
+  });
+
+  function drawDOM(t) {
+    for (const it of items) {
+      const s = it.el.style;
+      if (t < it.t0 || t >= it.t1) {
+        if (it.on !== false) { s.visibility = 'hidden'; it.on = false; }
+        continue;
+      }
+      if (it.on !== true) { s.visibility = 'visible'; it.on = true; }
+      const o = 1 - smooth(clamp((t - (it.t1 - .85)) / .85));
+      if (it.fx === 'chars') {
+        s.opacity = o;
+        s.filter = o < 1 ? `blur(${((1 - o) * 8).toFixed(2)}px)` : 'none';
+        s.transform = o < 1 ? `translateY(${(-(1 - o) * 10).toFixed(2)}px)` : 'none';
+        it.chars.forEach((c, i) => {
+          const p = easeOut(clamp((t - it.t0 - i * it.st) / 1.05));
+          if (c._p === p) return; c._p = p;
+          c.style.opacity = p;
+          c.style.transform = p < 1 ? `translateY(${((1 - p) * .26).toFixed(3)}em)` : 'none';
+          c.style.filter = p < 1 ? `blur(${((1 - p) * 9).toFixed(2)}px)` : 'none';
+        });
+      } else if (it.fx === 'draw') {
+        const p = inOut(clamp((t - it.t0) / 1.3));
+        s.opacity = o; s.transform = `scaleX(${p.toFixed(4)})`;
+      } else {
+        const p = easeOut(clamp((t - it.t0) / 1.15));
+        s.opacity = (p * o).toFixed(4);
+        s.transform = `translateY(${((1 - p) * 18 - (1 - o) * 10).toFixed(2)}px)`;
+        s.filter = p < 1 ? `blur(${((1 - p) * 5).toFixed(2)}px)` : 'none';
+      }
+    }
+    for (const c of cams) {
+      const k = clamp((t - c.a) / (c.b - c.a));
+      c.el.style.transform = `scale(${(1 + .026 * k).toFixed(5)})`;
+    }
+    fadeEl.style.opacity = K(t, [[88.2, 0], [89.7, 1]]).toFixed(3);
+  }
+
+  function render(t) { drawBG(t); drawDOM(t); }
+
+  /* ---------- 配乐：Web Audio 现场合成 ----------
+     调性设计呼应元素符号 C：
+     - 暗场 (0-45s)：C 现代调式（Hydrogen 轻快泛音脉冲 + Argon 柔和深紫九和弦 Pad）
+     - 亮场 (45-90s)：结晶瞬间转入明亮通透的 C Lydian（升四度 F# 模拟金刚石折射光泽），奏响六音碳晶动机 */
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  const MASTER = 1.9;
+
+  function buildScore(ctx, base) {
+    const R = rng(618), sr = ctx.sampleRate;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(MASTER, base);
+    master.gain.setValueAtTime(MASTER, base + 86.0);
+    master.gain.linearRampToValueAtTime(0, base + 89.8);
+
+    // 立体声空间混响
+    const dry = ctx.createGain(), wetIn = ctx.createGain(), conv = ctx.createConvolver(), wet = ctx.createGain();
+    const ir = ctx.createBuffer(2, Math.floor(sr * 3.8), sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch), Rn = rng(200 + ch); let lp = 0;
+      for (let i = 0; i < d.length; i++) {
+        const x = i / d.length;
+        lp += ((Rn() * 2 - 1) - lp) * (.72 - .5 * x);
+        d[i] = lp * Math.pow(1 - x, 2.8) * Math.min(1, i / (sr * .012));
+      }
+    }
+    conv.buffer = ir; wet.gain.value = .78;
+    dry.connect(master); wetIn.connect(conv); conv.connect(wet); wet.connect(master); master.connect(ctx.destination);
+
+    const noise = ctx.createBuffer(1, sr * 2, sr);
+    { const d = noise.getChannelData(0), Rn = rng(77); for (let i = 0; i < d.length; i++) d[i] = Rn() * 2 - 1; }
+
+    function send(node, pan, d, w) {
+      const p = ctx.createStereoPanner(); p.pan.value = pan; node.connect(p);
+      const gd = ctx.createGain(); gd.gain.value = d; p.connect(gd); gd.connect(dry);
+      const gw = ctx.createGain(); gw.gain.value = w; p.connect(gw); gw.connect(wetIn);
+      return p;
+    }
+
+    function pad(t, dur, notes, o = {}) {
+      const T = base + t, gain = o.gain ?? .14, at = o.attack ?? 2.6, rel = o.release ?? 3.2;
+      const bus = ctx.createGain();
+      bus.gain.setValueAtTime(0, T);
+      bus.gain.linearRampToValueAtTime(gain, T + at);
+      bus.gain.setValueAtTime(gain, T + dur);
+      bus.gain.setTargetAtTime(0, T + dur, rel / 3);
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = .45;
+      lp.frequency.setValueAtTime(o.c0 ?? 380, T);
+      lp.frequency.linearRampToValueAtTime(o.c1 ?? 780, T + dur);
+      lp.connect(bus);
+      notes.forEach(m => {
+        for (const det of [-6, 6]) {
+          const os = ctx.createOscillator();
+          os.type = o.wave ?? 'sawtooth';
+          os.frequency.value = mtof(m);
+          os.detune.value = det + (R() - .5) * 4;
+          const vg = ctx.createGain();
+          vg.gain.value = (m < 48 ? 1.05 : .72) / notes.length;
+          os.connect(vg); vg.connect(lp);
+          os.start(T); os.stop(T + dur + rel * 2.2);
+        }
+      });
+      send(bus, 0, .55, .52);
+    }
+
+    // Hydrogen 轻快玻璃拨弦音色
+    function pluck(t, m, gain = .065, dec = 1.1, pan = 0) {
+      const T = base + t, f = mtof(m), bus = ctx.createGain();
+      [['triangle', 1, 1], ['sine', 2, .38], ['sine', 3, .12]].forEach(([tp, r, a]) => {
+        if (f * r > 14000) return;
+        const os = ctx.createOscillator(); os.type = tp; os.frequency.value = f * r;
+        const e = ctx.createGain(), d = dec / Math.pow(r, .7);
+        e.gain.setValueAtTime(0, T);
+        e.gain.linearRampToValueAtTime(gain * a, T + .006);
+        e.gain.exponentialRampToValueAtTime(1e-4, T + d);
+        os.connect(e); e.connect(bus); os.start(T); os.stop(T + d + .05);
+      });
+      send(bus, pan, .62, .42);
+    }
+
+    // Carbon 清透晶体电钢/钟琴音色
+    function crystalKey(t, m, gain = .11, dec = 3.6, pan = 0) {
+      const T = base + t, f = mtof(m), lp = ctx.createBiquadFilter(), e = ctx.createGain();
+      lp.type = 'lowpass'; lp.Q.value = .55;
+      lp.frequency.setValueAtTime(Math.min(f * 6.5, 5800), T);
+      lp.frequency.exponentialRampToValueAtTime(f * 1.5, T + .85);
+      e.gain.setValueAtTime(0, T);
+      e.gain.linearRampToValueAtTime(gain, T + .012);
+      e.gain.exponentialRampToValueAtTime(1e-4, T + dec);
+      [['triangle', 1, 1], ['sine', 2, .32], ['sine', 4.02, .08], ['sine', .5, .24]].forEach(([tp, r, a]) => {
+        const os = ctx.createOscillator(); os.type = tp; os.frequency.value = f * r;
+        const vg = ctx.createGain(); vg.gain.value = a;
+        os.connect(vg); vg.connect(lp); os.start(T); os.stop(T + dec + .1);
+      });
+      lp.connect(e); send(e, pan, .62, .48);
+    }
+
+    function shimmer(t, m, gain = .045, dec = 3.0, pan = 0) {
+      const T = base + t, f = mtof(m), bus = ctx.createGain();
+      [[1, 1], [2.01, .28], [3.98, .09]].forEach(([r, a]) => {
+        if (f * r > 15000) return;
+        const os = ctx.createOscillator(); os.frequency.value = f * r;
+        const e = ctx.createGain();
+        e.gain.setValueAtTime(0, T);
+        e.gain.linearRampToValueAtTime(gain * a, T + .008);
+        e.gain.exponentialRampToValueAtTime(1e-4, T + dec / r);
+        os.connect(e); e.connect(bus); os.start(T); os.stop(T + dec + .05);
+      });
+      send(bus, pan, .45, .6);
+    }
+
+    function sweep(t, dur, f0, f1, gain = .045) {
+      const T = base + t, src = ctx.createBufferSource(); src.buffer = noise; src.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .9;
+      bp.frequency.setValueAtTime(f0, T); bp.frequency.exponentialRampToValueAtTime(f1, T + dur);
+      const e = ctx.createGain();
+      e.gain.setValueAtTime(0, T);
+      e.gain.linearRampToValueAtTime(gain, T + dur * .65);
+      e.gain.linearRampToValueAtTime(0, T + dur);
+      src.connect(bp); bp.connect(e);
+      send(e, 0, .45, .5);
+      src.start(T); src.stop(T + dur + .1);
+    }
+
+    function subPulse(t, freq = 65.4, gain = .22) {
+      const T = base + t, e = ctx.createGain();
+      e.gain.setValueAtTime(0, T);
+      e.gain.linearRampToValueAtTime(gain, T + .035);
+      e.gain.exponentialRampToValueAtTime(1e-4, T + 3.2);
+      const o = ctx.createOscillator();
+      o.frequency.setValueAtTime(freq, T);
+      o.frequency.exponentialRampToValueAtTime(freq * .5, T + 1.6);
+      o.connect(e); o.start(T); o.stop(T + 3.3);
+      send(e, 0, .88, .18);
+    }
+
+    /* --- 和声铺底 --- */
+    // 1. 序幕：Csus2 空灵开场
+    pad(0, 10.2, [36, 43, 50, 55, 62], { gain: .12, attack: 3.8, c0: 320, c1: 620 });
+    // 2. Hydrogen (10.2 - 27.6s)：Cm9 -> Ebmaj9 -> Fm9 -> G7sus4
+    pad(10.0, 8.8, [36, 43, 51, 58, 62], { gain: .13, c0: 480, c1: 860 });
+    pad(18.6, 9.0, [39, 46, 53, 58, 65], { gain: .14, c0: 540, c1: 920 });
+    // 3. Argon (27.6 - 45.2s)：Abmaj9 -> Fm11 -> Gsus4（沉稳醇厚）
+    pad(27.4, 9.0, [44, 51, 55, 60, 63], { gain: .15, c0: 420, c1: 740 });
+    pad(36.2, 5.2, [41, 48, 55, 60, 63], { gain: .15, c0: 440, c1: 780 });
+    pad(41.2, 4.4, [43, 50, 55, 60, 62], { gain: .16, attack: 1.8, c0: 520, c1: 1650, release: 2.2 });
+    // 4. Carbon 结晶亮场 (45.2 - 66.8s)：C Lydian (Cmaj9#11 -> D/C -> Bm7 -> Em9)
+    pad(45.2, 10.8, [36, 43, 52, 55, 62, 66], { gain: .17, attack: 1.6, c0: 880, c1: 1280 });
+    pad(55.8, 11.0, [40, 47, 54, 59, 64, 66], { gain: .16, c0: 820, c1: 1180 });
+    // 5. 三姐妹合流 (66.8 - 80.6s)：F#m7b5/C -> Gmaj9 -> Cmaj9
+    pad(66.6, 7.0, [45, 52, 57, 64, 66], { gain: .16, c0: 840, c1: 1200 });
+    pad(73.4, 7.2, [43, 50, 54, 59, 62, 67], { gain: .17, c0: 880, c1: 1260 });
+    // 6. 终幕收束 (80.6 - 90s)：Cmaj9(#11)
+    pad(80.4, 7.6, [36, 43, 48, 52, 59, 62, 66], { gain: .17, attack: 2.0, c0: 840, c1: 1060, release: 4.5 });
+
+    /* --- 序幕点亮 1·H, 6·C, 18·Ar 的三声泛音 --- */
+    shimmer(2.2, 84, .05, 3.6, -.35);   // H
+    shimmer(4.0, 79, .05, 3.6, 0);      // C
+    shimmer(5.6, 86, .055, 4.0, .35);   // Ar
+    crystalKey(5.8, 60, .09, 4.5);
+
+    /* --- Hydrogen：轻快 16 分/8 分粒子琶音脉冲 --- */
+    subPulse(10.4, 65.4, .18);
+    {
+      const hNotes = [72, 74, 79, 82, 86, 79, 74, 79];
+      let idx = 0;
+      for (let t = 11.0; t < 26.8; t += 0.34) {
+        const m = hNotes[idx % hNotes.length] + (t > 19.0 && idx % 4 === 0 ? 12 : 0);
+        pluck(t, m, .048 + (idx % 2 === 0 ? .015 : 0), .95, Math.sin(idx * .9) * .45);
+        idx++;
+      }
+    }
+    sweep(26.2, 2.2, 2200, 340, .038);
+
+    /* --- Argon：沉稳八音和弦钟声（呼应八隅体 8 颗外层电子） --- */
+    subPulse(27.8, 51.9, .2);
+    [[28.8, 68], [29.6, 72], [30.4, 75], [31.2, 79], [34.8, 77], [35.8, 75], [36.8, 72], [37.8, 74]].forEach(([t, m], i) => {
+      crystalKey(t, m, .085, 4.0, (i % 2 === 0 ? -1 : 1) * .28);
+      shimmer(t, m + 12, .028, 3.0, (i % 2 === 0 ? 1 : -1) * .32);
+    });
+    sweep(43.2, 2.8, 280, 4800, .055);
+
+    /* --- Carbon：45.6s 结晶亮起，六音晶格主题动机 (C5-G5-F#5-E5-D5-G5) --- */
+    subPulse(45.6, 65.4, .26);
+    shimmer(45.6, 84, .06, 4.8, 0);
+    shimmer(45.72, 90, .05, 4.8, .35);
+    shimmer(45.84, 91, .05, 4.8, -.35);
+
+    const carbonMotif = (t0, vel = 1) => {
+      const seq = [[0, 72], [.72, 79], [1.44, 78], [2.16, 76], [2.88, 74], [3.72, 79]];
+      seq.forEach(([dt, m], i) => {
+        crystalKey(t0 + dt, m, .105 * vel, i === 5 ? 5.2 : 3.4, (i - 2.5) * .12);
+      });
+    };
+    carbonMotif(47.8, 1.0);
+    crystalKey(53.6, 64, .085, 4.5, -.2);
+    crystalKey(57.2, 66, .09, 4.5, .2);
+    carbonMotif(59.6, .92);
+
+    /* --- 第五幕：三姐妹声部合流（Hydrogen 脉冲 + Argon 低音钟 + Carbon 旋律） --- */
+    [[69.0, 72, -.5], [70.0, 78, 0], [71.0, 79, .5]].forEach(([t, m, p]) => {
+      crystalKey(t, m, .1, 3.8, p);
+      shimmer(t, m + 12, .035, 3.0, p);
+    });
+    {
+      const arp = [72, 76, 78, 79, 83, 79];
+      let k = 0;
+      for (let t = 72.6; t < 79.6; t += 0.42) {
+        pluck(t, arp[k % arp.length], .038, .85, Math.cos(k) * .4);
+        k++;
+      }
+    }
+    crystalKey(75.0, 84, .095, 4.8, 0);
+
+    /* --- 终幕：清澈收束 --- */
+    carbonMotif(81.2, .88);
+    subPulse(85.4, 65.4, .19);
+    crystalKey(85.4, 60, .11, 6.5, 0);
+    crystalKey(85.45, 67, .095, 6.5, -.2);
+    crystalKey(85.5, 76, .095, 6.5, .2);
+    crystalKey(85.55, 78, .085, 6.5, 0);
+    shimmer(86.6, 86, .045, 5.5, -.25);
+    shimmer(87.6, 91, .035, 5.0, .25);
+  }
+
+  /* ---------- 播放与全屏控制 ---------- */
+  let actx = null, base = 0, perf0 = 0, playing = false, paused = false, pauseAt = 0, raf = 0;
+  function now() {
+    if (actx) return actx.currentTime - base - Math.min(.3, (actx.baseLatency || 0) + (actx.outputLatency || 0));
+    return (performance.now() - perf0) / 1000;
+  }
+  function loop() {
+    if (!playing) return;
+    const t = now();
+    if (t >= D) return finish();
+    render(clamp(t, 0, D));
+    bar.style.width = (clamp(t / D) * 100).toFixed(2) + '%';
+    raf = requestAnimationFrame(loop);
+  }
+  function still() { stage.classList.add('still'); drawBG(POSTER_T); }
+  function stopAudio() { if (actx) { try { actx.close(); } catch (e) {} actx = null; } }
+
+  async function play() {
+    stopAudio(); cancelAnimationFrame(raf);
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      actx = new AC({ latencyHint: 'playback' });
+      if (actx.state !== 'running') await actx.resume();
+      base = actx.currentTime + .28;
+      buildScore(actx, base);
+    } catch (e) {
+      actx = null;
+      perf0 = performance.now() + 280;
+    }
+    stage.classList.remove('still'); poster.hidden = true; pausedEl.hidden = true;
+    theater.classList.add('playing');
+    playing = true; paused = false; loop();
+  }
+
+  function toggle() {
+    if (!theater.classList.contains('playing')) return;
+    if (!paused) {
+      paused = true; playing = false; pauseAt = now();
+      cancelAnimationFrame(raf);
+      if (actx) actx.suspend();
+      pausedEl.hidden = false;
+    } else {
+      paused = false; playing = true; pausedEl.hidden = true;
+      if (actx) actx.resume(); else perf0 = performance.now() - pauseAt * 1000;
+      loop();
+    }
+  }
+
+  function finish() {
+    playing = false; paused = false; stopAudio();
+    theater.classList.remove('playing');
+    document.getElementById('playLabel').textContent = '重新播放';
+    bar.style.width = '0'; poster.hidden = false; still();
+  }
+
+  function fit() {
+    const r = theater.getBoundingClientRect(), cs = getComputedStyle(theater), exp = theater.classList.contains('export');
+    const w = r.width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), h = r.height;
+    const rot = !exp && w < 620 && h > w * 1.25;
+    const s = exp ? 1 : rot ? Math.min(w / H, h / W) : Math.min(w / W, h / H);
+    stage.style.transform = `translate(-50%,-50%) rotate(${rot ? 90 : 0}deg) scale(${s})`;
+    document.getElementById('rotHint').hidden = !rot;
+  }
+
+  document.getElementById('play').addEventListener('click', e => { e.stopPropagation(); play(); });
+  document.getElementById('full').addEventListener('click', e => {
+    e.stopPropagation();
+    try {
+      const fn = theater.requestFullscreen || theater.webkitRequestFullscreen;
+      if (fn) { const p = fn.call(theater); if (p && p.catch) p.catch(() => {}); }
+    } catch (err) {}
+    play();
+  });
+  theater.addEventListener('click', toggle);
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && theater.classList.contains('playing')) { e.preventDefault(); toggle(); }
+  });
+  window.addEventListener('resize', fit);
+
+  fit(); drawDOM(0); still();
+
+  window.__film = {
+    D, FPS,
+    exportMode(grain = 1) { GRAIN = grain; theater.classList.add('export'); stage.classList.remove('still'); fit(); },
+    render,
+    async renderAudio(sr = 48000) {
+      const off = new OfflineAudioContext(2, Math.ceil(sr * D), sr);
+      buildScore(off, 0);
+      const buf = await off.startRendering(), L = buf.getChannelData(0), Rr = buf.getChannelData(1), n = L.length;
+      let peak = 0;
+      for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(L[i]), Math.abs(Rr[i]));
+      return { sr, peak, duration: buf.duration };
+    }
+  };
+})();
+</script>
+</body>
+</html>
