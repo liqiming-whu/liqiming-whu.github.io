@@ -6,7 +6,7 @@ groups:
       - { repo: character-memory-engine, desc: "角色长期记忆引擎：SQLite 存储加向量检索，自动语义去重，按角色隔离。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
       - { repo: character-memory-system, desc: "记忆系统插件的重构版，能自动从聊天记录里提炼长期记忆。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
       - { repo: rp-xml-renderer, desc: "角色扮演用的标签渲染器，支持标签内正则替换和动态提示词。", lang: TypeScript, since: "2026-10", updated: "2026-11" }
-      - { repo: Operit-Environment-Context-Injector, desc: "对话前注入时间、日期、日历、纪念日等环境信息。", lang: TypeScript, since: "2026-08", updated: "2026-10" }
+      - { repo: Operit-Environment-Context-Injector, desc: "对话前注入时间、日期、日历、纪念日等环境信息。", lang: TypeScript, since: "2026-08", updated: "2026-11" }
       - { repo: codex-control, desc: "通过 Operit 的终端会话遥控电脑上的 Codex CLI，附带任务编排 Skill。", lang: JavaScript, since: "2026-08", updated: "2026-08" }
       - { repo: deepseek-responses-provider, desc: "让 Operit 用上 DeepSeek 的 Responses 协议。", lang: JavaScript, since: "2026-08", updated: "2026-10" }
       - { repo: deepseek_balance_watch, desc: "DeepSeek 余额快照，余额太低时提醒充值。", lang: TypeScript, since: "2026-08", updated: "2026-08" }
