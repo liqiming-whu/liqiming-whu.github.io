@@ -71,7 +71,9 @@ IP 在 AS2497，也就是 IIJ（Internet Initiative Japan）的段。分别在 I
 
 ## 我怎么用的
 
-只跑了一个 Rust 版的 Shadowsocks 2022，开了 BBR。装完还剩 250 MB 左右的内存，512 MB 跑这一个服务很宽裕。
+只跑了一个轻量服务，开了 BBR。装完还剩 250 MB 左右的内存，512 MB 跑这一个服务很宽裕。
+
+![客户端里的当前节点卡片：节点名南极洲，延迟 66 ms](/assets/img/posts/bytevirt-tokyo-isp/antarctica.webp#small "当前节点：南极洲，66 ms。企鹅那边应该是已经用上量子通信了。")
 
 再多的东西就别往上堆了，这个内存也堆不动。
 
