@@ -1112,6 +1112,8 @@ body { background: var(--void); color: var(--star); font-family: var(--f-cn); ov
     if (e.code === 'Space' && theater.classList.contains('playing')) { e.preventDefault(); toggle(); }
   });
   window.addEventListener('resize', fit);
+  // 切到后台就暂停：rAF 会停，但 AudioContext 不会，声音会自己往下演
+  document.addEventListener('visibilitychange', () => { if (document.hidden && playing && !theater.classList.contains('export')) toggle(); });
 
   fit(); drawDOM(0); still();
 

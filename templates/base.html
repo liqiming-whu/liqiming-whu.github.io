@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ full_title }}</title>
 <meta name="description" content="{{ meta_desc }}">
-<meta name="author" content="{{ site.author }}">
+<meta name="author" content="{{ (post.author if page == 'post' and post is defined else '') or site.author }}">
 <meta name="theme-color" content="#F6F7F4">
 <meta property="og:type" content="{{ 'article' if page == 'post' else 'website' }}">
 <meta property="og:site_name" content="{{ site.title }}">
