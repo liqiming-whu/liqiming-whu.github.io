@@ -16,6 +16,8 @@ groups:
   - name: 其他 Agent 与聊天客户端
     desc: 同样的想法搬到别的宿主上：让模型知道「现在」是什么时候、在哪儿。
     items:
+      - { repo: dsh-persona-hub, desc: "DeepSeek Harness 人设控制台：侧栏一键切换人设，预览写实和二次元双形象，显示会话与上下文负载，附人设管理 Skill。", lang: TypeScript, since: "2026-11", updated: "2026-11" }
+      - { repo: antigravity-plugins, desc: "Google Antigravity 人设控制台：侧边栏显示当前人设和双形象，监控模型档位与上下文负载，附两套人设规则。", lang: JavaScript, since: "2026-11", updated: "2026-11" }
       - { repo: SillyTavern-PresetLab, desc: "SillyTavern 预设编辑器，能看清最终发给模型的上下文和 Token 分布。", lang: JavaScript, since: "2026-06", updated: "2026-10" }
       - { repo: SillyTavern-Environment-Context, desc: "给 SillyTavern 注入时间、天气、地点、节假日等现实信息。", lang: JavaScript, since: "2026-08", updated: "2026-10" }
       - { repo: dsh-environment-context, desc: "DeepSeek Harness 的环境上下文插件。", lang: TypeScript, since: "2026-08", updated: "2026-10" }
